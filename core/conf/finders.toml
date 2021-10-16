@@ -1,0 +1,18 @@
+[server]
+# Server listening port.
+port = 9080
+
+# TCP client connection queue size. Default is 128.
+# backlog = 128
+
+# Upper capacity limit of the tcp receiving buffer, the unit is bytes. Default is 128K.
+# rcvBuf = 131072
+
+# Upper capacity limit of the tcp send buffer, the unit is bytes. Default is 128K.
+# sndBuf = 131072
+
+[cluster]
+# The own serverNode id, must be unique in the cluster.
+selfId = "n0"
+# Cluster serverNode info. Format: selfId-host:port.
+nodes = ["n0-127.0.0.1:9080", "n1-127.0.0.1:9081", "n2-127.0.0.1:9082"]
