@@ -32,20 +32,19 @@ public class FindersHttpClient {
 
     private static final int RESPONSE_TIMEOUT = 10000;
 
-    private static final int POOL_MAX_CONNECTION = 50;
+    private static final int IDLE_TIME = 10;
 
-    private static final int POOL_MAX_IDLE_TIME = 20;
+    private static final int POOl_SIZE = 50;
 
-    private static final int POOL_MAX_LIFE_TIME = 60;
-
-    private static final int POOL_ACQUIRE_TIMEOUT = 60;
-
-    private static final int POOL_EVICT_IN_BACKGROUND = 120;
+    private static final int POOL_CLEANER_PERIOD = 120000;
 
     private static final WebClientOptions CLIENT_OPTIONS = new WebClientOptions();
 
     static {
-        CLIENT_OPTIONS.setConnectTimeout(CONNECT_TIMEOUT);
+        CLIENT_OPTIONS.setConnectTimeout(CONNECT_TIMEOUT)
+                .setIdleTimeout(IDLE_TIME)
+                .setMaxPoolSize(POOl_SIZE)
+                .setPoolCleanerPeriod(POOL_CLEANER_PERIOD);
     }
 
     public static String get(String url) {
