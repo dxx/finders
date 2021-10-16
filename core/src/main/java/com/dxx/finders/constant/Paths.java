@@ -3,7 +3,7 @@ package com.dxx.finders.constant;
 /**
  * Path for handler.
  */
-public class Path {
+public class Paths {
 
     public static final String HELLO = "/hello";
 
