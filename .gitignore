@@ -4,10 +4,13 @@
 # Gradle build output directory
 build
 
-### IntelliJ IDEA ###
+# IntelliJ IDEA
 .idea
 *.iws
 *.iml
 *.ipr
+
+# Compile directory
+out
 
 http
