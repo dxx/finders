@@ -37,16 +37,16 @@ public class RouterFunction {
         RouterFunction routerFunction = new RouterFunction(router);
 
         HelloHandler helloHandler = new HelloHandler();
-        routeIfNecessary(routerFunction, helloHandler);
+        routerFunction.routeIfNecessary(helloHandler);
 
         ServiceHandler serviceHandler = new ServiceHandler();
-        routeIfNecessary(routerFunction, serviceHandler);
+        routerFunction.routeIfNecessary(serviceHandler);
 
         router.route().handler(ctx -> new BadRequestHandler().accept(ctx));
     }
 
     @SuppressWarnings("unchecked")
-    private static void routeIfNecessary(RouterFunction routerFunction, Object obj) {
+    private void routeIfNecessary(Object obj) {
         Arrays.stream(obj.getClass().getMethods()).forEach(method -> {
             RequestMapping annotation = method.getAnnotation(RequestMapping.class);
             if (annotation == null) {
@@ -77,7 +77,7 @@ public class RouterFunction {
                     response.end(err);
                 }
             };
-            routerFunction.route(annotation.path(), annotation.method(), handlerFunction);
+            this.route(annotation.path(), annotation.method(), handlerFunction);
         });
     }
 
