@@ -1,6 +1,6 @@
 package com.dxx.finders.handler;
 
-import com.dxx.finders.constant.Path;
+import com.dxx.finders.constant.Paths;
 import com.dxx.finders.constant.Result;
 import com.dxx.finders.http.RequestMethod;
 import com.dxx.finders.http.annotation.Distribute;
@@ -17,7 +17,7 @@ import io.vertx.ext.web.RoutingContext;
  */
 public class ServiceHandler {
 
-    @RequestMapping(path = Path.SERVICE_LIST, method = RequestMethod.GET)
+    @RequestMapping(path = Paths.SERVICE_LIST, method = RequestMethod.GET)
     public void list(RoutingContext context) {
         HttpServerResponse response = context.response();
         response.putHeader(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8");
@@ -25,14 +25,14 @@ public class ServiceHandler {
     }
 
     @Distribute
-    @RequestMapping(path = Path.SERVICE, method = RequestMethod.POST)
+    @RequestMapping(path = Paths.SERVICE, method = RequestMethod.POST)
     public void register(RoutingContext context) {
         HttpServerResponse response = context.response();
         response.end(Result.SUCCESS);
     }
 
     @Distribute
-    @RequestMapping(path = Path.SERVICE, method = RequestMethod.DELETE)
+    @RequestMapping(path = Paths.SERVICE, method = RequestMethod.DELETE)
     public void deregister(RoutingContext context) {
         HttpServerResponse response = context.response();
         response.end(Result.SUCCESS);
