@@ -77,6 +77,8 @@
         <appender-ref ref="httpClientLog" />
     </appender>
 
+    <logger name="io.vertx.core.impl.BlockedThreadChecker" level="OFF" />
+
     <logger name="io.vertx.ext.web.handler.impl.LoggerHandlerImpl" level="INFO">
         <appender-ref ref="accessAsync" />
     </logger>
