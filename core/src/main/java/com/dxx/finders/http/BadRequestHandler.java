@@ -1,4 +1,4 @@
-package com.dxx.finders.handler;
+package com.dxx.finders.http;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.ext.web.RoutingContext;

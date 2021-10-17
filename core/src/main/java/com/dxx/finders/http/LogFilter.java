@@ -1,4 +1,4 @@
-package com.dxx.finders.filter;
+package com.dxx.finders.http;
 
 import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.http.AbstractFilter;

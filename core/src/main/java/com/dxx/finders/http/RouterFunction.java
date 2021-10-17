@@ -2,7 +2,6 @@ package com.dxx.finders.http;
 
 import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.exception.FindersRuntimeException;
-import com.dxx.finders.handler.BadRequestHandler;
 import com.dxx.finders.handler.HelloHandler;
 import com.dxx.finders.handler.ServiceHandler;
 import com.dxx.finders.http.annotation.RequestMapping;
