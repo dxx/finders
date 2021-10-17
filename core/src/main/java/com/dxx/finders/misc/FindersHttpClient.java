@@ -66,9 +66,7 @@ public class FindersHttpClient {
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
-            if (Loggers.HTTP_CLIENT.isErrorEnabled()) {
-                Loggers.HTTP_CLIENT.error("Await response error: ", e);
-            }
+            Loggers.HTTP_CLIENT.error("Await response error: ", e);
         }
         return reference.get();
     }
@@ -80,9 +78,7 @@ public class FindersHttpClient {
             try {
                 paramList.add(key + "=" + URLEncoder.encode(value, "UTF-8"));
             } catch (UnsupportedEncodingException e) {
-                if (Loggers.HTTP_CLIENT.isErrorEnabled()) {
-                    Loggers.HTTP_CLIENT.error("Encode param error: ", e);
-                }
+                Loggers.HTTP_CLIENT.error("Encode param error: ", e);
             }
         }
         if (StringUtils.isNotEmpty(url) && paramList.size() > 0) {
@@ -124,9 +120,7 @@ public class FindersHttpClient {
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
-            if (Loggers.HTTP_CLIENT.isErrorEnabled()) {
-                Loggers.HTTP_CLIENT.error("Await response error: ", e);
-            }
+            Loggers.HTTP_CLIENT.error("Await response error: ", e);
         }
         return reference.get();
     }
@@ -144,9 +138,8 @@ public class FindersHttpClient {
             }
             callback.onSuccess(response.bodyAsString());
         }).onFailure(e -> {
-            if (Loggers.HTTP_CLIENT.isErrorEnabled()) {
-                Loggers.HTTP_CLIENT.error("GET " + url + " response error: ", e);
-            }
+            Loggers.HTTP_CLIENT.error("GET " + url + " response error: ", e);
+
             callback.onError(e);
         });
     }
@@ -170,9 +163,8 @@ public class FindersHttpClient {
             callback.onSuccess(response.bodyAsString());
         });
         future.onFailure(e -> {
-            if (Loggers.HTTP_CLIENT.isErrorEnabled()) {
-                Loggers.HTTP_CLIENT.error("POST " + url + " response error: ", e);
-            }
+            Loggers.HTTP_CLIENT.error("POST " + url + " response error: ", e);
+
             callback.onError(e);
         });
     }

@@ -46,14 +46,10 @@ public class FindersApp {
 
         httpServer.listen(serverConfig.getPort(), http -> {
             if (http.succeeded()) {
-                if (Loggers.CORE.isInfoEnabled()) {
-                    Loggers.CORE.info("HTTP server started on port: {}", http.result().actualPort());
-                }
+                Loggers.CORE.info("HTTP server started on port: {}", http.result().actualPort());
                 return;
             }
-            if (Loggers.CORE.isErrorEnabled()) {
-                Loggers.CORE.error("HTTP server startup error", http.cause());
-            }
+            Loggers.CORE.error("HTTP server startup error", http.cause());
         });
     }
 

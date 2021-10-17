@@ -62,9 +62,7 @@ public class DefaultEventPublisher extends Thread implements EventPublisher {
                 receiveEvent(event);
             }
         } catch (InterruptedException e) {
-            if (Loggers.CORE.isErrorEnabled()) {
-                Loggers.CORE.error("[EventPublisher] An error occurred when handleEventQueue", e);
-            }
+            Loggers.CORE.error("[EventPublisher] An error occurred when handleEventQueue", e);
         }
     }
 

@@ -78,9 +78,7 @@ public final class Notifier {
             try {
                 publisher.shutdown();
             } catch (RuntimeException e) {
-                if (Loggers.NOTIFY.isErrorEnabled()) {
-                    Loggers.NOTIFY.error("[Notifier] An error occurred when shutdown", e);
-                }
+                Loggers.NOTIFY.error("[Notifier] An error occurred when shutdown", e);
             }
         }
     }

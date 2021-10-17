@@ -75,9 +75,8 @@ public class RouterFunction {
                 try {
                     method.invoke(obj, context);
                 } catch (Exception e) {
-                    if (Loggers.CORE.isErrorEnabled()) {
-                        Loggers.CORE.error("ERROR: ", e);
-                    }
+                    Loggers.CORE.error("ERROR: ", e);
+
                     HttpServerResponse response = context.response();
                     response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
                     String err = e.getMessage() != null ? e.getMessage() : e.getCause().getMessage();

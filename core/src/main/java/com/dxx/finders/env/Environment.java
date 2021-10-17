@@ -67,9 +67,8 @@ public class Environment {
             JsonNode jsonNode = TomlMapper.builder().build().readTree(new File(config));
             parseConfig(jsonNode);
         } catch (Exception e) {
-            if (Loggers.CORE.isErrorEnabled()) {
-                Loggers.CORE.error("Init config error: {}", e.getMessage());
-            }
+            Loggers.CORE.error("Init config error: {}", e.getMessage());
+
             throw new FindersRuntimeException(e);
         }
     }

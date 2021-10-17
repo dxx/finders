@@ -20,9 +20,7 @@ public class FilterBuilder {
                 filterChain.addLast((AbstractFilter) filter);
             }
         } catch (Throwable t) {
-            if (Loggers.CORE.isErrorEnabled()) {
-                Loggers.CORE.error("ERROR: build filter chain failed", t);
-            }
+            Loggers.CORE.error("ERROR: build filter chain failed", t);
         }
         return filterChain;
     }
