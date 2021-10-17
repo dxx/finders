@@ -16,7 +16,7 @@ public class BadRequestHandler implements Consumer<RoutingContext> {
     public void accept(RoutingContext context) {
         context.response().setStatusCode(HttpResponseStatus.BAD_REQUEST.code());
         context.response().setStatusMessage(HttpResponseStatus.BAD_REQUEST.reasonPhrase());
-        context.end();
+        context.end(HttpResponseStatus.BAD_REQUEST.reasonPhrase());
     }
 
 }
