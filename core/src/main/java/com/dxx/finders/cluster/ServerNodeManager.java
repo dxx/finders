@@ -50,7 +50,7 @@ public class ServerNodeManager {
         return new ArrayList<>(allNodes.values());
     }
 
-    public ServerNode getSelfNode() {
+    public ServerNode selfNode() {
         return this.allNodes.get(this.selfId);
     }
 

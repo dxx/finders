@@ -1,5 +1,6 @@
 package com.dxx.finders.filter;
 
+import com.dxx.finders.cluster.DistributionManager;
 import com.dxx.finders.exception.FindersRuntimeException;
 import com.dxx.finders.http.AbstractFilter;
 import com.dxx.finders.http.HandlerMethodMap;
@@ -24,8 +25,12 @@ public class DistributionFilter extends AbstractFilter {
             throw new FindersRuntimeException(String.format("No handler for %s %s",
                     request.method().name(), request.path()));
         }
-        if (method.isAnnotationPresent(Distribute.class)) {
+        if (DistributionManager.isCluster() && method.isAnnotationPresent(Distribute.class)) {
             System.out.println(method);
+            String serviceName = "serviceTest";
+            if (DistributionManager.isResponsible(serviceName)) {
+                // TODO: Distribute request
+            }
         }
         return fireDoFilter(context);
     }

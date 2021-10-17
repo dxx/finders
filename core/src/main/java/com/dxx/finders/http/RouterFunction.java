@@ -1,5 +1,7 @@
 package com.dxx.finders.http;
 
+import com.dxx.finders.cluster.DistributionManager;
+import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.exception.FindersRuntimeException;
 import com.dxx.finders.handler.HelloHandler;
@@ -30,18 +32,24 @@ public class RouterFunction {
     }
 
     /**
-     * Initialize http routes.
+     * Initialize route handler.
      */
     public static void init(Router router) {
         RouterFunction routerFunction = new RouterFunction(router);
-
-        HelloHandler helloHandler = new HelloHandler();
-        routerFunction.routeIfNecessary(helloHandler);
-
-        ServiceHandler serviceHandler = new ServiceHandler();
-        routerFunction.routeIfNecessary(serviceHandler);
+        routerFunction.initRouteHandler();
 
         router.route().handler(ctx -> new BadRequestHandler().accept(ctx));
+    }
+
+    private void initRouteHandler() {
+        ServerNodeManager serverNodeManager = ServerNodeManager.init();
+        DistributionManager.init(serverNodeManager);
+
+        HelloHandler helloHandler = new HelloHandler();
+        this.routeIfNecessary(helloHandler);
+
+        ServiceHandler serviceHandler = new ServiceHandler();
+        this.routeIfNecessary(serviceHandler);
     }
 
     @SuppressWarnings("unchecked")

@@ -15,4 +15,8 @@ public class FindersRuntimeException extends RuntimeException {
         super(cause);
     }
 
+    public FindersRuntimeException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
