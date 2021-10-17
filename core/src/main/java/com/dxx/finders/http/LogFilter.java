@@ -1,7 +1,6 @@
 package com.dxx.finders.http;
 
 import com.dxx.finders.constant.Loggers;
-import com.dxx.finders.http.AbstractFilter;
 import io.vertx.core.MultiMap;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.RoutingContext;
