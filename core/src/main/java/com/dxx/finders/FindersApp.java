@@ -12,6 +12,7 @@ import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.LoggerHandler;
 
 import java.io.File;
 
@@ -34,6 +35,9 @@ public class FindersApp {
         HttpServer httpServer = vertx.createHttpServer(serverOptions);
         Router router = Router.router(vertx);
 
+        // Logger handler
+        router.route().handler(LoggerHandler.create(true, LoggerHandler.DEFAULT_FORMAT));
+        // Body handler
         router.route().handler(BodyHandler.create());
 
         RouterFunction.init(router);

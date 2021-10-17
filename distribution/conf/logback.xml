@@ -11,6 +11,28 @@
         </encoder>
     </appender>
 
+    <appender name="accessLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/access.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/access.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                ${LOG_FORMAT}
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="accessAsync" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <neverBlock>true</neverBlock>
+        <appender-ref ref="accessLog" />
+    </appender>
+
     <appender name="coreLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/core.log</file>
         <append>true</append>
@@ -54,6 +76,10 @@
         <neverBlock>true</neverBlock>
         <appender-ref ref="httpClientLog" />
     </appender>
+
+    <logger name="io.vertx.ext.web.handler.impl.LoggerHandlerImpl" level="INFO">
+        <appender-ref ref="accessAsync" />
+    </logger>
 
     <logger name="com.dxx.finders.core" level="INFO">
         <appender-ref ref="coreAsync" />
