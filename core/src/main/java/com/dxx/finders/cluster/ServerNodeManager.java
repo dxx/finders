@@ -20,7 +20,7 @@ public class ServerNodeManager {
 
     private static final ServerNodeManager INSTANCE = new ServerNodeManager();
 
-    private volatile Map<String, ServerNode> allNodes;
+    private volatile Map<String, ServerNode> allNodes = new HashMap<>();
 
     private String selfId;
 
@@ -30,9 +30,12 @@ public class ServerNodeManager {
         ClusterConfig clusterConfig = ConfigHolder.config().getClusterConfig();
         if (clusterConfig != null) {
             INSTANCE.selfId = clusterConfig.getSelfId();
-            INSTANCE.allNodes = clusterConfig.getNodes().stream().map(INSTANCE::parseNode)
-                    .collect(Collectors.toMap(ServerNode::getId, Function.identity(), (oldValue, newValue) -> {
-                        throw new FindersRuntimeException(String.format("Duplicate cluster node %s", newValue)); }));
+            if (clusterConfig.getNodes() != null) {
+                INSTANCE.allNodes = clusterConfig.getNodes().stream().map(INSTANCE::parseNode)
+                        .collect(Collectors.toMap(ServerNode::getId, Function.identity(), (oldValue, newValue) -> {
+                            throw new FindersRuntimeException(String.format("Duplicate cluster node %s", newValue));
+                        }));
+            }
         }
         return INSTANCE;
     }
