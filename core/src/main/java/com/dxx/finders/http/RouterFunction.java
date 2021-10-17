@@ -84,14 +84,19 @@ public class RouterFunction {
     private void route(String path, RequestMethod method, HandlerFunction handlerFunction) {
         Handler<RoutingContext> routeHandler = (ctx) ->
                 new HandlerAdapter(filterChain, ctx, handlerFunction).apply();
-        if (method == RequestMethod.GET) {
-            this.router.get(path).handler(routeHandler);
-        } else if (method == RequestMethod.POST) {
-            this.router.post(path).handler(routeHandler);
-        } else if (method == RequestMethod.PUT) {
-            this.router.put(path).handler(routeHandler);
-        } else if (method == RequestMethod.DELETE) {
-            this.router.delete(path).handler(routeHandler);
+        switch (method) {
+            case GET:
+                this.router.get(path).handler(routeHandler);
+                break;
+            case POST:
+                this.router.post(path).handler(routeHandler);
+                break;
+            case PUT:
+                this.router.put(path).handler(routeHandler);
+                break;
+            case DELETE:
+                this.router.delete(path).handler(routeHandler);
+                break;
         }
     }
 
