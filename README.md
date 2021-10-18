@@ -1,2 +1,2 @@
 # finders
-Distributed service management
+Distributed service management.
