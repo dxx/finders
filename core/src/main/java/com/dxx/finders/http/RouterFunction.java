@@ -38,7 +38,7 @@ public class RouterFunction {
         RouterFunction routerFunction = new RouterFunction(router);
         routerFunction.initRouteHandler();
 
-        router.route().handler(ctx -> new BadRequestHandler().accept(ctx));
+        router.route().handler(ctx -> new NotFoundHandler().accept(ctx));
     }
 
     private void initRouteHandler() {

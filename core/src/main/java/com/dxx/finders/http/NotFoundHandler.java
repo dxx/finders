@@ -10,13 +10,13 @@ import java.util.function.Consumer;
  *
  * @author dxx
  */
-public class BadRequestHandler implements Consumer<RoutingContext> {
+public class NotFoundHandler implements Consumer<RoutingContext> {
 
     @Override
     public void accept(RoutingContext context) {
-        context.response().setStatusCode(HttpResponseStatus.BAD_REQUEST.code());
-        context.response().setStatusMessage(HttpResponseStatus.BAD_REQUEST.reasonPhrase());
-        context.end(HttpResponseStatus.BAD_REQUEST.reasonPhrase());
+        context.response().setStatusCode(HttpResponseStatus.NOT_FOUND.code());
+        context.response().setStatusMessage(HttpResponseStatus.NOT_FOUND.reasonPhrase());
+        context.end(HttpResponseStatus.NOT_FOUND.reasonPhrase());
     }
 
 }
