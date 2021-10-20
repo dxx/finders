@@ -3,6 +3,7 @@ package com.dxx.finders.http;
 import com.dxx.finders.cluster.DistributionManager;
 import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.constant.Loggers;
+import com.dxx.finders.core.ServiceManager;
 import com.dxx.finders.exception.FindersRuntimeException;
 import com.dxx.finders.handler.HelloHandler;
 import com.dxx.finders.handler.ServiceHandler;
@@ -45,10 +46,12 @@ public class RouterFunction {
         ServerNodeManager serverNodeManager = ServerNodeManager.init();
         DistributionManager.init(serverNodeManager);
 
+        ServiceManager serviceManager = new ServiceManager();
+
         HelloHandler helloHandler = new HelloHandler();
         this.routeIfNecessary(helloHandler);
 
-        ServiceHandler serviceHandler = new ServiceHandler();
+        ServiceHandler serviceHandler = new ServiceHandler(serviceManager);
         this.routeIfNecessary(serviceHandler);
     }
 

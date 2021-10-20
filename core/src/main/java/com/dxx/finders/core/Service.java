@@ -16,6 +16,13 @@ public class Service {
      */
     private Map<String, Set<Instance>> instances = new HashMap<>();
 
+    private String namespace;
+
     private String serviceName;
+
+    public Service(String namespace, String serviceName) {
+        this.namespace = namespace;
+        this.serviceName = serviceName;
+    }
 
 }
