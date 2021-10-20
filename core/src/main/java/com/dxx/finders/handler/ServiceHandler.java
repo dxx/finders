@@ -10,7 +10,6 @@ import com.dxx.finders.http.annotation.Distribute;
 import com.dxx.finders.http.annotation.RequestMapping;
 import com.dxx.finders.util.JacksonUtils;
 import com.dxx.finders.util.ParamUtils;
-import com.dxx.finders.util.StringUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
@@ -18,7 +17,6 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
-import java.nio.charset.StandardCharsets;
 
 /**
  * Service handler.
@@ -55,6 +53,7 @@ public class ServiceHandler {
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
         String namespace = jsonNode.get(Instances.PARAM_NAMESPACE).asText(Instances.DEFAULT_NAMESPACE);
         String serviceName = jsonNode.get(Instances.PARAM_SERVICE_NAME).asText();
+        ParamUtils.requiredCheck(Instances.PARAM_SERVICE_NAME, serviceName);
 
         serviceManager.registerService(namespace, serviceName);
 
