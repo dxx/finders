@@ -1,6 +1,6 @@
 package com.dxx.finders.util;
 
-import com.dxx.finders.exception.ArgumentException;
+import com.dxx.finders.exception.ValidationException;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.ext.web.RoutingContext;
@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class ParamUtils {
 
     /**
-     * Get parameter value from HttpServerRequest, if not found will throw {@link ArgumentException}.
+     * Get parameter value from HttpServerRequest, if not found will throw {@link ValidationException}.
      *
      * @param request {@link HttpServerRequest}
      * @param name    name
@@ -24,7 +24,7 @@ public class ParamUtils {
     public static String required(HttpServerRequest request, String name) {
         String value = request.getParam(name);
         if (StringUtils.isEmpty(value)) {
-            throw new ArgumentException("Param '" + name + "' is required.");
+            throw new ValidationException(400, "Param '" + name + "' is required.");
         }
         return value;
     }
@@ -46,13 +46,13 @@ public class ParamUtils {
     }
 
     /**
-     * Check a parameter, if null will throw {@link ArgumentException}.
+     * Check a parameter, if null will throw {@link ValidationException}.
      * @param name    parameter name
      * @param value   parameter value
      */
     public static void requiredCheck(String name, String value) {
         if (StringUtils.isEmpty(value)) {
-            throw new ArgumentException("Param '" + name + "' is required.");
+            throw new ValidationException(400, "Param '" + name + "' is required.");
         }
     }
 

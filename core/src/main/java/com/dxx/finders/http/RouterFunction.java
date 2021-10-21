@@ -5,6 +5,7 @@ import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.core.ServiceManager;
 import com.dxx.finders.exception.FindersRuntimeException;
+import com.dxx.finders.exception.ValidationException;
 import com.dxx.finders.handler.HelloHandler;
 import com.dxx.finders.handler.ServiceHandler;
 import com.dxx.finders.http.annotation.RequestMapping;
@@ -80,10 +81,7 @@ public class RouterFunction {
                 } catch (Exception e) {
                     Loggers.CORE.error("ERROR: ", e);
 
-                    HttpServerResponse response = context.response();
-                    response.setStatusCode(HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
-                    String err = e.getMessage() != null ? e.getMessage() : e.getCause().getMessage();
-                    response.end(err);
+                    handleMethodInvokeError(context.response(), e);
                 }
             };
             this.route(annotation.path(), annotation.method(), handlerFunction);
@@ -107,6 +105,22 @@ public class RouterFunction {
                 this.router.delete(path).handler(routeHandler);
                 break;
         }
+    }
+
+    private void handleMethodInvokeError(HttpServerResponse response, Exception e) {
+        Throwable throwable = e.getCause();
+        int statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
+        String errorMsg = e.getMessage();
+        if (throwable != null) {
+            errorMsg = throwable.getMessage();
+            if (throwable instanceof ValidationException) {
+                ValidationException exception = (ValidationException) throwable;
+                statusCode = exception.getErrorCode();
+                errorMsg = exception.getErrorMsg();
+            }
+        }
+        response.setStatusCode(statusCode);
+        response.end(errorMsg);
     }
 
 }
