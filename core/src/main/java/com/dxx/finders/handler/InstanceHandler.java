@@ -1,6 +1,6 @@
 package com.dxx.finders.handler;
 
-import com.dxx.finders.constant.Instances;
+import com.dxx.finders.constant.Services;
 import com.dxx.finders.constant.Paths;
 import com.dxx.finders.constant.Result;
 import com.dxx.finders.core.Instance;
@@ -43,8 +43,8 @@ public class InstanceHandler {
         HttpServerRequest request = context.request();
         HttpServerResponse response = context.response();
 
-        String namespace = ParamUtils.optional(request, Instances.PARAM_NAMESPACE, Instances.DEFAULT_NAMESPACE);
-        String serviceName = ParamUtils.required(request, Instances.PARAM_SERVICE_NAME);
+        String namespace = ParamUtils.optional(request, Services.PARAM_NAMESPACE, Services.DEFAULT_NAMESPACE);
+        String serviceName = ParamUtils.required(request, Services.PARAM_SERVICE_NAME);
         String clusters = ParamUtils.optional(request, "clusters", "");
 
         ObjectNode node = doList(namespace, clusters, serviceName);
@@ -59,9 +59,9 @@ public class InstanceHandler {
         HttpServerResponse response = context.response();
 
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
-        String namespace = jsonNode.get(Instances.PARAM_NAMESPACE).asText(Instances.DEFAULT_NAMESPACE);
-        String serviceName = jsonNode.get(Instances.PARAM_SERVICE_NAME).asText();
-        ParamUtils.requiredCheck(Instances.PARAM_SERVICE_NAME, serviceName);
+        String namespace = jsonNode.get(Services.PARAM_NAMESPACE).asText(Services.DEFAULT_NAMESPACE);
+        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME).asText();
+        ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, serviceName);
 
         Instance instance = createInstance(jsonNode);
 
@@ -79,13 +79,13 @@ public class InstanceHandler {
 
     private Instance createInstance(JsonNode jsonNode) {
         Instance instance = JacksonUtils.toObject(jsonNode.toString(), Instance.class);
-        ParamUtils.requiredCheck(Instances.PARAM_SERVICE_NAME, instance.getServiceName());
+        ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, instance.getServiceName());
         ParamUtils.requiredCheck("ip", instance.getIp());
         if (instance.getPort() == 0) {
             throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
                     "Param 'port' is required and must be greater than zero.");
         }
-        instance.setClusterName(StringUtils.defaultIfEmpty(instance.getClusterName(), Instances.DEFAULT_CLUSTER));
+        instance.setClusterName(StringUtils.defaultIfEmpty(instance.getClusterName(), Services.DEFAULT_CLUSTER));
         instance.createInstanceId();
         return instance;
     }
@@ -98,7 +98,7 @@ public class InstanceHandler {
         Service service = serviceManager.getService(namespace, serviceName);
 
         ObjectNode objectNode = JacksonUtils.createJsonNode();
-        objectNode.put(Instances.PARAM_SERVICE_NAME, serviceName);
+        objectNode.put(Services.PARAM_SERVICE_NAME, serviceName);
         ArrayNode clusterArrayNode = JacksonUtils.createArrayNode();
         ArrayNode instanceArrayNode = JacksonUtils.createArrayNode();
 

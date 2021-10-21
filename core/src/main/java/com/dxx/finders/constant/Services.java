@@ -1,11 +1,11 @@
 package com.dxx.finders.constant;
 
 /**
- * Instance constants.
+ * Service constants.
  *
  * @author dxx
  */
-public class Instances {
+public class Services {
 
     public static final String PARAM_NAMESPACE = "namespace";
 
