@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,4 +75,19 @@ public class JacksonUtils {
             throw new FindersRuntimeException(e);
         }
     }
+
+    /**
+     * Create a new Jackson ObjectNode.
+     */
+    public static ObjectNode createJsonNode() {
+        return new ObjectNode(mapper.getNodeFactory());
+    }
+
+    /**
+     * Create a new Jackson ArrayNode.
+     */
+    public static ArrayNode createArrayNode() {
+        return new ArrayNode(mapper.getNodeFactory());
+    }
+
 }
