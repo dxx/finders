@@ -11,8 +11,8 @@ public class Paths {
 
     public static final String DATA = "/data";
 
-    public static final String SERVICE = "/service";
+    public static final String INSTANCE = "/instance";
 
-    public static final String SERVICE_LIST = SERVICE + "/list";
+    public static final String INSTANCE_LIST = INSTANCE + "/list";
 
 }

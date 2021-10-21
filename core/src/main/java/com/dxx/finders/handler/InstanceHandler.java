@@ -30,15 +30,15 @@ import java.util.*;
  *
  * @author dxx
  */
-public class ServiceHandler {
+public class InstanceHandler {
 
     private final ServiceManager serviceManager;
 
-    public ServiceHandler(ServiceManager serviceManager) {
+    public InstanceHandler(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
     }
 
-    @RequestMapping(path = Paths.SERVICE_LIST, method = RequestMethod.GET)
+    @RequestMapping(path = Paths.INSTANCE_LIST, method = RequestMethod.GET)
     public void list(RoutingContext context) {
         HttpServerRequest request = context.request();
         HttpServerResponse response = context.response();
@@ -54,7 +54,7 @@ public class ServiceHandler {
     }
 
     @Distribute
-    @RequestMapping(path = Paths.SERVICE, method = RequestMethod.POST)
+    @RequestMapping(path = Paths.INSTANCE, method = RequestMethod.POST)
     public void register(RoutingContext context) {
         HttpServerResponse response = context.response();
 
@@ -71,7 +71,7 @@ public class ServiceHandler {
     }
 
     @Distribute
-    @RequestMapping(path = Paths.SERVICE, method = RequestMethod.DELETE)
+    @RequestMapping(path = Paths.INSTANCE, method = RequestMethod.DELETE)
     public void deregister(RoutingContext context) {
         HttpServerResponse response = context.response();
         response.end(Result.SUCCESS);

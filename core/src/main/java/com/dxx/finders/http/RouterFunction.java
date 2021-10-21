@@ -7,7 +7,7 @@ import com.dxx.finders.core.ServiceManager;
 import com.dxx.finders.exception.FindersRuntimeException;
 import com.dxx.finders.exception.ValidationException;
 import com.dxx.finders.handler.HelloHandler;
-import com.dxx.finders.handler.ServiceHandler;
+import com.dxx.finders.handler.InstanceHandler;
 import com.dxx.finders.http.annotation.RequestMapping;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
@@ -52,8 +52,8 @@ public class RouterFunction {
         HelloHandler helloHandler = new HelloHandler();
         this.routeIfNecessary(helloHandler);
 
-        ServiceHandler serviceHandler = new ServiceHandler(serviceManager);
-        this.routeIfNecessary(serviceHandler);
+        InstanceHandler instanceHandler = new InstanceHandler(serviceManager);
+        this.routeIfNecessary(instanceHandler);
     }
 
     @SuppressWarnings("unchecked")
