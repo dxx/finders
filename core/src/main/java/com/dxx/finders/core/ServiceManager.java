@@ -41,7 +41,7 @@ public class ServiceManager {
         if (service == null) {
             service = new Service(namespace, serviceName);
 
-            serviceMap.computeIfAbsent(namespace, k -> new ConcurrentHashMap<>());
+            serviceMap.computeIfAbsent(namespace, k -> new ConcurrentSkipListMap<>());
             serviceMap.get(namespace).put(serviceName, service);
         }
         return service;
