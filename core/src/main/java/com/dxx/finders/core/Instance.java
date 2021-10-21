@@ -21,8 +21,8 @@ public class Instance {
 
     private volatile long lastBeatTimestamp = System.currentTimeMillis();
 
-    public String createInstanceId() {
-        return String.format("%s#%s@%s:%s", getClusterName(), getServiceName(), getIp(), getPort());
+    public void createInstanceId() {
+        this.instanceId = String.format("%s#%s@%s:%s", getClusterName(), getServiceName(), getIp(), getPort());
     }
 
     public String getInstanceId() {
