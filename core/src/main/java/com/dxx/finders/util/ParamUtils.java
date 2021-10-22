@@ -25,7 +25,7 @@ public class ParamUtils {
     public static String required(HttpServerRequest request, String name) {
         String value = request.getParam(name);
         if (StringUtils.isEmpty(value)) {
-            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(), "Param '" + name + "' is required.");
+            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(), "Param '" + name + "' is required");
         }
         return value;
     }
@@ -53,7 +53,7 @@ public class ParamUtils {
      */
     public static void requiredCheck(String name, String value) {
         if (StringUtils.isEmpty(value)) {
-            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(), "Param '" + name + "' is required.");
+            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(), "Param '" + name + "' is required");
         }
     }
 

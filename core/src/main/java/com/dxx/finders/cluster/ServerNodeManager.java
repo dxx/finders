@@ -66,7 +66,7 @@ public class ServerNodeManager {
             }
             return ServerNode.builder().id(nodeInfo[0]).ip(address).port(port).build();
         }
-        throw new FindersRuntimeException(String.format("The cluster node format (%s) is incorrect.", node));
+        throw new FindersRuntimeException(String.format("The cluster node format (%s) is incorrect", node));
     }
 
 }

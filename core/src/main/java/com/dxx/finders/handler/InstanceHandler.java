@@ -92,7 +92,7 @@ public class InstanceHandler {
         }
         if (instance.getPort() == 0) {
             throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
-                    "Param 'port' is required and must be greater than zero.");
+                    "Param 'port' is required and must be greater than zero");
         }
 
         instance.createInstanceId();
