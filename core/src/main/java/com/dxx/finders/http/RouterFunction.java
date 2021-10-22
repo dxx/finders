@@ -89,8 +89,7 @@ public class RouterFunction {
     }
 
     private void route(String path, RequestMethod method, HandlerFunction handlerFunction) {
-        Handler<RoutingContext> routeHandler = (ctx) ->
-                new HandlerAdapter(filterChain, ctx, handlerFunction).apply();
+        Handler<RoutingContext> routeHandler = new HandlerDecorator(filterChain, handlerFunction);
         switch (method) {
             case GET:
                 this.router.get(path).handler(routeHandler);
