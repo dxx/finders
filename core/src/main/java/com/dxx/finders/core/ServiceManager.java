@@ -1,6 +1,9 @@
 package com.dxx.finders.core;
 
-import java.util.Collections;
+import com.dxx.finders.constant.Services;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -16,6 +19,8 @@ public class ServiceManager {
      * Map<namespace, Map<serviceName, Service>>.
      */
     private final Map<String, Map<String, Service>> serviceMap = new ConcurrentHashMap<>();
+
+    private final ServiceStore serviceStore = new ServiceStore();
 
     public void registerService(String namespace, String serviceName, Instance instance) {
         Service service = getService(namespace, serviceName);
@@ -48,7 +53,19 @@ public class ServiceManager {
     }
 
     private void addInstance(Service service, Instance instance) {
-        service.updateInstance(Collections.singletonList(instance));
+        updateInstance(service, instance, Services.ACTION_ADD);
+    }
+
+    private void updateInstance(Service service, Instance instance, String action) {
+        List<Instance> instances = new ArrayList<>();
+        List<Instance> storeInstances = serviceStore.get(service.getNamespace(), service.getServiceName());
+        if (storeInstances != null && storeInstances.size() > 0) {
+            instances = storeInstances;
+        }
+        instances.add(instance);
+        serviceStore.add(service.getNamespace(), service.getServiceName(), instances);
+
+        service.updateInstance(instances);
     }
 
 }

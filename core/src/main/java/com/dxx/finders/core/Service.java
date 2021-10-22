@@ -57,4 +57,12 @@ public class Service {
         clusterMap.put(clusterName, new HashSet<>(instances));
     }
 
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
 }

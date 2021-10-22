@@ -19,4 +19,8 @@ public class Services {
 
     public static final String CLUSTER_NAME_SYNTAX = "[0-9a-zA-Z-_]+";
 
+    public static final String ACTION_ADD = "add";
+
+    public static final String ACTION_REMOVE = "remove";
+
 }
