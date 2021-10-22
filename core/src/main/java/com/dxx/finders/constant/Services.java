@@ -15,4 +15,8 @@ public class Services {
 
     public static final String DEFAULT_CLUSTER = "DEFAULT_CLUSTER";
 
+    public static final String SERVICE_NAME_SYNTAX = "[0-9a-zA-Z@\\.:_-]+";
+
+    public static final String CLUSTER_NAME_SYNTAX = "[0-9a-zA-Z-_]+";
+
 }

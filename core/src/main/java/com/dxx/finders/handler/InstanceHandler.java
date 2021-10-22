@@ -61,7 +61,6 @@ public class InstanceHandler {
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
         String namespace = jsonNode.get(Services.PARAM_NAMESPACE).asText(Services.DEFAULT_NAMESPACE);
         String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME).asText();
-        ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, serviceName);
 
         Instance instance = createInstance(jsonNode);
 
@@ -81,11 +80,21 @@ public class InstanceHandler {
         Instance instance = JacksonUtils.toObject(jsonNode.toString(), Instance.class);
         ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, instance.getServiceName());
         ParamUtils.requiredCheck("ip", instance.getIp());
+        instance.setClusterName(StringUtils.defaultIfEmpty(instance.getClusterName(), Services.DEFAULT_CLUSTER));
+
+        if (!instance.getServiceName().matches(Services.SERVICE_NAME_SYNTAX)) {
+            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
+                    "Service name can only have these characters: 0-9a-zA-Z@.:_-");
+        }
+        if (!instance.getClusterName().matches(Services.CLUSTER_NAME_SYNTAX)) {
+            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
+                    "Cluster name can only have these characters: 0-9a-zA-Z-_");
+        }
         if (instance.getPort() == 0) {
             throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
                     "Param 'port' is required and must be greater than zero.");
         }
-        instance.setClusterName(StringUtils.defaultIfEmpty(instance.getClusterName(), Services.DEFAULT_CLUSTER));
+
         instance.createInstanceId();
         return instance;
     }
