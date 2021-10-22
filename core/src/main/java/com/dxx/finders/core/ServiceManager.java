@@ -63,7 +63,7 @@ public class ServiceManager {
             instances = storeInstances;
         }
         instances.add(instance);
-        serviceStore.add(service.getNamespace(), service.getServiceName(), instances);
+        serviceStore.put(service.getNamespace(), service.getServiceName(), instances);
 
         service.updateInstance(instances);
     }

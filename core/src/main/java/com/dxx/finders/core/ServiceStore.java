@@ -21,7 +21,7 @@ public class ServiceStore {
         return this.storeMap.get(buildKey(namespace, serviceName));
     }
 
-    public void add(String namespace, String serviceName, List<Instance> instances) {
+    public void put(String namespace, String serviceName, List<Instance> instances) {
         this.storeMap.put(buildKey(namespace, serviceName), instances);
     }
 
