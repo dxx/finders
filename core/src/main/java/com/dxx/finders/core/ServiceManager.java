@@ -1,12 +1,16 @@
 package com.dxx.finders.core;
 
+import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.constant.Services;
+import com.dxx.finders.executor.GlobalExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Service management.
@@ -21,6 +25,12 @@ public class ServiceManager {
     private final Map<String, Map<String, Service>> serviceMap = new ConcurrentHashMap<>();
 
     private final ServiceStore serviceStore = new ServiceStore();
+
+    private final ServiceUpdater serviceUpdater = new ServiceUpdater();
+
+    public ServiceManager() {
+        GlobalExecutor.executeServiceUpdateTask(serviceUpdater);
+    }
 
     public void registerService(String namespace, String serviceName, Instance instance) {
         Service service = getService(namespace, serviceName);
@@ -65,7 +75,6 @@ public class ServiceManager {
         instances.add(instance);
         serviceStore.put(service.getNamespace(), service.getServiceName(), instances);
 
-        service.updateInstance(instances);
+        serviceUpdater.addTask(service, instances);
     }
-
 }
