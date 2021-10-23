@@ -59,8 +59,10 @@ public class InstanceHandler {
         HttpServerResponse response = context.response();
 
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
-        String namespace = jsonNode.get(Services.PARAM_NAMESPACE).asText(Services.DEFAULT_NAMESPACE);
-        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME).asText();
+        String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
+                jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
+        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME) != null ?
+                jsonNode.get(Services.PARAM_SERVICE_NAME).asText() : "";
 
         Instance instance = createInstance(jsonNode);
 
@@ -75,12 +77,18 @@ public class InstanceHandler {
         HttpServerResponse response = context.response();
 
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
-        String namespace = jsonNode.get(Services.PARAM_NAMESPACE).asText(Services.DEFAULT_NAMESPACE);
-        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME).asText();
-
         Instance instance = createInstanceByIdAddress(jsonNode);
 
-        serviceManager.deregisterInstance(namespace, serviceName, instance);
+        String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
+                jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
+
+        Service service = serviceManager.getService(namespace, instance.getServiceName());
+        if (service == null) {
+            response.end(Result.SUCCESS);
+            return;
+        }
+
+        serviceManager.deregisterInstance(namespace, instance.getServiceName(), instance);
 
         response.end(Result.SUCCESS);
     }
@@ -109,8 +117,11 @@ public class InstanceHandler {
     }
 
     private Instance createInstanceByIdAddress(JsonNode jsonNode) {
-        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME).asText();
-        String clusterName = jsonNode.get(Services.PARAM_CLUSTER_NAME).asText(Services.DEFAULT_CLUSTER);
+        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME) != null ?
+                jsonNode.get(Services.PARAM_SERVICE_NAME).asText() : "";
+        String clusterName = jsonNode.get(Services.PARAM_CLUSTER_NAME) != null ?
+                jsonNode.get(Services.PARAM_CLUSTER_NAME).asText() : Services.DEFAULT_CLUSTER;
+
         String ip = jsonNode.get("ip").asText();
         int port = jsonNode.get("port").asInt();
 
