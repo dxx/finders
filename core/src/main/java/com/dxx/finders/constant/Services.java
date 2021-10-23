@@ -9,6 +9,8 @@ public class Services {
 
     public static final String PARAM_NAMESPACE = "namespace";
 
+    public static final String PARAM_CLUSTER_NAME = "clusterName";
+
     public static final String PARAM_SERVICE_NAME = "serviceName";
 
     public static final String DEFAULT_NAMESPACE = "default";

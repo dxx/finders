@@ -29,7 +29,7 @@ public class ServiceManager {
         GlobalExecutor.executeServiceUpdateTask(serviceUpdater);
     }
 
-    public void registerService(String namespace, String serviceName, Instance instance) {
+    public void registerInstance(String namespace, String serviceName, Instance instance) {
         Service service = getService(namespace, serviceName);
         if (service == null) {
             synchronized ((namespace + serviceName).intern()) {
@@ -38,6 +38,10 @@ public class ServiceManager {
         }
 
         addInstance(service, instance);
+    }
+
+    public void deregisterInstance(String namespace, String serviceName, Instance instance) {
+
     }
 
     public Service getService(String namespace, String serviceName) {
