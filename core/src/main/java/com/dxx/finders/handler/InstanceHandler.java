@@ -121,6 +121,7 @@ public class InstanceHandler {
 
         List<Instance> instances;
         if (clusterNames.size() > 0) {
+            clusterNames.forEach(clusterArrayNode::add);
             instances = service.getInstances(clusterNames);
         } else {
             instances = service.getInstances();
