@@ -4,10 +4,13 @@ import com.dxx.finders.constant.Services;
 import com.dxx.finders.executor.GlobalExecutor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Service management.
@@ -37,11 +40,14 @@ public class ServiceManager {
             }
         }
 
-        addInstance(service, instance);
+        addInstance(service, Collections.singletonList(instance));
     }
 
     public void deregisterInstance(String namespace, String serviceName, Instance instance) {
-
+        Service service = getService(namespace, serviceName);
+        synchronized ((namespace + serviceName).intern()) {
+            removeInstance(service, Collections.singletonList(instance));
+        }
     }
 
     public Service getService(String namespace, String serviceName) {
@@ -63,19 +69,33 @@ public class ServiceManager {
         return service;
     }
 
-    private void addInstance(Service service, Instance instance) {
-        updateInstance(service, instance, Services.ACTION_ADD);
+    private void addInstance(Service service, List<Instance> instances) {
+        updateInstance(service, instances, Services.ACTION_ADD);
     }
 
-    private void updateInstance(Service service, Instance instance, String action) {
-        List<Instance> instances = new ArrayList<>();
+    private void removeInstance(Service service, List<Instance> instances) {
+        updateInstance(service, instances, Services.ACTION_REMOVE);
+    }
+
+    private void updateInstance(Service service, List<Instance> instances, String action) {
+        List<Instance> newInstances = new ArrayList<>();
         List<Instance> storeInstances = serviceStore.get(service.getNamespace(), service.getServiceName());
         if (storeInstances != null && storeInstances.size() > 0) {
-            instances = storeInstances;
+            newInstances = storeInstances;
         }
-        instances.add(instance);
-        serviceStore.put(service.getNamespace(), service.getServiceName(), instances);
+        Map<String, Instance> instanceMap = newInstances.stream()
+                .collect(Collectors.toMap(Instance::getInstanceId, Function.identity()));
 
-        serviceUpdater.addTask(service, instances);
+        instances.forEach(instance -> {
+            instanceMap.remove(instance.getInstanceId());
+            if (Services.ACTION_ADD.equals(action)) {
+                instanceMap.put(instance.getInstanceId(), instance);
+            }
+        });
+
+        List<Instance> instanceList = new ArrayList<>(instanceMap.values());
+        serviceStore.put(service.getNamespace(), service.getServiceName(), instanceList);
+
+        serviceUpdater.addTask(service, instanceList);
     }
 }
