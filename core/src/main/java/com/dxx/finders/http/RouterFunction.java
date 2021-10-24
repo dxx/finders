@@ -6,7 +6,6 @@ import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.core.ServiceManager;
 import com.dxx.finders.exception.FindersRuntimeException;
 import com.dxx.finders.exception.ValidationException;
-import com.dxx.finders.handler.HelloHandler;
 import com.dxx.finders.handler.InstanceHandler;
 import com.dxx.finders.http.annotation.RequestMapping;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -48,9 +47,6 @@ public class RouterFunction {
         DistributionManager.init(serverNodeManager);
 
         ServiceManager serviceManager = new ServiceManager();
-
-        HelloHandler helloHandler = new HelloHandler();
-        this.routeIfNecessary(helloHandler);
 
         InstanceHandler instanceHandler = new InstanceHandler(serviceManager);
         this.routeIfNecessary(instanceHandler);

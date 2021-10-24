@@ -1,5 +1,7 @@
 package com.dxx.finders.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * The class that holds instance information.
  *
@@ -19,6 +21,7 @@ public class Instance {
 
     private InstanceStatus status = InstanceStatus.HEALTHY;
 
+    @JsonIgnore
     private volatile long lastBeatTimestamp = System.currentTimeMillis();
 
     public void createInstanceId() {

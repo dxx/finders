@@ -59,12 +59,14 @@ public class InstanceHandler {
         HttpServerResponse response = context.response();
 
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
-        String namespace = jsonNode.get(Services.PARAM_NAMESPACE).asText(Services.DEFAULT_NAMESPACE);
-        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME).asText();
+        String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
+                jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
+        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME) != null ?
+                jsonNode.get(Services.PARAM_SERVICE_NAME).asText() : "";
 
         Instance instance = createInstance(jsonNode);
 
-        serviceManager.registerService(namespace, serviceName, instance);
+        serviceManager.registerInstance(namespace, serviceName, instance);
 
         response.end(Result.SUCCESS);
     }
@@ -73,6 +75,21 @@ public class InstanceHandler {
     @RequestMapping(path = Paths.INSTANCE, method = RequestMethod.DELETE)
     public void deregister(RoutingContext context) {
         HttpServerResponse response = context.response();
+
+        JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
+        Instance instance = createInstanceByIdAddress(jsonNode);
+
+        String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
+                jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
+
+        Service service = serviceManager.getService(namespace, instance.getServiceName());
+        if (service == null) {
+            response.end(Result.SUCCESS);
+            return;
+        }
+
+        serviceManager.deregisterInstance(namespace, instance.getServiceName(), instance);
+
         response.end(Result.SUCCESS);
     }
 
@@ -99,6 +116,31 @@ public class InstanceHandler {
         return instance;
     }
 
+    private Instance createInstanceByIdAddress(JsonNode jsonNode) {
+        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME) != null ?
+                jsonNode.get(Services.PARAM_SERVICE_NAME).asText() : "";
+        String clusterName = jsonNode.get(Services.PARAM_CLUSTER_NAME) != null ?
+                jsonNode.get(Services.PARAM_CLUSTER_NAME).asText() : Services.DEFAULT_CLUSTER;
+
+        String ip = jsonNode.get("ip").asText();
+        int port = jsonNode.get("port").asInt();
+
+        ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, serviceName);
+        ParamUtils.requiredCheck("ip", ip);
+        if (port == 0) {
+            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
+                    "Param 'port' is required and must be greater than zero");
+        }
+
+        Instance instance = new Instance();
+        instance.setClusterName(clusterName);
+        instance.setServiceName(serviceName);
+        instance.setIp(ip);
+        instance.setPort(port);
+        instance.createInstanceId();
+        return instance;
+    }
+
     private ObjectNode doList(String namespace, String clusters, String serviceName) {
         List<String> clusterNames = new ArrayList<>();
         if (StringUtils.isNotEmpty(clusters)) {
@@ -121,6 +163,7 @@ public class InstanceHandler {
 
         List<Instance> instances;
         if (clusterNames.size() > 0) {
+            clusterNames.forEach(clusterArrayNode::add);
             instances = service.getInstances(clusterNames);
         } else {
             instances = service.getInstances();

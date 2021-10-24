@@ -9,11 +9,11 @@ import java.util.concurrent.ExecutorService;
  */
 public class GlobalExecutor {
 
-    private static final ExecutorService ASYNC_HTTP_REQUEST_EXECUTOR = ExecutorFactory.newFixedExecutorService(
-            Runtime.getRuntime().availableProcessors() * 2, new NamedThreadFactory("finders-async-http-request"));
+    private static final ExecutorService SERVICE_UPDATER_EXECUTOR = ExecutorFactory.newSingleExecutorService(
+            new NamedThreadFactory("finders-service-updater"));
 
-    public static void executeAsyncHttpRequest(Runnable runnable) {
-        ASYNC_HTTP_REQUEST_EXECUTOR.execute(runnable);
+    public static void executeServiceUpdateTask(Runnable runnable) {
+        SERVICE_UPDATER_EXECUTOR.execute(runnable);
     }
 
 }
