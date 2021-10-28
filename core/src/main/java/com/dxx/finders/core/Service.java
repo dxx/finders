@@ -65,7 +65,8 @@ public class Service {
     }
 
     private void init() {
-        GlobalExecutor.scheduleServiceHealthCheckTask(instanceHealthCheckTask, 5000, 5000, TimeUnit.MILLISECONDS);
+        GlobalExecutor.scheduleServiceHealthCheckTask(instanceHealthCheckTask,
+                5000, 5000, TimeUnit.MILLISECONDS);
     }
 
     public String getNamespace() {

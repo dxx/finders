@@ -1,5 +1,7 @@
 package com.dxx.finders.constant;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Service constants.
  *
@@ -24,5 +26,9 @@ public class Services {
     public static final String ACTION_ADD = "add";
 
     public static final String ACTION_REMOVE = "remove";
+
+    public static final long INSTANCE_HEARTBEAT_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
+
+    public static final long INSTANCE_DELETE_TIMEOUT = TimeUnit.SECONDS.toMillis(20);
 
 }
