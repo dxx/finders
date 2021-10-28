@@ -38,6 +38,9 @@ public class InstanceHandler {
         this.serviceManager = serviceManager;
     }
 
+    /**
+     * Get list of service instance.
+     */
     @RequestMapping(path = Paths.INSTANCE_LIST, method = RequestMethod.GET)
     public void list(RoutingContext context) {
         HttpServerRequest request = context.request();
@@ -53,6 +56,9 @@ public class InstanceHandler {
         response.end(JacksonUtils.toJson(node));
     }
 
+    /**
+     * Register instance.
+     */
     @Distribute
     @RequestMapping(path = Paths.INSTANCE, method = RequestMethod.POST)
     public void register(RoutingContext context) {
@@ -69,6 +75,9 @@ public class InstanceHandler {
         response.end(Result.SUCCESS);
     }
 
+    /**
+     * Deregister instance.
+     */
     @Distribute
     @RequestMapping(path = Paths.INSTANCE, method = RequestMethod.DELETE)
     public void deregister(RoutingContext context) {
@@ -91,6 +100,9 @@ public class InstanceHandler {
         response.end(Result.SUCCESS);
     }
 
+    /**
+     * Send a heartbeat to the specified instance.
+     */
     @Distribute
     @RequestMapping(path = Paths.INSTANCE_BEAT, method = RequestMethod.PUT)
     public void beat(RoutingContext context) {
