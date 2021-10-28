@@ -3,10 +3,7 @@ package com.dxx.finders.core;
 import com.dxx.finders.constant.Services;
 import com.dxx.finders.executor.GlobalExecutor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.function.Function;
@@ -48,6 +45,24 @@ public class ServiceManager {
         synchronized ((namespace + serviceName).intern()) {
             removeInstance(service, Collections.singletonList(instance));
         }
+    }
+
+    public Instance getInstance(String namespace, String serviceName, String clusterName, String ip, int port) {
+        Service service = getService(namespace, serviceName);
+        if (service == null) {
+            return null;
+        }
+
+        List<Instance> instances = service.getInstances(Collections.singletonList(clusterName));
+        if (instances.size() > 0) {
+            Optional<Instance> optionalInstance = instances.stream().filter(item ->
+                    ip.equals(item.getIp()) && port == item.getPort()).findFirst();
+            if (optionalInstance.isPresent()) {
+                return optionalInstance.get();
+            }
+        }
+
+        return null;
     }
 
     public Service getService(String namespace, String serviceName) {

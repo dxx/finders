@@ -61,12 +61,10 @@ public class InstanceHandler {
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
         String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
                 jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
-        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME) != null ?
-                jsonNode.get(Services.PARAM_SERVICE_NAME).asText() : "";
 
-        Instance instance = createInstance(jsonNode);
+        Instance instance = createInstance(jsonNode.toString());
 
-        serviceManager.registerInstance(namespace, serviceName, instance);
+        serviceManager.registerInstance(namespace, instance.getServiceName(), instance);
 
         response.end(Result.SUCCESS);
     }
@@ -77,10 +75,10 @@ public class InstanceHandler {
         HttpServerResponse response = context.response();
 
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
-        Instance instance = createInstanceByIdAddress(jsonNode);
-
         String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
                 jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
+
+        Instance instance = createInstance(jsonNode.toString());
 
         Service service = serviceManager.getService(namespace, instance.getServiceName());
         if (service == null) {
@@ -93,8 +91,29 @@ public class InstanceHandler {
         response.end(Result.SUCCESS);
     }
 
-    private Instance createInstance(JsonNode jsonNode) {
-        Instance instance = JacksonUtils.toObject(jsonNode.toString(), Instance.class);
+    @Distribute
+    @RequestMapping(path = Paths.INSTANCE_BEAT, method = RequestMethod.PUT)
+    public void beat(RoutingContext context) {
+        HttpServerResponse response = context.response();
+
+        JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
+        String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
+                jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
+
+        Instance paramInstance = createInstance(jsonNode.toString());
+
+        Instance instance = serviceManager.getInstance(namespace, paramInstance.getServiceName(),
+                paramInstance.getClusterName(), paramInstance.getIp(), paramInstance.getPort());
+
+        if (instance == null) {
+            serviceManager.registerInstance(namespace, paramInstance.getServiceName(), paramInstance);
+        }
+
+        response.end(Result.SUCCESS);
+    }
+
+    private Instance createInstance(String json) {
+        Instance instance = JacksonUtils.toObject(json, Instance.class);
         ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, instance.getServiceName());
         ParamUtils.requiredCheck("ip", instance.getIp());
         instance.setClusterName(StringUtils.defaultIfEmpty(instance.getClusterName(), Services.DEFAULT_CLUSTER));
