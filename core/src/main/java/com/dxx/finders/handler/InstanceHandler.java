@@ -135,31 +135,6 @@ public class InstanceHandler {
         return instance;
     }
 
-    private Instance createInstanceByIdAddress(JsonNode jsonNode) {
-        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME) != null ?
-                jsonNode.get(Services.PARAM_SERVICE_NAME).asText() : "";
-        String clusterName = jsonNode.get(Services.PARAM_CLUSTER_NAME) != null ?
-                jsonNode.get(Services.PARAM_CLUSTER_NAME).asText() : Services.DEFAULT_CLUSTER;
-
-        String ip = jsonNode.get("ip").asText();
-        int port = jsonNode.get("port").asInt();
-
-        ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, serviceName);
-        ParamUtils.requiredCheck("ip", ip);
-        if (port == 0) {
-            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
-                    "Param 'port' is required and must be greater than zero");
-        }
-
-        Instance instance = new Instance();
-        instance.setClusterName(clusterName);
-        instance.setServiceName(serviceName);
-        instance.setIp(ip);
-        instance.setPort(port);
-        instance.createInstanceId();
-        return instance;
-    }
-
     private ObjectNode doList(String namespace, String clusters, String serviceName) {
         List<String> clusterNames = new ArrayList<>();
         if (StringUtils.isNotEmpty(clusters)) {
