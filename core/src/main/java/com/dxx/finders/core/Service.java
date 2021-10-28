@@ -1,6 +1,9 @@
 package com.dxx.finders.core;
 
+import com.dxx.finders.executor.GlobalExecutor;
+
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -15,6 +18,8 @@ public class Service {
      */
     private Map<String, Set<Instance>> clusterMap = new HashMap<>();
 
+    private InstanceHealthCheckTask instanceHealthCheckTask = new InstanceHealthCheckTask(this);
+
     private String namespace;
 
     private String serviceName;
@@ -22,6 +27,8 @@ public class Service {
     public Service(String namespace, String serviceName) {
         this.namespace = namespace;
         this.serviceName = serviceName;
+
+        init();
     }
 
     public void updateInstance(List<Instance> instances) {
@@ -55,6 +62,10 @@ public class Service {
 
     private void updateInstance(String clusterName, List<Instance> instances) {
         clusterMap.put(clusterName, new HashSet<>(instances));
+    }
+
+    private void init() {
+        GlobalExecutor.scheduleServiceHealthCheckTask(instanceHealthCheckTask, 5000, 5000, TimeUnit.MILLISECONDS);
     }
 
     public String getNamespace() {
