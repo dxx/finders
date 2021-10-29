@@ -90,9 +90,11 @@ public class FindersHttpClient {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         AtomicReference<String> reference = new AtomicReference<>();
         HttpRequest<Buffer> request = webClient.requestAbs(method, url).timeout(RESPONSE_TIMEOUT);
-        Future<HttpResponse<Buffer>> future = request.send();
+        Future<HttpResponse<Buffer>> future;
         if (StringUtils.isNotEmpty(body)) {
             future = request.sendBuffer(Buffer.buffer(body));
+        } else {
+            future = request.send();
         }
         future.onSuccess(response -> {
             if (response.statusCode() != HttpResponseStatus.OK.code()) {
@@ -133,9 +135,11 @@ public class FindersHttpClient {
     public static void asyncRequest(String url, HttpMethod method, String body, AsyncHttpCallback<String> callback) {
         WebClient webClient = WebClient.create(vertx, CLIENT_OPTIONS);
         HttpRequest<Buffer> request = webClient.requestAbs(method, url).timeout(RESPONSE_TIMEOUT);
-        Future<HttpResponse<Buffer>> future = request.send();
+        Future<HttpResponse<Buffer>> future;
         if (StringUtils.isNotEmpty(body)) {
             future = request.sendBuffer(Buffer.buffer(body));
+        } else {
+            future = request.send();
         }
         future.onSuccess(response -> {
             if (response.statusCode() != HttpResponseStatus.OK.code()) {
