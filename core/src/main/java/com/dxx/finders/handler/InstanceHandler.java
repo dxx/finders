@@ -57,6 +57,19 @@ public class InstanceHandler {
     }
 
     /**
+     * Get detail of service instance.
+     */
+    @RequestMapping(path = Paths.INSTANCE, method = RequestMethod.GET)
+    public void detail(RoutingContext context) {
+        HttpServerRequest request = context.request();
+        HttpServerResponse response = context.response();
+
+        Instance instance = doDetail(request);
+        response.putHeader(HttpHeaderNames.CONTENT_TYPE,HttpHeaderValues.APPLICATION_JSON + ";charset=UTF-8");
+        response.end(JacksonUtils.toJson(instance));
+    }
+
+    /**
      * Register instance.
      */
     @Distribute
@@ -181,6 +194,15 @@ public class InstanceHandler {
         instances.forEach(instanceArrayNode::addPOJO);
 
         return objectNode;
+    }
+
+    public Instance doDetail(HttpServerRequest request) {
+        String namespace = ParamUtils.optional(request, Services.PARAM_NAMESPACE, Services.DEFAULT_NAMESPACE);
+        String cluster = ParamUtils.optional(request, Services.PARAM_CLUSTER, Services.DEFAULT_CLUSTER);
+        String serviceName = ParamUtils.required(request, Services.PARAM_SERVICE_NAME);
+        String ip = ParamUtils.required(request, "ip");
+        String port = ParamUtils.required(request, "port");
+        return serviceManager.getInstance(namespace, cluster, serviceName, ip, Integer.parseInt(port));
     }
 
 }
