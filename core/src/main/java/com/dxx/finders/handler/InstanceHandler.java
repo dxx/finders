@@ -52,7 +52,7 @@ public class InstanceHandler {
 
         ObjectNode node = doList(namespace, clusters, serviceName);
 
-        response.putHeader(HttpHeaderNames.CONTENT_TYPE,HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8");
+        response.putHeader(HttpHeaderNames.CONTENT_TYPE,HttpHeaderValues.APPLICATION_JSON + ";charset=UTF-8");
         response.end(JacksonUtils.toJson(node));
     }
 
