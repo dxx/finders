@@ -3,10 +3,7 @@ package com.dxx.finders.core;
 import com.dxx.finders.constant.Services;
 import com.dxx.finders.executor.GlobalExecutor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.function.Function;
@@ -50,12 +47,38 @@ public class ServiceManager {
         }
     }
 
+    public Instance getInstance(String namespace, String serviceName, String cluster, String ip, int port) {
+        Service service = getService(namespace, serviceName);
+        if (service == null) {
+            return null;
+        }
+
+        List<Instance> instances = service.getInstances(Collections.singletonList(cluster));
+        if (instances.size() > 0) {
+            Optional<Instance> optionalInstance = instances.stream().filter(item ->
+                    ip.equals(item.getIp()) && port == item.getPort()).findFirst();
+            if (optionalInstance.isPresent()) {
+                return optionalInstance.get();
+            }
+        }
+
+        return null;
+    }
+
     public Service getService(String namespace, String serviceName) {
         Map<String, Service> clusterMap = serviceMap.get(namespace);
         if (clusterMap == null) {
             return null;
         }
         return clusterMap.get(serviceName);
+    }
+
+    public void handleInstanceHeartbeat(String namespace, String serviceName, String cluster, String ip, int port) {
+        Service service = getService(namespace, serviceName);
+        if (service == null) {
+            return;
+        }
+        service.handleHeartbeat(cluster, ip, port);
     }
 
     private Service createServiceIfAbsent(String namespace, String serviceName) {

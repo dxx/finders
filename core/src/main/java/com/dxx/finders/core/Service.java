@@ -1,6 +1,9 @@
 package com.dxx.finders.core;
 
+import com.dxx.finders.executor.GlobalExecutor;
+
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -15,6 +18,8 @@ public class Service {
      */
     private Map<String, Set<Instance>> clusterMap = new HashMap<>();
 
+    private InstanceHealthCheckTask instanceHealthCheckTask = new InstanceHealthCheckTask(this);
+
     private String namespace;
 
     private String serviceName;
@@ -22,6 +27,8 @@ public class Service {
     public Service(String namespace, String serviceName) {
         this.namespace = namespace;
         this.serviceName = serviceName;
+
+        init();
     }
 
     public void updateInstance(List<Instance> instances) {
@@ -30,7 +37,7 @@ public class Service {
 
         instances.forEach(instance -> {
             List<Instance> instanceList = newClusterMap.computeIfAbsent(
-                    instance.getClusterName(), k -> new ArrayList<>());
+                    instance.getCluster(), k -> new ArrayList<>());
             instanceList.add(instance);
         });
 
@@ -53,8 +60,23 @@ public class Service {
         return instances;
     }
 
+    public void handleHeartbeat(String cluster, String ip, int port) {
+        Instance instance = new Instance();
+        instance.setCluster(cluster);
+        instance.setServiceName(getServiceName());
+        instance.setIp(ip);
+        instance.setPort(port);
+        InstanceHeartbeatHandler heartbeatHandler = new InstanceHeartbeatHandler(this, instance);
+        GlobalExecutor.scheduleHeartbeatHandler(heartbeatHandler, 0, TimeUnit.MILLISECONDS);
+    }
+
     private void updateInstance(String clusterName, List<Instance> instances) {
         clusterMap.put(clusterName, new HashSet<>(instances));
+    }
+
+    private void init() {
+        GlobalExecutor.scheduleHealthCheckTask(instanceHealthCheckTask,
+                5000, 5000, TimeUnit.MILLISECONDS);
     }
 
     public String getNamespace() {

@@ -30,14 +30,14 @@ public class FindersHttpClientTest {
 
     @Test
     public void testPostEmpty() {
-        String res = FindersHttpClient.post("https://httpbin.org/post");
+        String res = FindersHttpClient.post("https://httpbin.org/post", "");
         System.out.println(res);
     }
 
     @Test
     public void testAsyncGet() throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        FindersHttpClient.asyncGet("https://httpbin.org/get", new AsyncHttpCallback<String>() {
+        FindersHttpClient.asyncGetRequest("https://httpbin.org/get", new AsyncHttpCallback<String>() {
             @Override
             public void onSuccess(String s) {
                 System.out.println(s);
@@ -56,7 +56,7 @@ public class FindersHttpClientTest {
     @Test
     public void testAsyncPost() throws InterruptedException {
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        FindersHttpClient.asyncPost("https://httpbin.org/post", "", new AsyncHttpCallback<String>() {
+        FindersHttpClient.asyncPostRequest("https://httpbin.org/post", "", new AsyncHttpCallback<String>() {
             @Override
             public void onSuccess(String s) {
                 System.out.println(s);

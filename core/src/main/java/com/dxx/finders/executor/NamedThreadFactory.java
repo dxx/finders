@@ -20,7 +20,7 @@ public class NamedThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable runnable) {
-        String threadName = name + "-" + id.getAndDecrement();
+        String threadName = name + "-" + id.getAndIncrement();
         Thread thread = new Thread(runnable, threadName);
         thread.setDaemon(true);
         return thread;

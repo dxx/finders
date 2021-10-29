@@ -55,6 +55,28 @@
         <appender-ref ref="coreLog" />
     </appender>
 
+    <appender name="eventLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/event.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/event.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                ${LOG_FORMAT}
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="eventAsync" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <neverBlock>true</neverBlock>
+        <appender-ref ref="eventLog" />
+    </appender>
+
     <appender name="httpClientLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/http_client.log</file>
         <append>true</append>
@@ -85,6 +107,10 @@
 
     <logger name="com.dxx.finders.core" level="DEBUG">
         <appender-ref ref="coreAsync" />
+    </logger>
+
+    <logger name="com.dxx.finders.event" level="DEBUG">
+        <appender-ref ref="eventAsync" />
     </logger>
 
     <logger name="com.dxx.finders.http.client" level="DEBUG">

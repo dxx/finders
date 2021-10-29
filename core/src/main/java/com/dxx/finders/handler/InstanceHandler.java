@@ -38,6 +38,9 @@ public class InstanceHandler {
         this.serviceManager = serviceManager;
     }
 
+    /**
+     * Get list of service instance.
+     */
     @RequestMapping(path = Paths.INSTANCE_LIST, method = RequestMethod.GET)
     public void list(RoutingContext context) {
         HttpServerRequest request = context.request();
@@ -49,10 +52,26 @@ public class InstanceHandler {
 
         ObjectNode node = doList(namespace, clusters, serviceName);
 
-        response.putHeader(HttpHeaderNames.CONTENT_TYPE,HttpHeaderValues.APPLICATION_JSON + ";charset=utf-8");
+        response.putHeader(HttpHeaderNames.CONTENT_TYPE,HttpHeaderValues.APPLICATION_JSON + ";charset=UTF-8");
         response.end(JacksonUtils.toJson(node));
     }
 
+    /**
+     * Get detail of service instance.
+     */
+    @RequestMapping(path = Paths.INSTANCE, method = RequestMethod.GET)
+    public void detail(RoutingContext context) {
+        HttpServerRequest request = context.request();
+        HttpServerResponse response = context.response();
+
+        Instance instance = doDetail(request);
+        response.putHeader(HttpHeaderNames.CONTENT_TYPE,HttpHeaderValues.APPLICATION_JSON + ";charset=UTF-8");
+        response.end(JacksonUtils.toJson(instance));
+    }
+
+    /**
+     * Register instance.
+     */
     @Distribute
     @RequestMapping(path = Paths.INSTANCE, method = RequestMethod.POST)
     public void register(RoutingContext context) {
@@ -61,26 +80,27 @@ public class InstanceHandler {
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
         String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
                 jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
-        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME) != null ?
-                jsonNode.get(Services.PARAM_SERVICE_NAME).asText() : "";
 
-        Instance instance = createInstance(jsonNode);
+        Instance instance = createInstance(jsonNode.toString());
 
-        serviceManager.registerInstance(namespace, serviceName, instance);
+        serviceManager.registerInstance(namespace, instance.getServiceName(), instance);
 
         response.end(Result.SUCCESS);
     }
 
+    /**
+     * Deregister instance.
+     */
     @Distribute
     @RequestMapping(path = Paths.INSTANCE, method = RequestMethod.DELETE)
     public void deregister(RoutingContext context) {
         HttpServerResponse response = context.response();
 
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
-        Instance instance = createInstanceByIdAddress(jsonNode);
-
         String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
                 jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
+
+        Instance instance = createInstance(jsonNode.toString());
 
         Service service = serviceManager.getService(namespace, instance.getServiceName());
         if (service == null) {
@@ -93,50 +113,51 @@ public class InstanceHandler {
         response.end(Result.SUCCESS);
     }
 
-    private Instance createInstance(JsonNode jsonNode) {
-        Instance instance = JacksonUtils.toObject(jsonNode.toString(), Instance.class);
+    /**
+     * Send a heartbeat to the specified instance.
+     */
+    @Distribute
+    @RequestMapping(path = Paths.INSTANCE_BEAT, method = RequestMethod.PUT)
+    public void beat(RoutingContext context) {
+        HttpServerResponse response = context.response();
+
+        JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
+        String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
+                jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
+
+        Instance paramInstance = createInstance(jsonNode.toString());
+
+        Instance instance = serviceManager.getInstance(namespace, paramInstance.getServiceName(),
+                paramInstance.getCluster(), paramInstance.getIp(), paramInstance.getPort());
+
+        if (instance == null) {
+            serviceManager.registerInstance(namespace, paramInstance.getServiceName(), paramInstance);
+        }
+        serviceManager.handleInstanceHeartbeat(namespace, paramInstance.getServiceName(),
+                paramInstance.getCluster(), paramInstance.getIp(), paramInstance.getPort());
+
+        response.end(Result.SUCCESS);
+    }
+
+    private Instance createInstance(String json) {
+        Instance instance = JacksonUtils.toObject(json, Instance.class);
         ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, instance.getServiceName());
         ParamUtils.requiredCheck("ip", instance.getIp());
-        instance.setClusterName(StringUtils.defaultIfEmpty(instance.getClusterName(), Services.DEFAULT_CLUSTER));
+        instance.setCluster(StringUtils.defaultIfEmpty(instance.getCluster(), Services.DEFAULT_CLUSTER));
 
+        if (!instance.getCluster().matches(Services.CLUSTER_SYNTAX)) {
+            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
+                    "Cluster name can only have these characters: 0-9a-zA-Z-_");
+        }
         if (!instance.getServiceName().matches(Services.SERVICE_NAME_SYNTAX)) {
             throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
                     "Service name can only have these characters: 0-9a-zA-Z@.:_-");
-        }
-        if (!instance.getClusterName().matches(Services.CLUSTER_NAME_SYNTAX)) {
-            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
-                    "Cluster name can only have these characters: 0-9a-zA-Z-_");
         }
         if (instance.getPort() == 0) {
             throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
                     "Param 'port' is required and must be greater than zero");
         }
 
-        instance.createInstanceId();
-        return instance;
-    }
-
-    private Instance createInstanceByIdAddress(JsonNode jsonNode) {
-        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME) != null ?
-                jsonNode.get(Services.PARAM_SERVICE_NAME).asText() : "";
-        String clusterName = jsonNode.get(Services.PARAM_CLUSTER_NAME) != null ?
-                jsonNode.get(Services.PARAM_CLUSTER_NAME).asText() : Services.DEFAULT_CLUSTER;
-
-        String ip = jsonNode.get("ip").asText();
-        int port = jsonNode.get("port").asInt();
-
-        ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, serviceName);
-        ParamUtils.requiredCheck("ip", ip);
-        if (port == 0) {
-            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
-                    "Param 'port' is required and must be greater than zero");
-        }
-
-        Instance instance = new Instance();
-        instance.setClusterName(clusterName);
-        instance.setServiceName(serviceName);
-        instance.setIp(ip);
-        instance.setPort(port);
         instance.createInstanceId();
         return instance;
     }
@@ -148,7 +169,7 @@ public class InstanceHandler {
         }
         Service service = serviceManager.getService(namespace, serviceName);
 
-        ObjectNode objectNode = JacksonUtils.createJsonNode();
+        ObjectNode objectNode = JacksonUtils.createObjectNode();
         objectNode.put(Services.PARAM_SERVICE_NAME, serviceName);
         ArrayNode clusterArrayNode = JacksonUtils.createArrayNode();
         ArrayNode instanceArrayNode = JacksonUtils.createArrayNode();
@@ -167,12 +188,21 @@ public class InstanceHandler {
             instances = service.getInstances(clusterNames);
         } else {
             instances = service.getInstances();
-            instances.stream().map(Instance::getClusterName).distinct().forEach(clusterArrayNode::add);
+            instances.stream().map(Instance::getCluster).distinct().forEach(clusterArrayNode::add);
         }
 
         instances.forEach(instanceArrayNode::addPOJO);
 
         return objectNode;
+    }
+
+    public Instance doDetail(HttpServerRequest request) {
+        String namespace = ParamUtils.optional(request, Services.PARAM_NAMESPACE, Services.DEFAULT_NAMESPACE);
+        String cluster = ParamUtils.optional(request, Services.PARAM_CLUSTER, Services.DEFAULT_CLUSTER);
+        String serviceName = ParamUtils.required(request, Services.PARAM_SERVICE_NAME);
+        String ip = ParamUtils.required(request, "ip");
+        String port = ParamUtils.required(request, "port");
+        return serviceManager.getInstance(namespace, cluster, serviceName, ip, Integer.parseInt(port));
     }
 
 }
