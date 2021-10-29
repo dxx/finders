@@ -47,13 +47,13 @@ public class ServiceManager {
         }
     }
 
-    public Instance getInstance(String namespace, String serviceName, String clusterName, String ip, int port) {
+    public Instance getInstance(String namespace, String serviceName, String cluster, String ip, int port) {
         Service service = getService(namespace, serviceName);
         if (service == null) {
             return null;
         }
 
-        List<Instance> instances = service.getInstances(Collections.singletonList(clusterName));
+        List<Instance> instances = service.getInstances(Collections.singletonList(cluster));
         if (instances.size() > 0) {
             Optional<Instance> optionalInstance = instances.stream().filter(item ->
                     ip.equals(item.getIp()) && port == item.getPort()).findFirst();

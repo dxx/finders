@@ -37,7 +37,7 @@ public class Service {
 
         instances.forEach(instance -> {
             List<Instance> instanceList = newClusterMap.computeIfAbsent(
-                    instance.getClusterName(), k -> new ArrayList<>());
+                    instance.getCluster(), k -> new ArrayList<>());
             instanceList.add(instance);
         });
 

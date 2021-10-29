@@ -115,7 +115,7 @@ public class InstanceHandler {
         Instance paramInstance = createInstance(jsonNode.toString());
 
         Instance instance = serviceManager.getInstance(namespace, paramInstance.getServiceName(),
-                paramInstance.getClusterName(), paramInstance.getIp(), paramInstance.getPort());
+                paramInstance.getCluster(), paramInstance.getIp(), paramInstance.getPort());
 
         if (instance == null) {
             serviceManager.registerInstance(namespace, paramInstance.getServiceName(), paramInstance);
@@ -128,15 +128,15 @@ public class InstanceHandler {
         Instance instance = JacksonUtils.toObject(json, Instance.class);
         ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, instance.getServiceName());
         ParamUtils.requiredCheck("ip", instance.getIp());
-        instance.setClusterName(StringUtils.defaultIfEmpty(instance.getClusterName(), Services.DEFAULT_CLUSTER));
+        instance.setCluster(StringUtils.defaultIfEmpty(instance.getCluster(), Services.DEFAULT_CLUSTER));
 
+        if (!instance.getCluster().matches(Services.CLUSTER_SYNTAX)) {
+            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
+                    "Cluster name can only have these characters: 0-9a-zA-Z-_");
+        }
         if (!instance.getServiceName().matches(Services.SERVICE_NAME_SYNTAX)) {
             throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
                     "Service name can only have these characters: 0-9a-zA-Z@.:_-");
-        }
-        if (!instance.getClusterName().matches(Services.CLUSTER_NAME_SYNTAX)) {
-            throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
-                    "Cluster name can only have these characters: 0-9a-zA-Z-_");
         }
         if (instance.getPort() == 0) {
             throw new ValidationException(HttpResponseStatus.BAD_REQUEST.code(),
@@ -173,7 +173,7 @@ public class InstanceHandler {
             instances = service.getInstances(clusterNames);
         } else {
             instances = service.getInstances();
-            instances.stream().map(Instance::getClusterName).distinct().forEach(clusterArrayNode::add);
+            instances.stream().map(Instance::getCluster).distinct().forEach(clusterArrayNode::add);
         }
 
         instances.forEach(instanceArrayNode::addPOJO);

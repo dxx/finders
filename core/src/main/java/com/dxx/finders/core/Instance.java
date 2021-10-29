@@ -11,7 +11,7 @@ public class Instance {
 
     private String instanceId;
 
-    private String clusterName;
+    private String cluster;
 
     private String serviceName;
 
@@ -25,7 +25,7 @@ public class Instance {
     private volatile long lastBeatTimestamp = System.currentTimeMillis();
 
     public void createInstanceId() {
-        this.instanceId = String.format("%s#%s@%s:%s", getClusterName(), getServiceName(), getIp(), getPort());
+        this.instanceId = String.format("%s#%s@%s:%s", getCluster(), getServiceName(), getIp(), getPort());
     }
 
     public String getInstanceId() {
@@ -36,12 +36,12 @@ public class Instance {
         this.instanceId = instanceId;
     }
 
-    public String getClusterName() {
-        return clusterName;
+    public String getCluster() {
+        return cluster;
     }
 
-    public void setClusterName(String clusterName) {
-        this.clusterName = clusterName;
+    public void setCluster(String cluster) {
+        this.cluster = cluster;
     }
 
     public String getServiceName() {
