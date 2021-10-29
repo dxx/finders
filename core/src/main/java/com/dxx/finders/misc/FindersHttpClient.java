@@ -102,12 +102,12 @@ public class FindersHttpClient {
                     Loggers.HTTP_CLIENT.debug("{} {} response status {} {}", method, url,
                             response.statusCode(), response.statusMessage());
                 }
-                countDownLatch.countDown();
                 return;
             }
             reference.set(response.bodyAsString());
-            countDownLatch.countDown();
         });
+        future.onFailure(e -> Loggers.HTTP_CLIENT.error(method + " " + url + " response error: ", e));
+        future.onComplete(r -> countDownLatch.countDown());
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
