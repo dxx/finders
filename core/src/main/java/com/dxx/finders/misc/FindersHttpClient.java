@@ -48,30 +48,6 @@ public class FindersHttpClient {
                 .setPoolCleanerPeriod(POOL_CLEANER_PERIOD);
     }
 
-    public static String get(String url) {
-        WebClient webClient = WebClient.create(vertx, CLIENT_OPTIONS);
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        AtomicReference<String> reference = new AtomicReference<>();
-        webClient.getAbs(url).timeout(RESPONSE_TIMEOUT).send().onSuccess(response -> {
-            if (response.statusCode() != HttpResponseStatus.OK.code()) {
-                if (Loggers.HTTP_CLIENT.isDebugEnabled()) {
-                    Loggers.HTTP_CLIENT.debug("{} {} response status {} {}", "GET", url,
-                            response.statusCode(), response.statusMessage());
-                }
-                countDownLatch.countDown();
-                return;
-            }
-            reference.set(response.bodyAsString());
-            countDownLatch.countDown();
-        });
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            Loggers.HTTP_CLIENT.error("Await response error: ", e);
-        }
-        return reference.get();
-    }
-
     public static String get(String url, Map<String, String> queryParams) {
         List<String> paramList = new ArrayList<>();
         for (String key : queryParams.keySet()) {
@@ -91,6 +67,10 @@ public class FindersHttpClient {
             }
         }
         return get(url);
+    }
+
+    public static String get(String url) {
+        return request(url, HttpMethod.GET, null);
     }
 
     public static String post(String url, String body) {
@@ -117,7 +97,7 @@ public class FindersHttpClient {
         future.onSuccess(response -> {
             if (response.statusCode() != HttpResponseStatus.OK.code()) {
                 if (Loggers.HTTP_CLIENT.isDebugEnabled()) {
-                    Loggers.HTTP_CLIENT.debug("{} {} response status {} {}", "POST", url,
+                    Loggers.HTTP_CLIENT.debug("{} {} response status {} {}", method, url,
                             response.statusCode(), response.statusMessage());
                 }
                 countDownLatch.countDown();
@@ -151,10 +131,6 @@ public class FindersHttpClient {
     }
 
     public static void asyncRequest(String url, HttpMethod method, String body, AsyncHttpCallback<String> callback) {
-        if (method == HttpMethod.GET) {
-            asyncGet(url, callback);
-            return;
-        }
         WebClient webClient = WebClient.create(vertx, CLIENT_OPTIONS);
         HttpRequest<Buffer> request = webClient.requestAbs(method, url).timeout(RESPONSE_TIMEOUT);
         Future<HttpResponse<Buffer>> future = request.send();
@@ -178,24 +154,4 @@ public class FindersHttpClient {
             callback.onError(e);
         });
     }
-
-    private static void asyncGet(String url, AsyncHttpCallback<String> callback) {
-        WebClient webClient = WebClient.create(vertx, CLIENT_OPTIONS);
-        webClient.getAbs(url).timeout(RESPONSE_TIMEOUT).send().onSuccess(response -> {
-            if (response.statusCode() != HttpResponseStatus.OK.code()) {
-                if (Loggers.HTTP_CLIENT.isDebugEnabled()) {
-                    Loggers.HTTP_CLIENT.debug("{} {} response status {} {}", "GET", url,
-                            response.statusCode(), response.statusMessage());
-                }
-                callback.onSuccess(null);
-                return;
-            }
-            callback.onSuccess(response.bodyAsString());
-        }).onFailure(e -> {
-            Loggers.HTTP_CLIENT.error("GET " + url + " response error: ", e);
-
-            callback.onError(e);
-        });
-    }
-
 }
