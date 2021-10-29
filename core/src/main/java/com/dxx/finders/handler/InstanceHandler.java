@@ -154,7 +154,7 @@ public class InstanceHandler {
         }
         Service service = serviceManager.getService(namespace, serviceName);
 
-        ObjectNode objectNode = JacksonUtils.createJsonNode();
+        ObjectNode objectNode = JacksonUtils.createObjectNode();
         objectNode.put(Services.PARAM_SERVICE_NAME, serviceName);
         ArrayNode clusterArrayNode = JacksonUtils.createArrayNode();
         ArrayNode instanceArrayNode = JacksonUtils.createArrayNode();

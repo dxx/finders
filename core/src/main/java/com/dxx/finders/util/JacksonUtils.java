@@ -79,7 +79,7 @@ public class JacksonUtils {
     /**
      * Create a new Jackson ObjectNode.
      */
-    public static ObjectNode createJsonNode() {
+    public static ObjectNode createObjectNode() {
         return new ObjectNode(mapper.getNodeFactory());
     }
 
