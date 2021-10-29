@@ -35,20 +35,20 @@ public class InstanceHealthCheckTask implements Runnable {
                 for (Instance instance : instances) {
                     if (instance.getStatus() == InstanceStatus.HEALTHY) {
                         if (System.currentTimeMillis() - instance.getLastBeatTimestamp() > Services.INSTANCE_HEARTBEAT_TIMEOUT) {
-                            Loggers.EVENT.info("Service {} is unhealthy, health check timeout after {}, last beat: {}",
+                            Loggers.EVENT.info("Service {} is unhealthy, health check timeout after {} ms, last beat: {}",
                                     instance.getServiceName(), Services.INSTANCE_HEARTBEAT_TIMEOUT, instance.getLastBeatTimestamp());
                             instance.setStatus(InstanceStatus.UN_HEALTHY);
                         }
                     }
                     if (System.currentTimeMillis() - instance.getLastBeatTimestamp() > Services.INSTANCE_DELETE_TIMEOUT) {
-                        Loggers.EVENT.info("Service {} is valid and will be deleted, last beat: {}",
+                        Loggers.EVENT.info("Service {} is invalid and will be deleted, last beat: {}",
                                 instance.getServiceName(), instance.getLastBeatTimestamp());
                         deleteInstance(instance);
                     }
                 }
             }
         } catch (Exception e) {
-            Loggers.EVENT.error("Exception while processing instance health check timeout.", e);
+            Loggers.EVENT.error("Exception while processing instance health check timeout", e);
         }
     }
 

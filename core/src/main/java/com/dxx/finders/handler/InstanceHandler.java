@@ -120,6 +120,8 @@ public class InstanceHandler {
         if (instance == null) {
             serviceManager.registerInstance(namespace, paramInstance.getServiceName(), paramInstance);
         }
+        serviceManager.handleInstanceHeartbeat(namespace, paramInstance.getServiceName(),
+                paramInstance.getCluster(), paramInstance.getIp(), paramInstance.getPort());
 
         response.end(Result.SUCCESS);
     }

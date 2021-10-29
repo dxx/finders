@@ -73,6 +73,14 @@ public class ServiceManager {
         return clusterMap.get(serviceName);
     }
 
+    public void handleInstanceHeartbeat(String namespace, String serviceName, String cluster, String ip, int port) {
+        Service service = getService(namespace, serviceName);
+        if (service == null) {
+            return;
+        }
+        service.handleHeartbeat(cluster, ip, port);
+    }
+
     private Service createServiceIfAbsent(String namespace, String serviceName) {
         Service service = getService(namespace, serviceName);
         if (service == null) {

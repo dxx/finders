@@ -23,8 +23,12 @@ public class GlobalExecutor {
         SERVICE_UPDATER_EXECUTOR.execute(runnable);
     }
 
-    public static void scheduleServiceHealthCheckTask(Runnable runnable, long initialDelay, long delay,
-                                                      TimeUnit unit) {
+    public static void scheduleHeartbeatHandler(Runnable runnable, long delay, TimeUnit unit) {
+        SERVICE_HEALTHY_CHECK_EXECUTOR.schedule(runnable, delay, unit);
+    }
+
+    public static void scheduleHealthCheckTask(Runnable runnable, long initialDelay, long delay,
+                                               TimeUnit unit) {
         SERVICE_HEALTHY_CHECK_EXECUTOR.scheduleWithFixedDelay(runnable, initialDelay, delay, unit);
     }
 

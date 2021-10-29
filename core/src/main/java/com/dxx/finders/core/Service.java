@@ -60,12 +60,22 @@ public class Service {
         return instances;
     }
 
+    public void handleHeartbeat(String cluster, String ip, int port) {
+        Instance instance = new Instance();
+        instance.setCluster(cluster);
+        instance.setServiceName(getServiceName());
+        instance.setIp(ip);
+        instance.setPort(port);
+        InstanceHeartbeatHandler heartbeatHandler = new InstanceHeartbeatHandler(this, instance);
+        GlobalExecutor.scheduleHeartbeatHandler(heartbeatHandler, 0, TimeUnit.MILLISECONDS);
+    }
+
     private void updateInstance(String clusterName, List<Instance> instances) {
         clusterMap.put(clusterName, new HashSet<>(instances));
     }
 
     private void init() {
-        GlobalExecutor.scheduleServiceHealthCheckTask(instanceHealthCheckTask,
+        GlobalExecutor.scheduleHealthCheckTask(instanceHealthCheckTask,
                 5000, 5000, TimeUnit.MILLISECONDS);
     }
 
