@@ -173,6 +173,7 @@ public class InstanceHandler {
         instance.setStatus(InstanceStatus.fromStr(status));
 
         serviceManager.updateInstanceStatus(namespace, serviceName, instance);
+        
         response.end(Result.SUCCESS);
     }
 
