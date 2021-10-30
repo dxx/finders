@@ -202,7 +202,7 @@ public class InstanceHandler {
         String serviceName = ParamUtils.required(request, Services.PARAM_SERVICE_NAME);
         String ip = ParamUtils.required(request, "ip");
         String port = ParamUtils.required(request, "port");
-        return serviceManager.getInstance(namespace, cluster, serviceName, ip, Integer.parseInt(port));
+        return serviceManager.getInstance(namespace, serviceName, cluster, ip, Integer.parseInt(port));
     }
 
 }
