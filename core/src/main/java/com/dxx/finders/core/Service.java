@@ -44,11 +44,11 @@ public class Service {
         newClusterMap.forEach(this::updateInstance);
     }
 
-    public List<Instance> getInstances() {
+    public List<Instance> getAllInstance() {
         return clusterMap.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
-    public List<Instance> getInstances(List<String> clusters) {
+    public List<Instance> getAllInstance(List<String> clusters) {
         List<Instance> instances = new ArrayList<>();
         for (String cluster : clusters) {
             Set<Instance> instanceSet = clusterMap.get(cluster);
@@ -58,6 +58,16 @@ public class Service {
             instances.addAll(instanceSet);
         }
         return instances;
+    }
+
+    public List<Instance> getInstances() {
+        return getAllInstance().stream()
+                .filter(in -> in.getStatus() != InstanceStatus.DISABLE).collect(Collectors.toList());
+    }
+
+    public List<Instance> getInstances(List<String> clusters) {
+        return getAllInstance(clusters).stream()
+                .filter(in -> in.getStatus() != InstanceStatus.DISABLE).collect(Collectors.toList());
     }
 
     public void handleHeartbeat(String cluster, String ip, int port) {

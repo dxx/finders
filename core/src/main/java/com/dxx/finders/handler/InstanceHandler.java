@@ -4,6 +4,7 @@ import com.dxx.finders.constant.Services;
 import com.dxx.finders.constant.Paths;
 import com.dxx.finders.constant.Result;
 import com.dxx.finders.core.Instance;
+import com.dxx.finders.core.InstanceStatus;
 import com.dxx.finders.core.Service;
 import com.dxx.finders.core.ServiceManager;
 import com.dxx.finders.exception.ValidationException;
@@ -136,6 +137,43 @@ public class InstanceHandler {
         serviceManager.handleInstanceHeartbeat(namespace, paramInstance.getServiceName(),
                 paramInstance.getCluster(), paramInstance.getIp(), paramInstance.getPort());
 
+        response.end(Result.SUCCESS);
+    }
+
+    /**
+     * Update status of instance.
+     */
+    @Distribute
+    @RequestMapping(path = Paths.INSTANCE_STATUS, method = RequestMethod.PUT)
+    public void status(RoutingContext context) {
+        HttpServerResponse response = context.response();
+
+        JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
+        String namespace = jsonNode.get(Services.PARAM_NAMESPACE) != null ?
+                jsonNode.get(Services.PARAM_NAMESPACE).asText() : Services.DEFAULT_NAMESPACE;
+        String cluster = jsonNode.get(Services.PARAM_CLUSTER) != null ?
+                jsonNode.get(Services.PARAM_CLUSTER).asText() : Services.DEFAULT_CLUSTER;
+        String serviceName = jsonNode.get(Services.PARAM_SERVICE_NAME) != null ?
+                jsonNode.get(Services.PARAM_SERVICE_NAME).asText() : "";
+        ParamUtils.requiredCheck(Services.PARAM_SERVICE_NAME, serviceName);
+
+        String ip = jsonNode.get("ip") != null ? jsonNode.get("ip").asText() : "";
+        String port = jsonNode.get("port") != null ? jsonNode.get("port").asText() : "";
+        String status = jsonNode.get("status") != null ? jsonNode.get("status").asText() : "";
+
+        ParamUtils.requiredCheck("ip", ip);
+        ParamUtils.requiredCheck("port", port);
+        ParamUtils.requiredCheck("status", status);
+
+        Instance instance = new Instance();
+        instance.setCluster(cluster);
+        instance.setServiceName(serviceName);
+        instance.setIp(ip);
+        instance.setPort(Integer.parseInt(port));
+        instance.setStatus(InstanceStatus.fromStr(status));
+
+        serviceManager.updateInstanceStatus(namespace, serviceName, instance);
+        
         response.end(Result.SUCCESS);
     }
 

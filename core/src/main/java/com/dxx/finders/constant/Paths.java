@@ -11,4 +11,6 @@ public class Paths {
 
     public static final String INSTANCE_BEAT = INSTANCE + "/beat";
 
+    public static final String INSTANCE_STATUS = INSTANCE + "/status";
+
 }

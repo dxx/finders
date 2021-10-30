@@ -81,6 +81,26 @@ public class ServiceManager {
         service.handleHeartbeat(cluster, ip, port);
     }
 
+    public void updateInstanceStatus(String namespace, String serviceName, Instance instance) {
+        Service service = getService(namespace, serviceName);
+        if (service == null) {
+            return;
+        }
+        Instance existentInstance = getInstance(namespace, serviceName,
+                instance.getCluster(), instance.getIp(), instance.getPort());
+        if (existentInstance != null) {
+            Instance newInstance = new Instance();
+            newInstance.setInstanceId(existentInstance.getInstanceId());
+            newInstance.setCluster(existentInstance.getCluster());
+            newInstance.setServiceName(existentInstance.getServiceName());
+            newInstance.setIp(existentInstance.getIp());
+            newInstance.setPort(existentInstance.getPort());
+            newInstance.setStatus(instance.getStatus());
+            newInstance.setLastBeatTimestamp(System.currentTimeMillis());
+            addInstance(service, Collections.singletonList(newInstance));
+        }
+    }
+
     private Service createServiceIfAbsent(String namespace, String serviceName) {
         Service service = getService(namespace, serviceName);
         if (service == null) {
