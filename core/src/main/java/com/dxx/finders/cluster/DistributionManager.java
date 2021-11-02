@@ -36,8 +36,18 @@ public class DistributionManager {
 
     public static boolean isResponsible(String serviceName) {
         checkServerNodeManager();
-        int index = Math.abs(INSTANCE.hash(serviceName)) % INSTANCE.nodeList.size();
+        int index = INSTANCE.distributedIndex(serviceName);
         return INSTANCE.serverNodeManager.selfNode().getAddress().equals(INSTANCE.nodeList.get(index));
+    }
+
+    public static String getDistributedAddress(String serviceName) {
+        checkServerNodeManager();
+        int index = INSTANCE.distributedIndex(serviceName);
+        return INSTANCE.nodeList.get(index);
+    }
+
+    private int distributedIndex(String serviceName) {
+        return Math.abs(INSTANCE.hash(serviceName)) % INSTANCE.nodeList.size();
     }
 
     /**
