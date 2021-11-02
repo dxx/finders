@@ -1,6 +1,11 @@
 package com.dxx.finders.http;
 
+import com.dxx.finders.constant.Loggers;
+import com.dxx.finders.exception.FindersRuntimeException;
+import com.dxx.finders.exception.ValidationException;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
 /**
@@ -21,11 +26,33 @@ public class HandlerDecorator implements Handler<RoutingContext> {
 
     @Override
     public void handle(RoutingContext context) {
-        // Call the filter processing.
-        if (!abstractFilter.doFilter(context)) {
-            return;
+        try {
+            // Call the filter chain.
+            if (!abstractFilter.doFilter(context)) {
+                return;
+            }
+            handlerFunction.accept(context);
+        } catch (FindersRuntimeException e) {
+            Loggers.CORE.error("ERROR: ", e);
+
+            handleMethodInvokeError(context.response(), e);
         }
-        handlerFunction.accept(context);
+    }
+
+    private void handleMethodInvokeError(HttpServerResponse response, Exception e) {
+        Throwable throwable = e.getCause();
+        int statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
+        String errorMsg = e.getMessage();
+        if (throwable != null) {
+            errorMsg = throwable.getMessage();
+            if (throwable instanceof ValidationException) {
+                ValidationException exception = (ValidationException) throwable;
+                statusCode = exception.getErrorCode();
+                errorMsg = exception.getErrorMsg();
+            }
+        }
+        response.setStatusCode(statusCode);
+        response.end(errorMsg);
     }
 
 }
