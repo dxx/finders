@@ -2,10 +2,7 @@ package com.dxx.finders.cluster;
 
 import com.dxx.finders.exception.ArgumentException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Distribution management.
@@ -16,16 +13,12 @@ public class DistributionManager {
 
     private static final DistributionManager INSTANCE = new DistributionManager();
 
-    private volatile List<String> nodeList = new ArrayList<>();
-
     private ServerNodeManager serverNodeManager;
 
     private DistributionManager() {}
 
     public static void init(ServerNodeManager serverNodeManager) {
         INSTANCE.serverNodeManager = serverNodeManager;
-        INSTANCE.nodeList = serverNodeManager.allNodes().stream()
-                .map(ServerNode::getAddress).distinct().sorted().collect(Collectors.toList());
     }
 
     public static boolean isCluster() {
@@ -37,17 +30,18 @@ public class DistributionManager {
     public static boolean isResponsible(String serviceName) {
         checkServerNodeManager();
         int index = INSTANCE.distributedIndex(serviceName);
-        return INSTANCE.serverNodeManager.selfNode().getAddress().equals(INSTANCE.nodeList.get(index));
+        return INSTANCE.serverNodeManager.selfNode().getAddress().equals(
+                INSTANCE.serverNodeManager.getUpAddresses().get(index));
     }
 
     public static String getDistributedAddress(String serviceName) {
         checkServerNodeManager();
         int index = INSTANCE.distributedIndex(serviceName);
-        return INSTANCE.nodeList.get(index);
+        return INSTANCE.serverNodeManager.getUpAddresses().get(index);
     }
 
     private int distributedIndex(String serviceName) {
-        return Math.abs(INSTANCE.hash(serviceName)) % INSTANCE.nodeList.size();
+        return Math.abs(INSTANCE.hash(serviceName)) % INSTANCE.serverNodeManager.getUpAddresses().size();
     }
 
     /**

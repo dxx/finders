@@ -23,6 +23,11 @@ public class ServerNodeManager {
 
     private volatile Map<String, ServerNode> allNodes = new HashMap<>();
 
+    /**
+     * Online list of service addresses, must be unrepeatable and orderly.
+     */
+    private volatile List<String> upAddresses = new ArrayList<>();
+
     private static final int DEFAULT_PORT = 9080;
 
     private static final String LOCALHOST_IP = "127.0.0.1";
@@ -40,6 +45,8 @@ public class ServerNodeManager {
                         .collect(Collectors.toMap(ServerNode::getId, Function.identity(), (oldValue, newValue) -> {
                             throw new FindersRuntimeException(String.format("Duplicate cluster node %s", newValue));
                         }));
+                INSTANCE.upAddresses = INSTANCE.allNodes.values().stream()
+                        .map(ServerNode::getAddress).distinct().sorted().collect(Collectors.toList());
             }
         }
         return INSTANCE;
@@ -57,6 +64,10 @@ public class ServerNodeManager {
 
     public ServerNode selfNode() {
         return this.allNodes.get(this.selfId);
+    }
+
+    public List<String> getUpAddresses() {
+        return upAddresses;
     }
 
     public static ServerNode getLocalNode() {
