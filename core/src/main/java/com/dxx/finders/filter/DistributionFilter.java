@@ -46,7 +46,7 @@ public class DistributionFilter extends AbstractFilter {
 
             if (!DistributionManager.isResponsible(serviceName)) {
                 String address = DistributionManager.getDistributedAddress(serviceName);
-                String result = FindersHttpClient.request(String.format("http://%s%s", address, request.path()),
+                String result = FindersHttpClient.request(String.format("http://%s%s", address, request.uri()),
                         HttpMethod.valueOf(request.method().name()), jsonNode.toString());
                 response.putHeader(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON + ";charset=UTF-8");
                 response.end(result);
