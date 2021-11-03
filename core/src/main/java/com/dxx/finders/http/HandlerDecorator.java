@@ -32,7 +32,7 @@ public class HandlerDecorator implements Handler<RoutingContext> {
                 return;
             }
             handlerFunction.accept(context);
-        } catch (FindersRuntimeException e) {
+        } catch (Exception e) {
             Loggers.CORE.error("ERROR: ", e);
 
             handleMethodInvokeError(context.response(), e);
@@ -40,10 +40,10 @@ public class HandlerDecorator implements Handler<RoutingContext> {
     }
 
     private void handleMethodInvokeError(HttpServerResponse response, Exception e) {
-        Throwable throwable = e.getCause();
         int statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
         String errorMsg = e.getMessage();
-        if (throwable != null) {
+        Throwable throwable = e.getCause();
+        if (e instanceof FindersRuntimeException && throwable != null) {
             errorMsg = throwable.getMessage();
             if (throwable instanceof ValidationException) {
                 ValidationException exception = (ValidationException) throwable;
