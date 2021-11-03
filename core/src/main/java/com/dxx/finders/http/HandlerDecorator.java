@@ -35,20 +35,26 @@ public class HandlerDecorator implements Handler<RoutingContext> {
         } catch (Exception e) {
             Loggers.CORE.error("ERROR: ", e);
 
-            handleMethodInvokeError(context.response(), e);
+            handleError(context.response(), e);
         }
     }
 
-    private void handleMethodInvokeError(HttpServerResponse response, Exception e) {
+    private void handleError(HttpServerResponse response, Exception e) {
         int statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
         String errorMsg = e.getMessage();
-        Throwable throwable = e.getCause();
-        if (e instanceof FindersRuntimeException && throwable != null) {
-            errorMsg = throwable.getMessage();
-            if (throwable instanceof ValidationException) {
-                ValidationException exception = (ValidationException) throwable;
-                statusCode = exception.getErrorCode();
-                errorMsg = exception.getErrorMsg();
+        if (e instanceof ValidationException) {
+            ValidationException exception = (ValidationException) e;
+            statusCode = exception.getErrorCode();
+            errorMsg = exception.getErrorMsg();
+        } else if (e instanceof FindersRuntimeException) {
+            Throwable throwable = e.getCause();
+            if (throwable != null) {
+                errorMsg = throwable.getMessage();
+                if (throwable instanceof ValidationException) {
+                    ValidationException exception = (ValidationException) throwable;
+                    statusCode = exception.getErrorCode();
+                    errorMsg = exception.getErrorMsg();
+                }
             }
         }
         response.setStatusCode(statusCode);
