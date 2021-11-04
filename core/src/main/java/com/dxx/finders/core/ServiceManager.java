@@ -42,6 +42,8 @@ public class ServiceManager {
         }
 
         addInstance(service, Collections.singletonList(instance));
+
+        syncManager.sync(service.getNamespace(), service.getServiceName());
     }
 
     public void deregisterInstance(String namespace, String serviceName, Instance instance) {
@@ -49,6 +51,7 @@ public class ServiceManager {
         synchronized ((namespace + serviceName).intern()) {
             removeInstance(service, Collections.singletonList(instance));
         }
+        syncManager.sync(service.getNamespace(), service.getServiceName());
     }
 
     public Instance getInstance(String namespace, String serviceName, String cluster, String ip, int port) {
@@ -105,8 +108,16 @@ public class ServiceManager {
         }
     }
 
+    public void syncInstance(Service service, List<Instance> instances) {
+        updateInstance(service, instances, Services.ACTION_SYNC);
+    }
+
     public ServiceStore getServiceStore() {
         return serviceStore;
+    }
+
+    public Service createService(String namespace, String serviceName) {
+        return createServiceIfAbsent(namespace, serviceName);
     }
 
     private Service createServiceIfAbsent(String namespace, String serviceName) {
@@ -137,18 +148,24 @@ public class ServiceManager {
         Map<String, Instance> instanceMap = newInstances.stream()
                 .collect(Collectors.toMap(Instance::getInstanceId, Function.identity()));
 
-        instances.forEach(instance -> {
-            instanceMap.remove(instance.getInstanceId());
-            if (Services.ACTION_ADD.equals(action)) {
-                instanceMap.put(instance.getInstanceId(), instance);
+        if (Services.ACTION_SYNC.equals(action)) {
+            if (instances.size() > 0) {
+                instances.forEach(instance -> instanceMap.put(instance.getInstanceId(), instance));
+            } else {
+                instanceMap.clear();
             }
-        });
+        } else {
+            instances.forEach(instance -> {
+                instanceMap.remove(instance.getInstanceId());
+                if (Services.ACTION_ADD.equals(action)) {
+                    instanceMap.put(instance.getInstanceId(), instance);
+                }
+            });
+        }
 
         List<Instance> instanceList = new ArrayList<>(instanceMap.values());
         serviceStore.put(service.getNamespace(), service.getServiceName(), instanceList);
 
         serviceUpdater.addTask(service, instanceList);
-
-        syncManager.sync(service.getNamespace(), service.getServiceName());
     }
 }

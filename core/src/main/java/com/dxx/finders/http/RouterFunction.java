@@ -6,6 +6,7 @@ import com.dxx.finders.core.ServiceManager;
 import com.dxx.finders.core.SyncManager;
 import com.dxx.finders.exception.FindersRuntimeException;
 import com.dxx.finders.handler.InstanceHandler;
+import com.dxx.finders.handler.ServiceHandler;
 import com.dxx.finders.http.annotation.RequestMapping;
 import io.vertx.core.Handler;
 import io.vertx.ext.web.Router;
@@ -50,7 +51,9 @@ public class RouterFunction {
         syncManager.init(serviceManager);
 
         InstanceHandler instanceHandler = new InstanceHandler(serviceManager);
+        ServiceHandler serviceHandler = new ServiceHandler(serviceManager);
         this.routeIfNecessary(instanceHandler);
+        this.routeIfNecessary(serviceHandler);
     }
 
     @SuppressWarnings("unchecked")

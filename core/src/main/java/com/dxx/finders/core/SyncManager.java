@@ -3,6 +3,7 @@ package com.dxx.finders.core;
 import com.dxx.finders.cluster.ServerNode;
 import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.constant.Loggers;
+import com.dxx.finders.constant.Paths;
 import com.dxx.finders.executor.GlobalExecutor;
 import com.dxx.finders.misc.FindersHttpClient;
 import com.dxx.finders.util.JacksonUtils;
@@ -40,7 +41,11 @@ public class SyncManager {
 
     public void sync(String namespace, String serviceName) {
         List<Instance> instanceList = serviceStore.get(namespace, serviceName);
-        String data = JacksonUtils.toJson(instanceList);
+        SyncData syncData = new SyncData();
+        syncData.setNamespace(namespace);
+        syncData.setServiceName(serviceName);
+        syncData.setInstanceList(instanceList);
+        String data = JacksonUtils.toJson(syncData);
         List<ServerNode> serverNodes = serverNodeManager.allNodesWithoutSelf();
         serverNodes.forEach(serverNode -> serviceSyncTask.addTask(serverNode.getAddress(), data));
     }
@@ -78,7 +83,9 @@ public class SyncManager {
             int retry = RETRY_COUNT + 1;
             for (; retry > 0; retry--) {
                 try {
-                    FindersHttpClient.request(String.format("http://%s", pair.getValue0()), HttpMethod.PUT, pair.getValue1());
+                    FindersHttpClient.request(String.format("http://%s%s", pair.getValue0(), Paths.SERVICE_SYNC),
+                            HttpMethod.PUT, pair.getValue1());
+                    break;
                 } catch (Exception e) {
                     Loggers.EVENT.error("[Service Sync Task] Sync service data to {} failed, error: {}, retrying again",
                             pair.getValue0(), e.getMessage());
