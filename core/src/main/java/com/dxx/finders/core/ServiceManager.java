@@ -25,7 +25,11 @@ public class ServiceManager {
 
     private final ServiceUpdater serviceUpdater = new ServiceUpdater();
 
-    public ServiceManager() {
+    private final SyncManager syncManager;
+
+    public ServiceManager(SyncManager syncManager) {
+        this.syncManager = syncManager;
+
         GlobalExecutor.executeServiceUpdateTask(serviceUpdater);
     }
 
@@ -101,6 +105,10 @@ public class ServiceManager {
         }
     }
 
+    public ServiceStore getServiceStore() {
+        return serviceStore;
+    }
+
     private Service createServiceIfAbsent(String namespace, String serviceName) {
         Service service = getService(namespace, serviceName);
         if (service == null) {
@@ -140,5 +148,7 @@ public class ServiceManager {
         serviceStore.put(service.getNamespace(), service.getServiceName(), instanceList);
 
         serviceUpdater.addTask(service, instanceList);
+
+        syncManager.sync(service.getNamespace(), service.getServiceName());
     }
 }
