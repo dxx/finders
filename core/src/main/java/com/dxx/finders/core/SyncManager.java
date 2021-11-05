@@ -95,11 +95,11 @@ public class SyncManager {
             }
         }
 
-        public void sync(Pair<String, String> pair) {
+        public void sync(String address, String data) {
             int retry = RETRY_COUNT + 1;
             for (; retry > 0; retry--) {
                 try {
-                    FindersHttpClient.put(String.format("http://%s%s", pair.getValue0(), Paths.SERVICE_SYNC), pair.getValue1());
+                    FindersHttpClient.put(String.format("http://%s%s", address, Paths.SERVICE_SYNC), data);
                     break;
                 } catch (Exception e) {
                     Loggers.EVENT.error("[Service Synchronizer] Sync service data to {} failed, error: {}, retrying again",
