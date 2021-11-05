@@ -8,7 +8,6 @@ import com.dxx.finders.core.SyncData;
 import com.dxx.finders.http.RequestMethod;
 import com.dxx.finders.http.annotation.RequestMapping;
 import com.dxx.finders.util.JacksonUtils;
-import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
@@ -41,4 +40,13 @@ public class ServiceHandler {
 
         response.end(Result.SUCCESS);
     }
+
+    @RequestMapping(path = Paths.SERVICE_VERIFY, method = RequestMethod.PUT)
+    public void verify(RoutingContext context) {
+        HttpServerResponse response = context.response();
+        String reqBody = context.getBodyAsString();
+        System.out.println(reqBody);
+        response.end(Result.SUCCESS);
+    }
+
 }

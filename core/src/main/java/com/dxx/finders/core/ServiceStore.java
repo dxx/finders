@@ -1,6 +1,9 @@
 package com.dxx.finders.core;
 
+import com.dxx.finders.util.MD5Utils;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +31,21 @@ public class ServiceStore {
 
     public List<String> getKeys() {
         return new ArrayList<>(this.storeMap.keySet());
+    }
+
+    public String getCheckInfo(String key) {
+        List<Instance> instances = this.storeMap.get(key);
+        if (instances == null) {
+            return "";
+        }
+        Collections.sort(instances);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Instance instance : instances) {
+            String str = String.format("%s_%s_%s_%s",
+                    instance.getCluster(), instance.getIp(), instance.getPort(), instance.getStatus().toString());
+            stringBuilder.append(str).append(",");
+        }
+        return MD5Utils.getMD5String(stringBuilder.toString());
     }
 
 }

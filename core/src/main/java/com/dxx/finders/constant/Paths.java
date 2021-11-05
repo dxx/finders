@@ -17,4 +17,6 @@ public class Paths {
 
     public static final String SERVICE_SYNC = SERVICE + "/sync";
 
+    public static final String SERVICE_VERIFY = SERVICE + "/verify";
+
 }

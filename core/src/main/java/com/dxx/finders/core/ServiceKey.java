@@ -29,7 +29,7 @@ public class ServiceKey {
         String[] strings = new String[]{"", ""};
         if (StringUtils.isNotEmpty(key)) {
             String[] str = key.split(NAMESPACE_KEY_CONNECTOR);
-            strings[0] = str[0].substring(str[0].lastIndexOf(KEY_PREFIX) + 1);
+            strings[0] = str[0].substring(str[0].lastIndexOf(KEY_PREFIX) + KEY_PREFIX.length());
             strings[1] = str[1];
         }
         return strings;

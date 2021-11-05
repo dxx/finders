@@ -38,4 +38,9 @@ public class GlobalExecutor {
     public static void executeServiceSync(Runnable runnable) {
         SERVICE_SYNC_EXECUTOR.execute(runnable);
     }
+
+    public static void scheduleServiceSyncTask(Runnable runnable, long initialDelay, long delay,
+                                               TimeUnit unit) {
+        SERVICE_SYNC_EXECUTOR.scheduleWithFixedDelay(runnable, initialDelay, delay, unit);
+    }
 }
