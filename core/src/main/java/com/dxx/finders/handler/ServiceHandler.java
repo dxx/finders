@@ -24,6 +24,9 @@ public class ServiceHandler {
         this.serviceManager = serviceManager;
     }
 
+    /**
+     * Service sync.
+     */
     @RequestMapping(path = Paths.SERVICE_SYNC, method = RequestMethod.PUT)
     public void sync(RoutingContext context) {
         HttpServerResponse response = context.response();
@@ -41,6 +44,9 @@ public class ServiceHandler {
         response.end(Result.SUCCESS);
     }
 
+    /**
+     * Verify service info.
+     */
     @RequestMapping(path = Paths.SERVICE_VERIFY, method = RequestMethod.PUT)
     public void verify(RoutingContext context) {
         HttpServerResponse response = context.response();
