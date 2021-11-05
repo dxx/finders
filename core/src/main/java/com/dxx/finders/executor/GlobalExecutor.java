@@ -32,7 +32,7 @@ public class GlobalExecutor {
 
     public static void scheduleHealthCheckTask(Runnable runnable, long initialDelay, long delay,
                                                TimeUnit unit) {
-        SERVICE_HEALTHY_CHECK_EXECUTOR.scheduleWithFixedDelay(runnable, initialDelay, delay, unit);
+        SERVICE_HEALTHY_CHECK_EXECUTOR.scheduleAtFixedRate(runnable, initialDelay, delay, unit);
     }
 
     public static void executeServiceSync(Runnable runnable) {
