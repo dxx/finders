@@ -88,7 +88,7 @@ public class SyncManager {
             while (true) {
                 try {
                     Pair<String, String> pair = taskQueue.take();
-                    sync(pair);
+                    sync(pair.getValue0(), pair.getValue1());
                 } catch (InterruptedException e) {
                     Loggers.EVENT.error("[Service Synchronizer] Error while handling service sync task", e);
                 }
@@ -103,7 +103,7 @@ public class SyncManager {
                     break;
                 } catch (Exception e) {
                     Loggers.EVENT.error("[Service Synchronizer] Sync service data to {} failed, error: {}, retrying again",
-                            pair.getValue0(), e.getMessage());
+                            address, e.getMessage());
                 }
             }
         }
