@@ -6,6 +6,7 @@ import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.constant.Paths;
 import com.dxx.finders.executor.GlobalExecutor;
+import com.dxx.finders.misc.AsyncHttpCallback;
 import com.dxx.finders.misc.FindersHttpClient;
 import com.dxx.finders.util.JacksonUtils;
 import io.vertx.core.http.HttpMethod;
@@ -85,8 +86,7 @@ public class SyncManager {
             int retry = RETRY_COUNT + 1;
             for (; retry > 0; retry--) {
                 try {
-                    FindersHttpClient.request(String.format("http://%s%s", pair.getValue0(), Paths.SERVICE_SYNC),
-                            HttpMethod.PUT, pair.getValue1());
+                    FindersHttpClient.put(String.format("http://%s%s", pair.getValue0(), Paths.SERVICE_SYNC), pair.getValue1());
                     break;
                 } catch (Exception e) {
                     Loggers.EVENT.error("[Service Synchronizer] Sync service data to {} failed, error: {}, retrying again",
@@ -128,8 +128,18 @@ public class SyncManager {
             dataMap.put("checkInfo", syncCheckInfo);
             String data = JacksonUtils.toJson(dataMap);
             serverNodes.forEach(serverNode -> {
-                FindersHttpClient.request(String.format("http://%s%s", serverNode.getAddress(), Paths.SERVICE_VERIFY),
-                        HttpMethod.PUT, data);
+                FindersHttpClient.asyncPutRequest(String.format("http://%s%s", serverNode.getAddress(),
+                        Paths.SERVICE_VERIFY), data, new AsyncHttpCallback<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Loggers.EVENT.error("Sync check info failed, current address: {}, remote server address: {}",
+                               localServerNode.getAddress() , serverNode.getAddress(), e);
+                    }
+                });
             });
         }
     }
