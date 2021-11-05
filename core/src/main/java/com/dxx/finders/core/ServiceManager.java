@@ -141,7 +141,8 @@ public class ServiceManager {
 
     private void updateInstance(Service service, List<Instance> instances, String action) {
         List<Instance> newInstances = new ArrayList<>();
-        List<Instance> storeInstances = serviceStore.get(service.getNamespace(), service.getServiceName());
+        String serviceKey = ServiceKey.build(service.getNamespace(), service.getServiceName());
+        List<Instance> storeInstances = serviceStore.get(serviceKey);
         if (storeInstances != null && storeInstances.size() > 0) {
             newInstances = storeInstances;
         }
@@ -164,7 +165,7 @@ public class ServiceManager {
         }
 
         List<Instance> instanceList = new ArrayList<>(instanceMap.values());
-        serviceStore.put(service.getNamespace(), service.getServiceName(), instanceList);
+        serviceStore.put(serviceKey, instanceList);
 
         serviceUpdater.addTask(service, instanceList);
     }
