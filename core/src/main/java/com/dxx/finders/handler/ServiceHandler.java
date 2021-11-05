@@ -57,7 +57,6 @@ public class ServiceHandler {
         JsonNode jsonNode = ParamUtils.getBodyAsJsonNode(context);
         String sendAddress = jsonNode.get("sendAddress").asText();
         String checkInfo = jsonNode.get("checkInfo").toString();
-        System.out.println(checkInfo);
         SyncCheckInfo syncCheckInfo = JacksonUtils.toObject(checkInfo, SyncCheckInfo.class);
         syncManager.verifyCheckInfo(sendAddress, syncCheckInfo);
 
