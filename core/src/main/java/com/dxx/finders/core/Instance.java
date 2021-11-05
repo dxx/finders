@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  * @author dxx
  */
-public class Instance {
+public class Instance implements Comparable<Instance> {
 
     private String instanceId;
 
@@ -82,5 +82,10 @@ public class Instance {
 
     public void setLastBeatTimestamp(long lastBeatTimestamp) {
         this.lastBeatTimestamp = lastBeatTimestamp;
+    }
+
+    @Override
+    public int compareTo(Instance o) {
+        return this.instanceId.compareTo(o.getInstanceId());
     }
 }

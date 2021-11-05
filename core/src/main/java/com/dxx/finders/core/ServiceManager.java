@@ -25,8 +25,12 @@ public class ServiceManager {
 
     private final ServiceUpdater serviceUpdater = new ServiceUpdater();
 
-    public ServiceManager() {
-        GlobalExecutor.executeServiceUpdateTask(serviceUpdater);
+    private final SyncManager syncManager;
+
+    public ServiceManager(SyncManager syncManager) {
+        this.syncManager = syncManager;
+
+        GlobalExecutor.executeServiceUpdate(serviceUpdater);
     }
 
     public void registerInstance(String namespace, String serviceName, Instance instance) {
@@ -38,6 +42,8 @@ public class ServiceManager {
         }
 
         addInstance(service, Collections.singletonList(instance));
+
+        syncManager.sync(service.getNamespace(), service.getServiceName());
     }
 
     public void deregisterInstance(String namespace, String serviceName, Instance instance) {
@@ -45,6 +51,7 @@ public class ServiceManager {
         synchronized ((namespace + serviceName).intern()) {
             removeInstance(service, Collections.singletonList(instance));
         }
+        syncManager.sync(service.getNamespace(), service.getServiceName());
     }
 
     public Instance getInstance(String namespace, String serviceName, String cluster, String ip, int port) {
@@ -101,6 +108,18 @@ public class ServiceManager {
         }
     }
 
+    public void syncInstance(Service service, List<Instance> instances) {
+        updateInstance(service, instances, Services.ACTION_SYNC);
+    }
+
+    public ServiceStore getServiceStore() {
+        return serviceStore;
+    }
+
+    public Service createService(String namespace, String serviceName) {
+        return createServiceIfAbsent(namespace, serviceName);
+    }
+
     private Service createServiceIfAbsent(String namespace, String serviceName) {
         Service service = getService(namespace, serviceName);
         if (service == null) {
@@ -112,7 +131,7 @@ public class ServiceManager {
         return service;
     }
 
-    private void addInstance(Service service, List<Instance> instances) {
+    public void addInstance(Service service, List<Instance> instances) {
         updateInstance(service, instances, Services.ACTION_ADD);
     }
 
@@ -122,22 +141,31 @@ public class ServiceManager {
 
     private void updateInstance(Service service, List<Instance> instances, String action) {
         List<Instance> newInstances = new ArrayList<>();
-        List<Instance> storeInstances = serviceStore.get(service.getNamespace(), service.getServiceName());
+        String serviceKey = ServiceKey.build(service.getNamespace(), service.getServiceName());
+        List<Instance> storeInstances = serviceStore.get(serviceKey);
         if (storeInstances != null && storeInstances.size() > 0) {
             newInstances = storeInstances;
         }
         Map<String, Instance> instanceMap = newInstances.stream()
                 .collect(Collectors.toMap(Instance::getInstanceId, Function.identity()));
 
-        instances.forEach(instance -> {
-            instanceMap.remove(instance.getInstanceId());
-            if (Services.ACTION_ADD.equals(action)) {
-                instanceMap.put(instance.getInstanceId(), instance);
+        if (Services.ACTION_SYNC.equals(action)) {
+            if (instances.size() > 0) {
+                instances.forEach(instance -> instanceMap.put(instance.getInstanceId(), instance));
+            } else {
+                instanceMap.clear();
             }
-        });
+        } else {
+            instances.forEach(instance -> {
+                instanceMap.remove(instance.getInstanceId());
+                if (Services.ACTION_ADD.equals(action)) {
+                    instanceMap.put(instance.getInstanceId(), instance);
+                }
+            });
+        }
 
         List<Instance> instanceList = new ArrayList<>(instanceMap.values());
-        serviceStore.put(service.getNamespace(), service.getServiceName(), instanceList);
+        serviceStore.put(serviceKey, instanceList);
 
         serviceUpdater.addTask(service, instanceList);
     }

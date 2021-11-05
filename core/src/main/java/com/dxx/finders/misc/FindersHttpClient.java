@@ -1,6 +1,7 @@
 package com.dxx.finders.misc;
 
 import com.dxx.finders.constant.Loggers;
+import com.dxx.finders.exception.FindersRuntimeException;
 import com.dxx.finders.util.StringUtils;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Future;
@@ -106,14 +107,21 @@ public class FindersHttpClient {
             }
             reference.set(response.bodyAsString());
         });
-        future.onFailure(e -> Loggers.HTTP_CLIENT.error(method + " " + url + " response error: ", e));
+        future.onFailure(e -> {
+            Loggers.HTTP_CLIENT.error(method + " " + url + " response error: ", e);
+            reference.set("ERROR: " + e.getMessage());
+        });
         future.onComplete(r -> countDownLatch.countDown());
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
             Loggers.HTTP_CLIENT.error("Await response error: ", e);
         }
-        return reference.get();
+        String result = reference.get();
+        if (result != null && result.startsWith("ERROR: ")) {
+            throw new FindersRuntimeException(result.replace("ERROR: ", ""));
+        }
+        return result;
     }
 
     public static void asyncGetRequest(String url, AsyncHttpCallback<String> callback) {

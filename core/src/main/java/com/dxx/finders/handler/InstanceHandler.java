@@ -27,7 +27,7 @@ import io.vertx.ext.web.RoutingContext;
 import java.util.*;
 
 /**
- * Service handler.
+ * Instance handler.
  *
  * @author dxx
  */

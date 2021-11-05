@@ -24,7 +24,7 @@ public class ServiceUpdater implements Runnable {
                 try {
                     taskQueue.put(pair);
                 } catch (InterruptedException e) {
-                    Loggers.CORE.error("[Service Updater] Error while put pair into taskQueue", e);
+                    Loggers.EVENT.error("[Service Updater] Error while put pair into taskQueue", e);
                 }
             }).start();
         }
@@ -32,14 +32,14 @@ public class ServiceUpdater implements Runnable {
 
     @Override
     public void run() {
-        Loggers.CORE.info("Service updater started");
+        Loggers.EVENT.info("Service updater started");
 
         while (true) {
             try {
                 Pair<Service, List<Instance>> pair = taskQueue.take();
                 pair.getValue0().updateInstance(pair.getValue1());
             } catch (InterruptedException e) {
-                Loggers.CORE.error("[Service Updater] Error while handling instance update task", e);
+                Loggers.EVENT.error("[Service Updater] Error while handling instance update task", e);
             }
         }
     }

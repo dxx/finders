@@ -68,7 +68,7 @@ public class InstanceHealthCheckTask implements Runnable {
 
             @Override
             public void onError(Throwable e) {
-                Loggers.HTTP_CLIENT.error("Delete instance failed, instance: " + objectNode, e);
+                Loggers.EVENT.error("Delete instance failed, instance: " + objectNode, e);
             }
         });
     }

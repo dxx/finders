@@ -20,25 +20,30 @@ public class DistributionManagerTest {
         System.setProperty(EnvConst.HOME, home);
 
         Environment.init();
+
+        ServerNodeManager serverNodeManager = ServerNodeManager.init();
+        DistributionManager.init(serverNodeManager);
     }
 
     @Test
     public void testIsCluster() {
-        ServerNodeManager serverNodeManager = ServerNodeManager.init();
-        DistributionManager.init(serverNodeManager);
-
         boolean isCluster = DistributionManager.isCluster();
         System.out.println(isCluster);
     }
 
     @Test
     public void testIsResponsible() {
-        ServerNodeManager serverNodeManager = ServerNodeManager.init();
-        DistributionManager.init(serverNodeManager);
-
         String serviceName = "testService";
 
         boolean isResponsible = DistributionManager.isResponsible(serviceName);
         System.out.println(isResponsible);
+    }
+
+    @Test
+    public void testGetDistributedAddress() {
+        String serviceName = "testService1";
+
+        String address = DistributionManager.getDistributedAddress(serviceName);
+        System.out.println(address);
     }
 }

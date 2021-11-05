@@ -2,15 +2,13 @@ package com.dxx.finders.http;
 
 import com.dxx.finders.cluster.DistributionManager;
 import com.dxx.finders.cluster.ServerNodeManager;
-import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.core.ServiceManager;
+import com.dxx.finders.core.SyncManager;
 import com.dxx.finders.exception.FindersRuntimeException;
-import com.dxx.finders.exception.ValidationException;
 import com.dxx.finders.handler.InstanceHandler;
+import com.dxx.finders.handler.ServiceHandler;
 import com.dxx.finders.http.annotation.RequestMapping;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
@@ -46,10 +44,16 @@ public class RouterFunction {
         ServerNodeManager serverNodeManager = ServerNodeManager.init();
         DistributionManager.init(serverNodeManager);
 
-        ServiceManager serviceManager = new ServiceManager();
+        SyncManager syncManager = new SyncManager(serverNodeManager);
+
+        ServiceManager serviceManager = new ServiceManager(syncManager);
+
+        syncManager.init(serviceManager);
 
         InstanceHandler instanceHandler = new InstanceHandler(serviceManager);
+        ServiceHandler serviceHandler = new ServiceHandler(serviceManager, syncManager);
         this.routeIfNecessary(instanceHandler);
+        this.routeIfNecessary(serviceHandler);
     }
 
     @SuppressWarnings("unchecked")
@@ -75,9 +79,7 @@ public class RouterFunction {
                 try {
                     method.invoke(obj, context);
                 } catch (Exception e) {
-                    Loggers.CORE.error("ERROR: ", e);
-
-                    handleMethodInvokeError(context.response(), e);
+                    throw new FindersRuntimeException("Error occurred while invoke handle", e.getCause());
                 }
             };
             this.route(annotation.path(), annotation.method(), handlerFunction);
@@ -101,21 +103,4 @@ public class RouterFunction {
                 break;
         }
     }
-
-    private void handleMethodInvokeError(HttpServerResponse response, Exception e) {
-        Throwable throwable = e.getCause();
-        int statusCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
-        String errorMsg = e.getMessage();
-        if (throwable != null) {
-            errorMsg = throwable.getMessage();
-            if (throwable instanceof ValidationException) {
-                ValidationException exception = (ValidationException) throwable;
-                statusCode = exception.getErrorCode();
-                errorMsg = exception.getErrorMsg();
-            }
-        }
-        response.setStatusCode(statusCode);
-        response.end(errorMsg);
-    }
-
 }
