@@ -24,6 +24,8 @@ public class SyncManager {
 
     private final ServerNodeManager serverNodeManager;
 
+    private ServiceManager serviceManager;
+
     private ServiceStore serviceStore;
 
     private final ServiceSynchronizer serviceSynchronizer = new ServiceSynchronizer();
@@ -37,6 +39,7 @@ public class SyncManager {
     }
 
     public void init(ServiceManager serviceManager) {
+        this.serviceManager = serviceManager;
         this.serviceStore = serviceManager.getServiceStore();
 
         GlobalExecutor.executeServiceSync(serviceSynchronizer);
@@ -62,8 +65,18 @@ public class SyncManager {
             if (checkInfo.equals(serviceStore.getCheckInfo(key))) {
                 return;
             }
-
+            serviceSyncUpdater.addTask(sendAddress, key);
         });
+    }
+
+    public String getServiceData(String namespace, String serviceName) {
+        String key = ServiceKey.build(namespace, serviceName);
+        List<Instance> instances = serviceStore.get(key);
+        SyncData syncData = new SyncData();
+        syncData.setNamespace(namespace);
+        syncData.setServiceName(serviceName);
+        syncData.setInstanceList(instances);
+        return JacksonUtils.toJson(syncData);
     }
 
     private static class ServiceSynchronizer implements Runnable {
@@ -185,7 +198,13 @@ public class SyncManager {
         }
 
         public void handle(String address, String data) {
-
+            String namespace = ServiceKey.getNamespace(data);
+            String serviceName = ServiceKey.getServiceName(data);
+            String result = FindersHttpClient.get(String.format("http://%s%s?namespace=%s&serviceName=%s",
+                    address, Paths.SERVICE_DATA, namespace, serviceName));
+            SyncData syncData = JacksonUtils.toObject(result, SyncData.class);
+            Service service = serviceManager.getService(namespace, serviceName);
+            serviceManager.syncInstance(service, syncData.getInstanceList());
         }
     }
 

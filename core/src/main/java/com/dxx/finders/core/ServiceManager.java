@@ -131,7 +131,7 @@ public class ServiceManager {
         return service;
     }
 
-    private void addInstance(Service service, List<Instance> instances) {
+    public void addInstance(Service service, List<Instance> instances) {
         updateInstance(service, instances, Services.ACTION_ADD);
     }
 

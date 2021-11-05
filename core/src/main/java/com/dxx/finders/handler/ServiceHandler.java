@@ -2,12 +2,14 @@ package com.dxx.finders.handler;
 
 import com.dxx.finders.constant.Paths;
 import com.dxx.finders.constant.Result;
+import com.dxx.finders.constant.Services;
 import com.dxx.finders.core.*;
 import com.dxx.finders.http.RequestMethod;
 import com.dxx.finders.http.annotation.RequestMapping;
 import com.dxx.finders.util.JacksonUtils;
 import com.dxx.finders.util.ParamUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
@@ -63,4 +65,18 @@ public class ServiceHandler {
         response.end(Result.SUCCESS);
     }
 
+    /**
+     * Get data of service.
+     */
+    @RequestMapping(path = Paths.SERVICE_DATA, method = RequestMethod.GET)
+    public void data(RoutingContext context) {
+        HttpServerResponse response = context.response();
+        HttpServerRequest request = context.request();
+
+        String namespace = ParamUtils.required(request, Services.PARAM_NAMESPACE);
+        String serviceName = ParamUtils.required(request, Services.PARAM_SERVICE_NAME);
+        String data = syncManager.getServiceData(namespace, serviceName);
+
+        response.end(data);
+    }
 }
