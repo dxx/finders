@@ -51,7 +51,7 @@ public class RouterFunction {
         syncManager.init(serviceManager);
 
         InstanceHandler instanceHandler = new InstanceHandler(serviceManager);
-        ServiceHandler serviceHandler = new ServiceHandler(serviceManager);
+        ServiceHandler serviceHandler = new ServiceHandler(serviceManager, syncManager);
         this.routeIfNecessary(instanceHandler);
         this.routeIfNecessary(serviceHandler);
     }

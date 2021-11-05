@@ -28,6 +28,8 @@ public class SyncManager {
 
     private final ServiceSynchronizer serviceSynchronizer = new ServiceSynchronizer();
 
+    private final ServiceSyncUpdater serviceSyncUpdater = new ServiceSyncUpdater();
+
     private final ServiceSyncTask serviceSyncTask = new ServiceSyncTask();
 
     public SyncManager(ServerNodeManager serverNodeManager) {
@@ -38,6 +40,7 @@ public class SyncManager {
         this.serviceStore = serviceManager.getServiceStore();
 
         GlobalExecutor.executeServiceSync(serviceSynchronizer);
+        GlobalExecutor.executeServiceSyncUpdate(serviceSyncUpdater);
         GlobalExecutor.scheduleServiceSyncTask(serviceSyncTask, 30000, 5000, TimeUnit.MILLISECONDS);
     }
 
@@ -50,6 +53,17 @@ public class SyncManager {
         String data = JacksonUtils.toJson(syncData);
         List<ServerNode> serverNodes = serverNodeManager.allNodesWithoutSelf();
         serverNodes.forEach(serverNode -> serviceSynchronizer.addTask(serverNode.getAddress(), data));
+    }
+
+    public void verifyCheckInfo(String sendAddress, SyncCheckInfo syncCheckInfo) {
+        String namespace = syncCheckInfo.getNamespace();
+        syncCheckInfo.getServiceCheckInfo().forEach((serviceName, checkInfo) -> {
+            String key = ServiceKey.build(namespace, serviceName);
+            if (checkInfo.equals(serviceStore.getCheckInfo(key))) {
+                return;
+            }
+
+        });
     }
 
     private static class ServiceSynchronizer implements Runnable {
@@ -142,4 +156,37 @@ public class SyncManager {
             });
         }
     }
+
+    private class ServiceSyncUpdater implements Runnable {
+
+        private final BlockingQueue<Pair<String, String>> taskQueue =
+                new LinkedBlockingQueue<>(1024);
+
+        public void addTask(String address, String data) {
+            try {
+                taskQueue.put(Pair.with(address, data));
+            } catch (InterruptedException e) {
+                Loggers.EVENT.error("[Service sync updater] Error while put pair into taskQueue", e);
+            }
+        }
+
+        @Override
+        public void run() {
+            Loggers.EVENT.info("Service sync updater started");
+
+            while (true) {
+                try {
+                    Pair<String, String> pair = taskQueue.take();
+                    handle(pair.getValue0(), pair.getValue1());
+                } catch (InterruptedException e) {
+                    Loggers.EVENT.error("[Service sync updater] Error while handling service sync task", e);
+                }
+            }
+        }
+
+        public void handle(String address, String data) {
+
+        }
+    }
+
 }
