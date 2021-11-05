@@ -27,14 +27,10 @@ public class ServiceHandler {
 
     @RequestMapping(path = Paths.SERVICE_SYNC, method = RequestMethod.PUT)
     public void sync(RoutingContext context) {
-        HttpServerRequest request = context.request();
         HttpServerResponse response = context.response();
 
         String reqBody = context.getBodyAsString();
         SyncData syncData = JacksonUtils.toObject(reqBody, SyncData.class);
-        System.out.println(syncData.getNamespace());
-        System.out.println(syncData.getServiceName());
-        System.out.println(syncData.getInstanceList());
         String namespace = syncData.getNamespace();
         String serviceName = syncData.getServiceName();
         Service service = serviceManager.getService(namespace, serviceName);
