@@ -9,7 +9,6 @@ import com.dxx.finders.executor.GlobalExecutor;
 import com.dxx.finders.misc.AsyncHttpCallback;
 import com.dxx.finders.misc.FindersHttpClient;
 import com.dxx.finders.util.JacksonUtils;
-import io.vertx.core.http.HttpMethod;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
