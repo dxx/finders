@@ -30,7 +30,7 @@ public class ServiceManager {
     public ServiceManager(SyncManager syncManager) {
         this.syncManager = syncManager;
 
-        GlobalExecutor.executeServiceUpdateTask(serviceUpdater);
+        GlobalExecutor.executeServiceUpdate(serviceUpdater);
     }
 
     public void registerInstance(String namespace, String serviceName, Instance instance) {

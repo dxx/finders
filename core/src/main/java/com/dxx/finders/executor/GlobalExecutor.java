@@ -22,7 +22,7 @@ public class GlobalExecutor {
     private static final ScheduledExecutorService SERVICE_SYNC_EXECUTOR = ExecutorFactory.
             newScheduledExecutorService(DEFAULT_THREAD_COUNT, new NamedThreadFactory("finders-service-synchronizer"));
 
-    public static void executeServiceUpdateTask(Runnable runnable) {
+    public static void executeServiceUpdate(Runnable runnable) {
         SERVICE_UPDATER_EXECUTOR.execute(runnable);
     }
 
@@ -35,7 +35,7 @@ public class GlobalExecutor {
         SERVICE_HEALTHY_CHECK_EXECUTOR.scheduleWithFixedDelay(runnable, initialDelay, delay, unit);
     }
 
-    public static void executeServiceSyncTask(Runnable runnable) {
+    public static void executeServiceSync(Runnable runnable) {
         SERVICE_SYNC_EXECUTOR.execute(runnable);
     }
 }

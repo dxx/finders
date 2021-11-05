@@ -26,7 +26,7 @@ public class SyncManager {
 
     private ServiceStore serviceStore;
 
-    private final ServiceSyncTask serviceSyncTask = new ServiceSyncTask();
+    private final ServiceSynchronizer serviceSynchronizer = new ServiceSynchronizer();
 
     public SyncManager(ServerNodeManager serverNodeManager) {
         this.serverNodeManager = serverNodeManager;
@@ -36,7 +36,7 @@ public class SyncManager {
         this.serviceManager = serviceManager;
         this.serviceStore = serviceManager.getServiceStore();
 
-        GlobalExecutor.executeServiceSyncTask(serviceSyncTask);
+        GlobalExecutor.executeServiceSync(serviceSynchronizer);
     }
 
     public void sync(String namespace, String serviceName) {
@@ -47,10 +47,10 @@ public class SyncManager {
         syncData.setInstanceList(instanceList);
         String data = JacksonUtils.toJson(syncData);
         List<ServerNode> serverNodes = serverNodeManager.allNodesWithoutSelf();
-        serverNodes.forEach(serverNode -> serviceSyncTask.addTask(serverNode.getAddress(), data));
+        serverNodes.forEach(serverNode -> serviceSynchronizer.addTask(serverNode.getAddress(), data));
     }
 
-    public static class ServiceSyncTask implements Runnable {
+    public static class ServiceSynchronizer implements Runnable {
 
         private final int RETRY_COUNT = 1;
 
