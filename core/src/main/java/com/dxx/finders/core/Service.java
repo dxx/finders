@@ -16,13 +16,13 @@ public class Service {
     /**
      * Map<cluster, Instances>.
      */
-    private Map<String, Set<Instance>> clusterMap = new HashMap<>();
+    private final Map<String, Set<Instance>> clusterMap = new HashMap<>();
 
-    private InstanceHealthCheckTask instanceHealthCheckTask = new InstanceHealthCheckTask(this);
+    private final InstanceHealthCheckTask instanceHealthCheckTask = new InstanceHealthCheckTask(this);
 
-    private String namespace;
+    private final String namespace;
 
-    private String serviceName;
+    private final String serviceName;
 
     public Service(String namespace, String serviceName) {
         this.namespace = namespace;
