@@ -61,20 +61,20 @@ public class SyncManager {
             try {
                 taskQueue.put(Pair.with(address, data));
             } catch (InterruptedException e) {
-                Loggers.EVENT.error("[Service Sync Task] Error while put pair into taskQueue", e);
+                Loggers.EVENT.error("[Service Synchronizer] Error while put pair into taskQueue", e);
             }
         }
 
         @Override
         public void run() {
-            Loggers.EVENT.info("Service sync task started");
+            Loggers.EVENT.info("Service synchronizer started");
 
             while (true) {
                 try {
                     Pair<String, String> pair = taskQueue.take();
                     sync(pair);
                 } catch (InterruptedException e) {
-                    Loggers.EVENT.error("[Service Sync Task] Error while handling service sync task", e);
+                    Loggers.EVENT.error("[Service Synchronizer] Error while handling service sync task", e);
                 }
             }
         }
@@ -87,7 +87,7 @@ public class SyncManager {
                             HttpMethod.PUT, pair.getValue1());
                     break;
                 } catch (Exception e) {
-                    Loggers.EVENT.error("[Service Sync Task] Sync service data to {} failed, error: {}, retrying again",
+                    Loggers.EVENT.error("[Service Synchronizer] Sync service data to {} failed, error: {}, retrying again",
                             pair.getValue0(), e.getMessage());
                 }
             }
