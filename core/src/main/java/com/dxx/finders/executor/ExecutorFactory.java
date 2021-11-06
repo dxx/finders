@@ -84,7 +84,6 @@ public final class ExecutorFactory {
                 }
                 retry--;
             }
-            executor.shutdownNow();
         }
 
     }
