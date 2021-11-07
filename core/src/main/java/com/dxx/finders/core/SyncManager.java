@@ -60,14 +60,14 @@ public class SyncManager {
         serverNodes.forEach(serverNode -> serviceSynchronizer.addTask(serverNode.getAddress(), data));
     }
 
-    public void verifyCheckInfo(String sendAddress, SyncCheckInfo syncCheckInfo) {
+    public void verifyCheckInfo(String serverAddress, SyncCheckInfo syncCheckInfo) {
         String namespace = syncCheckInfo.getNamespace();
         syncCheckInfo.getServiceCheckInfo().forEach((serviceName, checkInfo) -> {
             String key = ServiceKey.build(namespace, serviceName);
             if (checkInfo.equals(serviceStore.getCheckInfo(key))) {
                 return;
             }
-            serviceSyncUpdater.addTask(sendAddress, key);
+            serviceSyncUpdater.addTask(serverAddress, key);
         });
     }
 
