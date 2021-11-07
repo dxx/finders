@@ -5,6 +5,7 @@ import com.dxx.finders.cluster.ServerNode;
 import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.constant.Paths;
+import com.dxx.finders.constant.Services;
 import com.dxx.finders.executor.GlobalExecutor;
 import com.dxx.finders.misc.AsyncHttpCallback;
 import com.dxx.finders.misc.FindersHttpClient;
@@ -44,7 +45,8 @@ public class SyncManager {
 
         GlobalExecutor.executeServiceSync(serviceSynchronizer);
         GlobalExecutor.executeServiceSyncUpdate(serviceSyncUpdater);
-        GlobalExecutor.scheduleServiceSyncTask(serviceSyncTask, 30000, 5000, TimeUnit.MILLISECONDS);
+        GlobalExecutor.scheduleServiceSyncTask(serviceSyncTask, 30000,
+                Services.SERVICE_SYNC_TASK_PERIOD, TimeUnit.MILLISECONDS);
     }
 
     public void sync(String namespace, String serviceName) {
@@ -54,18 +56,18 @@ public class SyncManager {
         syncData.setServiceName(serviceName);
         syncData.setInstanceList(instanceList);
         String data = JacksonUtils.toJson(syncData);
-        List<ServerNode> serverNodes = serverNodeManager.allNodesWithoutSelf();
+        List<ServerNode> serverNodes = serverNodeManager.upNodesWithoutSelf();
         serverNodes.forEach(serverNode -> serviceSynchronizer.addTask(serverNode.getAddress(), data));
     }
 
-    public void verifyCheckInfo(String sendAddress, SyncCheckInfo syncCheckInfo) {
+    public void verifyCheckInfo(String serverAddress, SyncCheckInfo syncCheckInfo) {
         String namespace = syncCheckInfo.getNamespace();
         syncCheckInfo.getServiceCheckInfo().forEach((serviceName, checkInfo) -> {
             String key = ServiceKey.build(namespace, serviceName);
             if (checkInfo.equals(serviceStore.getCheckInfo(key))) {
                 return;
             }
-            serviceSyncUpdater.addTask(sendAddress, key);
+            serviceSyncUpdater.addTask(serverAddress, key);
         });
     }
 
@@ -90,7 +92,7 @@ public class SyncManager {
             try {
                 taskQueue.put(Pair.with(address, data));
             } catch (InterruptedException e) {
-                Loggers.EVENT.error("[Service Synchronizer] Error while put pair into taskQueue", e);
+                Loggers.EVENT.error("[ServiceSynchronizer] Error while put pair into taskQueue", e);
             }
         }
 
@@ -103,7 +105,7 @@ public class SyncManager {
                     Pair<String, String> pair = taskQueue.take();
                     sync(pair.getValue0(), pair.getValue1());
                 } catch (InterruptedException e) {
-                    Loggers.EVENT.error("[Service Synchronizer] Error while handling service sync task", e);
+                    Loggers.EVENT.error("[ServiceSynchronizer] Error while handling service sync task", e);
                 }
             }
         }
@@ -115,7 +117,7 @@ public class SyncManager {
                     FindersHttpClient.put(String.format("http://%s%s", address, Paths.SERVICE_SYNC), data);
                     break;
                 } catch (Exception e) {
-                    Loggers.EVENT.error("[Service Synchronizer] Sync service data to {} failed, error: {}, retrying again",
+                    Loggers.EVENT.error("[ServiceSynchronizer] Sync service data to {} failed, error: {}, retrying again",
                             address, e.getMessage());
                 }
             }
@@ -127,6 +129,9 @@ public class SyncManager {
         @Override
         public void run() {
             try {
+                if (!DistributionManager.isCluster()) {
+                    return;
+                }
                 List<String> keys = serviceStore.getKeys();
                 Map<String, SyncCheckInfo> syncCheckInfoMap = new HashMap<>();
                 for (String key : keys) {
@@ -142,13 +147,13 @@ public class SyncManager {
                 }
                 syncCheckInfoMap.values().forEach(this::syncCheckInfo);
             } catch (Exception e) {
-                Loggers.EVENT.error("[Service sync Task] Error while handling service sync task", e);
+                Loggers.EVENT.error("[ServiceSyncTask] Error while handling service sync task", e);
             }
         }
 
         public void syncCheckInfo(SyncCheckInfo syncCheckInfo) {
             ServerNode localServerNode = serverNodeManager.selfNode();
-            List<ServerNode> serverNodes = serverNodeManager.allNodesWithoutSelf();
+            List<ServerNode> serverNodes = serverNodeManager.upNodesWithoutSelf();
             Map<String, Object> dataMap = new HashMap<>();
             dataMap.put("sendAddress", localServerNode.getAddress());
             dataMap.put("checkInfo", syncCheckInfo);
@@ -179,7 +184,7 @@ public class SyncManager {
             try {
                 taskQueue.put(Pair.with(address, data));
             } catch (InterruptedException e) {
-                Loggers.EVENT.error("[Service sync updater] Error while put pair into taskQueue", e);
+                Loggers.EVENT.error("[ServiceSyncUpdater] Error while put pair into taskQueue", e);
             }
         }
 
@@ -192,7 +197,7 @@ public class SyncManager {
                     Pair<String, String> pair = taskQueue.take();
                     handle(pair.getValue0(), pair.getValue1());
                 } catch (InterruptedException e) {
-                    Loggers.EVENT.error("[Service sync updater] Error while handling service sync task", e);
+                    Loggers.EVENT.error("[ServiceSyncUpdater] Error while handling service sync task", e);
                 }
             }
         }

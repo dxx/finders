@@ -21,4 +21,10 @@ public class Paths {
 
     public static final String SERVICE_DATA = SERVICE + "/data";
 
+    public static final String SERVER = "/server";
+
+    public static final String SERVER_REPORT = SERVER + "/report";
+
+    public static final String SERVER_HEALTH = SERVER + "/health";
+
 }
