@@ -129,6 +129,9 @@ public class SyncManager {
         @Override
         public void run() {
             try {
+                if (!DistributionManager.isCluster()) {
+                    return;
+                }
                 List<String> keys = serviceStore.getKeys();
                 Map<String, SyncCheckInfo> syncCheckInfoMap = new HashMap<>();
                 for (String key : keys) {
