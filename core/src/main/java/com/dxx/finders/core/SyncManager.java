@@ -5,6 +5,7 @@ import com.dxx.finders.cluster.ServerNode;
 import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.constant.Paths;
+import com.dxx.finders.constant.Services;
 import com.dxx.finders.executor.GlobalExecutor;
 import com.dxx.finders.misc.AsyncHttpCallback;
 import com.dxx.finders.misc.FindersHttpClient;
@@ -44,7 +45,8 @@ public class SyncManager {
 
         GlobalExecutor.executeServiceSync(serviceSynchronizer);
         GlobalExecutor.executeServiceSyncUpdate(serviceSyncUpdater);
-        GlobalExecutor.scheduleServiceSyncTask(serviceSyncTask, 30000, 5000, TimeUnit.MILLISECONDS);
+        GlobalExecutor.scheduleServiceSyncTask(serviceSyncTask, 30000,
+                Services.SERVICE_SYNC_TASK_PERIOD, TimeUnit.MILLISECONDS);
     }
 
     public void sync(String namespace, String serviceName) {

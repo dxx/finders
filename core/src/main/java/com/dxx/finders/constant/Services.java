@@ -33,4 +33,8 @@ public class Services {
 
     public static final long INSTANCE_DELETE_TIMEOUT = TimeUnit.SECONDS.toMillis(20);
 
+    public static final long INSTANCE_HEALTH_CHECK_PERIOD = TimeUnit.SECONDS.toMillis(5);
+
+    public static final long SERVICE_SYNC_TASK_PERIOD = TimeUnit.SECONDS.toMillis(5);
+
 }

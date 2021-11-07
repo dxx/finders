@@ -1,5 +1,6 @@
 package com.dxx.finders.core;
 
+import com.dxx.finders.constant.Services;
 import com.dxx.finders.executor.GlobalExecutor;
 
 import java.util.*;
@@ -86,7 +87,7 @@ public class Service {
 
     private void init() {
         GlobalExecutor.scheduleHealthCheckTask(instanceHealthCheckTask,
-                5000, 5000, TimeUnit.MILLISECONDS);
+                5000, Services.INSTANCE_HEALTH_CHECK_PERIOD, TimeUnit.MILLISECONDS);
     }
 
     public String getNamespace() {
