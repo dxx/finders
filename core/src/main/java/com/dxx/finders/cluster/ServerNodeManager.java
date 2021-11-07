@@ -56,18 +56,19 @@ public class ServerNodeManager {
         return new ArrayList<>(allNodes.values());
     }
 
-    public List<ServerNode> allNodesWithoutSelf() {
-        Map<String, ServerNode> allNodes = new HashMap<>(this.allNodes);
-        allNodes.remove(selfId);
-        return new ArrayList<>(allNodes.values());
-    }
-
     public ServerNode selfNode() {
         return this.allNodes.get(this.selfId);
     }
 
+    public List<ServerNode> upNodesWithoutSelf() {
+        Map<String, ServerNode> allNodes = new HashMap<>(this.allNodes);
+        allNodes.remove(selfId);
+        return allNodes.values().stream().filter(item -> item.getStatus() == ServerStatus.UP)
+                .collect(Collectors.toList());
+    }
+
     public List<String> getUpAddresses() {
-        return upAddresses;
+        return this.upAddresses;
     }
 
     public static ServerNode getLocalNode() {

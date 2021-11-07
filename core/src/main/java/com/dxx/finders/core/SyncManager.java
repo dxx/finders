@@ -56,7 +56,7 @@ public class SyncManager {
         syncData.setServiceName(serviceName);
         syncData.setInstanceList(instanceList);
         String data = JacksonUtils.toJson(syncData);
-        List<ServerNode> serverNodes = serverNodeManager.allNodesWithoutSelf();
+        List<ServerNode> serverNodes = serverNodeManager.upNodesWithoutSelf();
         serverNodes.forEach(serverNode -> serviceSynchronizer.addTask(serverNode.getAddress(), data));
     }
 
@@ -153,7 +153,7 @@ public class SyncManager {
 
         public void syncCheckInfo(SyncCheckInfo syncCheckInfo) {
             ServerNode localServerNode = serverNodeManager.selfNode();
-            List<ServerNode> serverNodes = serverNodeManager.allNodesWithoutSelf();
+            List<ServerNode> serverNodes = serverNodeManager.upNodesWithoutSelf();
             Map<String, Object> dataMap = new HashMap<>();
             dataMap.put("sendAddress", localServerNode.getAddress());
             dataMap.put("checkInfo", syncCheckInfo);

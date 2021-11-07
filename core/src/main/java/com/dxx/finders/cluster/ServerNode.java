@@ -15,6 +15,8 @@ public class ServerNode {
 
     private String address;
 
+    private ServerStatus status;
+
     public static ServerNodeBuilder builder() {
         return new ServerNodeBuilder();
     }
@@ -51,6 +53,14 @@ public class ServerNode {
         this.address = address;
     }
 
+    public ServerStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ServerStatus status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "ServerNode{" +
@@ -58,6 +68,7 @@ public class ServerNode {
                 ", ip='" + ip + '\'' +
                 ", port=" + port +
                 ", address='" + address + '\'' +
+                ", status=" + status +
                 '}';
     }
 
@@ -68,6 +79,8 @@ public class ServerNode {
         private String ip;
 
         private int port;
+
+        private ServerStatus status = ServerStatus.UP;
 
         private ServerNodeBuilder() {}
 
@@ -86,12 +99,18 @@ public class ServerNode {
             return this;
         }
 
+        public ServerNodeBuilder status(ServerStatus status) {
+            this.status = status;
+            return this;
+        }
+
         public ServerNode build() {
             ServerNode serverNode = new ServerNode();
             serverNode.setId(this.id);
             serverNode.setIp(this.ip);
             serverNode.setPort(this.port);
             serverNode.setAddress(this.ip + ":" + this.port);
+            serverNode.setStatus(this.status);
             return serverNode;
         }
     }
