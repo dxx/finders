@@ -30,7 +30,7 @@ public class ServiceHandler {
     }
 
     /**
-     * Service sync.
+     * Service data sync.
      */
     @RequestMapping(path = Paths.SERVICE_SYNC, method = RequestMethod.PUT)
     public void sync(RoutingContext context) {
