@@ -2,10 +2,12 @@ package com.dxx.finders.http;
 
 import com.dxx.finders.cluster.DistributionManager;
 import com.dxx.finders.cluster.ServerNodeManager;
+import com.dxx.finders.cluster.ServerStatusManager;
 import com.dxx.finders.core.ServiceManager;
 import com.dxx.finders.core.SyncManager;
 import com.dxx.finders.exception.FindersRuntimeException;
 import com.dxx.finders.handler.InstanceHandler;
+import com.dxx.finders.handler.ServerHandler;
 import com.dxx.finders.handler.ServiceHandler;
 import com.dxx.finders.http.annotation.RequestMapping;
 import io.vertx.core.Handler;
@@ -50,10 +52,14 @@ public class RouterFunction {
 
         syncManager.init(serviceManager);
 
+        new ServerStatusManager(serverNodeManager);
+
         InstanceHandler instanceHandler = new InstanceHandler(serviceManager);
         ServiceHandler serviceHandler = new ServiceHandler(serviceManager, syncManager);
+        ServerHandler serverHandler = new ServerHandler();
         this.routeIfNecessary(instanceHandler);
         this.routeIfNecessary(serviceHandler);
+        this.routeIfNecessary(serverHandler);
     }
 
     @SuppressWarnings("unchecked")

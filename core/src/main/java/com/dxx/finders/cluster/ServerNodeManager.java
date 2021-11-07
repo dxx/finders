@@ -4,6 +4,7 @@ import com.dxx.finders.config.ClusterConfig;
 import com.dxx.finders.config.ConfigHolder;
 import com.dxx.finders.config.ServerConfig;
 import com.dxx.finders.exception.FindersRuntimeException;
+import com.dxx.finders.notify.Notifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
  *
  * @author dxx
  */
-public class ServerNodeManager {
+public class ServerNodeManager extends ServerChangeSubscriber {
 
     private static final ServerNodeManager INSTANCE = new ServerNodeManager();
 
@@ -49,11 +50,18 @@ public class ServerNodeManager {
                         .map(ServerNode::getAddress).distinct().sorted().collect(Collectors.toList());
             }
         }
+
+        Notifier.registerSubscriber(INSTANCE);
+
         return INSTANCE;
     }
 
+    public ServerNode getNode(String nodeId) {
+        return this.allNodes.get(nodeId);
+    }
+
     public List<ServerNode> allNodes() {
-        return new ArrayList<>(allNodes.values());
+        return new ArrayList<>(this.allNodes.values());
     }
 
     public ServerNode selfNode() {
@@ -92,6 +100,17 @@ public class ServerNodeManager {
             return ServerNode.builder().id(nodeInfo[0]).ip(address).port(port).build();
         }
         throw new FindersRuntimeException(String.format("The cluster node format (%s) is incorrect", node));
+    }
+
+    @Override
+    public void onEvent(ServerChangeEvent event) {
+        String[] address = event.getAddress().split(":");
+        ServerNode serverNode = ServerNode.builder().id(event.getId())
+                .ip(address[0]).port(Integer.parseInt(address[1])).status(event.getStatus()).build();
+        this.allNodes.put(serverNode.getId(), serverNode);
+
+        this.upAddresses = this.allNodes.values().stream().filter(item -> item.getStatus() == ServerStatus.UP)
+                .map(ServerNode::getAddress).distinct().sorted().collect(Collectors.toList());
     }
 
 }

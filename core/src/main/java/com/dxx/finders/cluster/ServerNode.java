@@ -62,6 +62,18 @@ public class ServerNode {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        ServerNode target = (ServerNode) obj;
+        return this.id.equals(target.getId()) &&
+                this.ip.equals(target.getIp()) &&
+                this.port == target.getPort() &&
+                this.status == target.getStatus();
+    }
+
+    @Override
     public String toString() {
         return "ServerNode{" +
                 "id='" + id + '\'' +
