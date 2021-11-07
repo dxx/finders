@@ -27,9 +27,6 @@ public class InstanceHeartbeatHandler implements Runnable {
         String ip = instance.getIp();
         int port = instance.getPort();
         for (Instance instance: instances) {
-            if (instance.getStatus() == InstanceStatus.DISABLE) {
-                return;
-            }
             if (ip.equals(instance.getIp()) && instance.getPort() == port) {
                 instance.setLastBeatTimestamp(System.currentTimeMillis());
                 instance.setStatus(InstanceStatus.HEALTHY);
