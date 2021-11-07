@@ -92,7 +92,7 @@ public class SyncManager {
             try {
                 taskQueue.put(Pair.with(address, data));
             } catch (InterruptedException e) {
-                Loggers.EVENT.error("[Service Synchronizer] Error while put pair into taskQueue", e);
+                Loggers.EVENT.error("[ServiceSynchronizer] Error while put pair into taskQueue", e);
             }
         }
 
@@ -105,7 +105,7 @@ public class SyncManager {
                     Pair<String, String> pair = taskQueue.take();
                     sync(pair.getValue0(), pair.getValue1());
                 } catch (InterruptedException e) {
-                    Loggers.EVENT.error("[Service Synchronizer] Error while handling service sync task", e);
+                    Loggers.EVENT.error("[ServiceSynchronizer] Error while handling service sync task", e);
                 }
             }
         }
@@ -117,7 +117,7 @@ public class SyncManager {
                     FindersHttpClient.put(String.format("http://%s%s", address, Paths.SERVICE_SYNC), data);
                     break;
                 } catch (Exception e) {
-                    Loggers.EVENT.error("[Service Synchronizer] Sync service data to {} failed, error: {}, retrying again",
+                    Loggers.EVENT.error("[ServiceSynchronizer] Sync service data to {} failed, error: {}, retrying again",
                             address, e.getMessage());
                 }
             }
@@ -147,7 +147,7 @@ public class SyncManager {
                 }
                 syncCheckInfoMap.values().forEach(this::syncCheckInfo);
             } catch (Exception e) {
-                Loggers.EVENT.error("[Service sync Task] Error while handling service sync task", e);
+                Loggers.EVENT.error("[ServiceSyncTask] Error while handling service sync task", e);
             }
         }
 
@@ -184,7 +184,7 @@ public class SyncManager {
             try {
                 taskQueue.put(Pair.with(address, data));
             } catch (InterruptedException e) {
-                Loggers.EVENT.error("[Service sync updater] Error while put pair into taskQueue", e);
+                Loggers.EVENT.error("[ServiceSyncUpdater] Error while put pair into taskQueue", e);
             }
         }
 
@@ -197,7 +197,7 @@ public class SyncManager {
                     Pair<String, String> pair = taskQueue.take();
                     handle(pair.getValue0(), pair.getValue1());
                 } catch (InterruptedException e) {
-                    Loggers.EVENT.error("[Service sync updater] Error while handling service sync task", e);
+                    Loggers.EVENT.error("[ServiceSyncUpdater] Error while handling service sync task", e);
                 }
             }
         }
