@@ -30,7 +30,7 @@ public class InstanceHeartbeatHandler implements Runnable {
             if (ip.equals(instance.getIp()) && instance.getPort() == port) {
                 instance.setLastBeatTimestamp(System.currentTimeMillis());
                 instance.setStatus(InstanceStatus.HEALTHY);
-                Loggers.EVENT.info("Service {} is healthy, health check ok", service.getServiceName());
+                Loggers.EVENT.info("Service {} is healthy", service.getServiceName());
             }
         }
     }
