@@ -51,7 +51,7 @@ Run the following command to start:
 startup.bat
 ```
 
-Or click the `startup.bat` file.
+Or double click the `startup.bat` file.
 
 ### Shutdown Server
 
@@ -67,7 +67,7 @@ Or click the `startup.bat` file.
 shutdown.bat
 ```
 
-Or click the `shutdown.bat` file.
+Or double click the `shutdown.bat` file.
 
 > Note: if the `shutdown.bat` file is not found, please build again.
 
