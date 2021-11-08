@@ -128,12 +128,6 @@ public class InstanceHandler {
 
         Instance paramInstance = createInstance(jsonNode.toString());
 
-        Instance instance = serviceManager.getInstance(namespace, paramInstance.getServiceName(),
-                paramInstance.getCluster(), paramInstance.getIp(), paramInstance.getPort());
-
-        if (instance == null) {
-            serviceManager.registerInstance(namespace, paramInstance.getServiceName(), paramInstance);
-        }
         serviceManager.handleInstanceHeartbeat(namespace, paramInstance.getServiceName(),
                 paramInstance.getCluster(), paramInstance.getIp(), paramInstance.getPort());
 

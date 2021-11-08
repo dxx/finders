@@ -81,10 +81,11 @@ public class ServiceManager {
     }
 
     public void handleInstanceHeartbeat(String namespace, String serviceName, String cluster, String ip, int port) {
-        Service service = getService(namespace, serviceName);
-        if (service == null) {
+        Instance instance = getInstance(namespace, serviceName, cluster, ip, port);
+        if (instance == null) {
             return;
         }
+        Service service = getService(namespace, serviceName);
         service.handleHeartbeat(cluster, ip, port);
     }
 
