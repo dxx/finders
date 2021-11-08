@@ -39,7 +39,7 @@ cd finders/bin
 
 #### Linux/Unix/Mac
 
-运行以下命令用来启动：
+运行以下命令来启动：
 
 ```shell
 ./startup
@@ -47,7 +47,7 @@ cd finders/bin
 
 #### Windows
 
-运行以下命令用来启动：
+运行以下命令来启动：
 
 ```shell
 startup.bat
