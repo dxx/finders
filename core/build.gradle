@@ -6,7 +6,7 @@ group 'com.dxx.finders'
 version '0.1.0'
 
 java {
-    archivesBaseName = 'finders-core'
+    archivesBaseName = 'finders-server'
 }
 
 dependencies {
