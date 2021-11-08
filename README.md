@@ -21,7 +21,7 @@ cd finders
 ./gradlew -p ./distribution build
 ```
 
-The binary package is then generated in the `./build/distributions` directory. Go in and you can see that there are two compressed package files,  `.zip` or `.tar`.
+The binary package is then generated in the `./build/distributions` directory. Go in and you can see that there are two compressed package files,  `.zip` and `.tar` file.
 
 Decompression zip file:
 
