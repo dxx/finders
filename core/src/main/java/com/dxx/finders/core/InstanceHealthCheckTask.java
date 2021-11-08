@@ -35,7 +35,7 @@ public class InstanceHealthCheckTask implements Runnable {
                 for (Instance instance : instances) {
                     if (instance.getStatus() == InstanceStatus.HEALTHY) {
                         if (System.currentTimeMillis() - instance.getLastBeatTimestamp() > Services.INSTANCE_HEARTBEAT_TIMEOUT) {
-                            Loggers.EVENT.info("Service {} is unhealthy, health check timeout after {} ms, last beat: {}",
+                            Loggers.EVENT.info("Service {} is unhealthy, health check timeout after {}ms, last beat: {}",
                                     instance.getServiceName(), Services.INSTANCE_HEARTBEAT_TIMEOUT, instance.getLastBeatTimestamp());
                             instance.setStatus(InstanceStatus.UN_HEALTHY);
                         }
