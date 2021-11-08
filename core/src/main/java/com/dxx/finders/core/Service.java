@@ -71,6 +71,24 @@ public class Service {
                 .filter(in -> in.getStatus() != InstanceStatus.DISABLE).collect(Collectors.toList());
     }
 
+    public Instance getInstance(String cluster, String ip, int port, boolean disabled) {
+        List<Instance> instances;
+        if (disabled) {
+            instances = getAllInstance(Collections.singletonList(cluster));;
+        } else {
+            instances = getInstances(Collections.singletonList(cluster));
+        }
+
+        if (instances.size() > 0) {
+            Optional<Instance> optionalInstance = instances.stream().filter(item ->
+                    ip.equals(item.getIp()) && port == item.getPort()).findFirst();
+            if (optionalInstance.isPresent()) {
+                return optionalInstance.get();
+            }
+        }
+        return null;
+    }
+
     public void handleHeartbeat(String cluster, String ip, int port) {
         Instance instance = new Instance();
         instance.setCluster(cluster);

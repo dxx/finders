@@ -59,17 +59,7 @@ public class ServiceManager {
         if (service == null) {
             return null;
         }
-
-        List<Instance> instances = service.getInstances(Collections.singletonList(cluster));
-        if (instances.size() > 0) {
-            Optional<Instance> optionalInstance = instances.stream().filter(item ->
-                    ip.equals(item.getIp()) && port == item.getPort()).findFirst();
-            if (optionalInstance.isPresent()) {
-                return optionalInstance.get();
-            }
-        }
-
-        return null;
+        return service.getInstance(cluster, ip, port, false);
     }
 
     public Service getService(String namespace, String serviceName) {
@@ -81,11 +71,14 @@ public class ServiceManager {
     }
 
     public void handleInstanceHeartbeat(String namespace, String serviceName, String cluster, String ip, int port) {
-        Instance instance = getInstance(namespace, serviceName, cluster, ip, port);
+        Service service = getService(namespace, serviceName);
+        if (service == null) {
+            return;
+        }
+        Instance instance = service.getInstance(cluster, ip, port, false);
         if (instance == null) {
             return;
         }
-        Service service = getService(namespace, serviceName);
         service.handleHeartbeat(cluster, ip, port);
     }
 
@@ -94,8 +87,8 @@ public class ServiceManager {
         if (service == null) {
             return;
         }
-        Instance existentInstance = getInstance(namespace, serviceName,
-                instance.getCluster(), instance.getIp(), instance.getPort());
+        Instance existentInstance = service.getInstance(instance.getCluster(),
+                instance.getIp(), instance.getPort(), true);
         if (existentInstance != null) {
             Instance newInstance = new Instance();
             newInstance.setInstanceId(existentInstance.getInstanceId());
