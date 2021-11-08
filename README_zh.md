@@ -4,6 +4,8 @@
 
 分布式服务管理。灵感来自于 [Nacos](https://github.com/alibaba/nacos)。
 
+[English](./README.md)
+
 ## 快速开始
 
 从源代码构建。该构建需要 `java8`。
