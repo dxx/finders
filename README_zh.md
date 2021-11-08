@@ -25,7 +25,7 @@ cd finders
 
 然后在 `./build/distributions` 目录中生成二进制包。进入后，可以看到有两个压缩包文件，`.zip` 和 `.tar` 文件。
 
-减压压缩文件：
+解压压缩文件：
 
 ```shell
 unzip finders-<version>.zip
