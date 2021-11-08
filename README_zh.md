@@ -2,7 +2,7 @@
 
 [![Apache-2.0 licensed](https://img.shields.io/github/license/dxx/finders.svg?color=blue)](./LICENSE)
 
-分布式服务管理。灵感来自于 [Nacos](https://github.com/alibaba/nacos)。
+分布式服务管理。灵感来自于 [Nacos](https://github.com/alibaba/nacos) 。
 
 [English](./README.md)
 
@@ -23,7 +23,7 @@ cd finders
 ./gradlew -p ./distribution build
 ```
 
-然后在 `./build/distributions` 目录中生成二进制包。进入后，可以看到有两个压缩包文件，`.zip` 和 `.tar` 文件。
+然后在 `./distribution/build/distributions` 目录中生成二进制包。进入后，可以看到有两个压缩包文件，`.zip` 和 `.tar` 文件。
 
 解压压缩文件：
 
