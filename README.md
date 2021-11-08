@@ -12,12 +12,12 @@ Build from source code. The build requires `java8`.
 
 ```shell
 git clone https://github.com/dxx/finders.git
+cd finders
 ```
 
 ### Build Binary Package
 
 ```shell
-cd finders
 ./gradlew -p ./distribution build
 ```
 
