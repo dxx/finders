@@ -28,8 +28,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class FindersHttpClient {
 
-    private static final Vertx vertx = Vertx.vertx();
-
     private static final int CONNECT_TIMEOUT = 5000;
 
     private static final int RESPONSE_TIMEOUT = 10000;
@@ -40,13 +38,17 @@ public class FindersHttpClient {
 
     private static final int POOL_CLEANER_PERIOD = 120000;
 
-    private static final WebClientOptions CLIENT_OPTIONS = new WebClientOptions();
+    private static final Vertx vertx = Vertx.vertx();
+
+    private static final WebClient WEB_CLIENT;
 
     static {
+        WebClientOptions CLIENT_OPTIONS = new WebClientOptions();
         CLIENT_OPTIONS.setConnectTimeout(CONNECT_TIMEOUT)
                 .setIdleTimeout(IDLE_TIME)
                 .setMaxPoolSize(POOl_SIZE)
                 .setPoolCleanerPeriod(POOL_CLEANER_PERIOD);
+        WEB_CLIENT = WebClient.create(vertx, CLIENT_OPTIONS);
     }
 
     public static String get(String url, Map<String, String> queryParams) {
@@ -87,10 +89,9 @@ public class FindersHttpClient {
     }
 
     public static String request(String url, HttpMethod method, String body) {
-        WebClient webClient = WebClient.create(vertx, CLIENT_OPTIONS);
         CountDownLatch countDownLatch = new CountDownLatch(1);
         AtomicReference<String> reference = new AtomicReference<>();
-        HttpRequest<Buffer> request = webClient.requestAbs(method, url).timeout(RESPONSE_TIMEOUT);
+        HttpRequest<Buffer> request = WEB_CLIENT.requestAbs(method, url).timeout(RESPONSE_TIMEOUT);
         Future<HttpResponse<Buffer>> future;
         if (StringUtils.isNotEmpty(body)) {
             future = request.sendBuffer(Buffer.buffer(body));
@@ -141,8 +142,7 @@ public class FindersHttpClient {
     }
 
     public static void asyncRequest(String url, HttpMethod method, String body, AsyncHttpCallback<String> callback) {
-        WebClient webClient = WebClient.create(vertx, CLIENT_OPTIONS);
-        HttpRequest<Buffer> request = webClient.requestAbs(method, url).timeout(RESPONSE_TIMEOUT);
+        HttpRequest<Buffer> request = WEB_CLIENT.requestAbs(method, url).timeout(RESPONSE_TIMEOUT);
         Future<HttpResponse<Buffer>> future;
         if (StringUtils.isNotEmpty(body)) {
             future = request.sendBuffer(Buffer.buffer(body));
