@@ -17,7 +17,7 @@ import io.vertx.ext.web.handler.LoggerHandler;
 
 import java.io.File;
 
-public class FindersApp {
+public class FindersServer {
 
     /**
      * Run the server.
@@ -47,10 +47,10 @@ public class FindersApp {
 
         httpServer.listen(serverConfig.getPort(), http -> {
             if (http.succeeded()) {
-                Loggers.CORE.info("HTTP server started on port: {}", http.result().actualPort());
+                Loggers.CORE.info("Finders server started on port: {}", http.result().actualPort());
                 return;
             }
-            Loggers.CORE.error("HTTP server startup error", http.cause());
+            Loggers.CORE.error("Finders server startup error", http.cause());
         });
     }
 

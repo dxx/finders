@@ -6,7 +6,7 @@ package com.dxx.finders;
 public class Starter {
 
     public static void main(String[] args) {
-        FindersApp.run();
+        FindersServer.run();
     }
 
 }
