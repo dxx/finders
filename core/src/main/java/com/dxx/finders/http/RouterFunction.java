@@ -107,6 +107,8 @@ public class RouterFunction {
             case DELETE:
                 this.router.delete(path).handler(routeHandler);
                 break;
+            default:
+                throw new FindersRuntimeException("Unsupported request method " + method);
         }
     }
 }
