@@ -1,11 +1,11 @@
 import groovy.text.SimpleTemplateEngine
 
 plugins {
-    id 'java'
     id 'application'
 }
 
-group 'com.dxx.finders'
+description = "Finders Distribution"
+
 version '0.1.0'
 
 java {
