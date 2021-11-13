@@ -25,6 +25,7 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Instance handler.
@@ -50,8 +51,9 @@ public class InstanceHandler {
         String namespace = ParamUtils.optional(request, Services.PARAM_NAMESPACE, Services.DEFAULT_NAMESPACE);
         String serviceName = ParamUtils.required(request, Services.PARAM_SERVICE_NAME);
         String clusters = ParamUtils.optional(request, "clusters", "");
+        String healthy = ParamUtils.optional(request, "healthy", "");
 
-        ObjectNode node = doList(namespace, clusters, serviceName);
+        ObjectNode node = doList(namespace, clusters, serviceName, healthy);
 
         response.putHeader(HttpHeaderNames.CONTENT_TYPE,HttpHeaderValues.APPLICATION_JSON + ";charset=UTF-8");
         response.end(JacksonUtils.toJson(node));
@@ -194,7 +196,7 @@ public class InstanceHandler {
         return instance;
     }
 
-    private ObjectNode doList(String namespace, String clusters, String serviceName) {
+    private ObjectNode doList(String namespace, String clusters, String serviceName, String healthy) {
         List<String> clusterNames = new ArrayList<>();
         if (StringUtils.isNotEmpty(clusters)) {
             clusterNames = Arrays.asList(clusters.split(","));
@@ -210,18 +212,26 @@ public class InstanceHandler {
         objectNode.set("instances", instanceArrayNode);
 
         if (service == null) {
-            clusterNames.forEach(clusterArrayNode::add);
             return objectNode;
         }
 
         List<Instance> instances;
         if (clusterNames.size() > 0) {
-            clusterNames.forEach(clusterArrayNode::add);
             instances = service.getInstances(clusterNames);
         } else {
             instances = service.getInstances();
-            instances.stream().map(Instance::getCluster).distinct().forEach(clusterArrayNode::add);
         }
+        if (StringUtils.isNotEmpty(healthy)) {
+            boolean isHealthy = Boolean.parseBoolean(healthy);
+            if (isHealthy) {
+                instances = instances.stream().filter(item ->
+                        item.getStatus() == InstanceStatus.HEALTHY).collect(Collectors.toList());
+            } else {
+                instances = instances.stream().filter(item ->
+                        item.getStatus() == InstanceStatus.UN_HEALTHY).collect(Collectors.toList());
+            }
+        }
+        instances.stream().map(Instance::getCluster).distinct().forEach(clusterArrayNode::add);
 
         instances.forEach(instanceArrayNode::addPOJO);
 
