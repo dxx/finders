@@ -61,7 +61,7 @@ public class Environment {
     private static void intiConfig() {
         String config = String.format("%s%s%s", CONF_DIR, File.separator, EnvConst.CONFIG_FILE_NAME);
         if (logger.isDebugEnabled()) {
-            logger.debug("Initialize configuration using the file {}", config);
+            logger.debug("Initialize configuration use the file {}", config);
         }
         try {
             JsonNode jsonNode = TomlMapper.builder().build().readTree(new File(config));

@@ -59,7 +59,7 @@ public class ServiceManager {
         if (service == null) {
             return null;
         }
-        return service.getInstance(cluster, ip, port, false);
+        return service.getInstance(cluster, ip, port, true);
     }
 
     public Service getService(String namespace, String serviceName) {
