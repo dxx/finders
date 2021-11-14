@@ -217,9 +217,9 @@ public class InstanceHandler {
 
         List<Instance> instances;
         if (clusterNames.size() > 0) {
-            instances = service.getInstances(clusterNames);
+            instances = service.getAllInstance(clusterNames);
         } else {
-            instances = service.getInstances();
+            instances = service.getAllInstance();
         }
         if (StringUtils.isNotEmpty(healthy)) {
             boolean isHealthy = Boolean.parseBoolean(healthy);
