@@ -41,22 +41,22 @@ public class FindersHttpClient {
     }
 
     public static String get(String url, Map<String, String> header) {
-        return request(url, "GET", null, header);
+        return request(url, HttpMethod.GET, null, header);
     }
 
     public static String post(String url, String body, Map<String, String> header) {
-        return request(url, "POST", body, header);
+        return request(url, HttpMethod.POST, body, header);
     }
 
     public static String put(String url, String body, Map<String, String> header) {
-        return request(url, "PUT", body, header);
+        return request(url, HttpMethod.PUT, body, header);
     }
 
     public static String delete(String url, String body, Map<String, String> header) {
-        return request(url, "DELETE", body, header);
+        return request(url, HttpMethod.DELETE, body, header);
     }
 
-    public static String request(String url, String method, String body, Map<String, String> header) {
+    public static String request(String url, HttpMethod method, String body, Map<String, String> header) {
         Request.Builder builder = new Request.Builder().url(url);
         if (header != null) {
             Headers.Builder headerBuilder = new Headers.Builder();
@@ -66,13 +66,13 @@ public class FindersHttpClient {
         if (body != null && !body.equals("")) {
             RequestBody requestBody = RequestBody.create(MediaType.get("application/json; charset=utf-8"), body);
             switch (method) {
-                case "POST":
+                case POST:
                     builder = builder.post(requestBody);
                     break;
-                case "PUT":
+                case PUT:
                     builder = builder.put(requestBody);
                     break;
-                case "DELETE":
+                case DELETE:
                     builder = builder.delete(requestBody);
                     break;
                 default:
