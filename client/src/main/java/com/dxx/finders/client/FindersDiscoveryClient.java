@@ -23,7 +23,7 @@ public class FindersDiscoveryClient implements FindersClient {
 
     private String serverList;
 
-    private FindersClientProxy proxy;
+    private FindersClientProxy clientProxy;
 
     public FindersDiscoveryClient(String serverList, String namespace,
                                   LoadBalancerType loadBalancerType) {
@@ -50,7 +50,7 @@ public class FindersDiscoveryClient implements FindersClient {
             default:
                 throw new FindersRuntimeException("loadBalancerType is incorrect");
         }
-        this.proxy = new FindersClientProxy(namespace, loadBalancer);
+        this.clientProxy = new FindersClientProxy(namespace, loadBalancer);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public List<Instance> getAllInstances(String serviceName, List<String> clusters) {
-        return proxy.getAllInstances(serviceName, clusters);
+        return clientProxy.getAllInstances(serviceName, clusters);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public List<Instance> getInstances(String serviceName, List<String> clusters, boolean healthy) {
-        return proxy.getInstances(serviceName, clusters, healthy);
+        return clientProxy.getInstances(serviceName, clusters, healthy);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public Instance getInstance(String serviceName, String ip, int port, String cluster) {
-        return proxy.getInstance(serviceName, ip, port, cluster);
+        return clientProxy.getInstance(serviceName, ip, port, cluster);
     }
 
     @Override
@@ -100,12 +100,12 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public void registerInstance(String serviceName, String ip, int port, String cluster) {
-        proxy.registerInstance(serviceName, ip, port, cluster);
+        clientProxy.registerInstance(serviceName, ip, port, cluster);
     }
 
     @Override
     public void registerInstance(Instance instance) {
-        proxy.registerInstance(instance);
+        clientProxy.registerInstance(instance);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public void deregisterInstance(String serviceName, String ip, int port, String cluster) {
-        proxy.deregisterInstance(serviceName, ip, port, cluster);
+        clientProxy.deregisterInstance(serviceName, ip, port, cluster);
     }
 
 }
