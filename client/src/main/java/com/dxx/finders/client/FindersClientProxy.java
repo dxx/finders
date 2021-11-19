@@ -1,6 +1,7 @@
 package com.dxx.finders.client;
 
 import com.dxx.finders.client.constant.Paths;
+import com.dxx.finders.client.constant.Services;
 import com.dxx.finders.client.http.FindersHttpClient;
 import com.dxx.finders.client.loadbalance.LoadBalancer;
 import com.dxx.finders.client.util.JacksonUtils;
@@ -57,9 +58,9 @@ public class FindersClientProxy {
 
     public void registerInstance(String serviceName, String ip, int port, String cluster) {
         ObjectNode objectNode = JacksonUtils.createObjectNode();
-        objectNode.put("namespace", this.namespace);
-        objectNode.put("cluster", cluster);
-        objectNode.put("serviceName", serviceName);
+        objectNode.put(Services.NAMESPACE, this.namespace);
+        objectNode.put(Services.CLUSTER, cluster);
+        objectNode.put(Services.SERVICE_NAME, serviceName);
         objectNode.put("ip", ip);
         objectNode.put("port", port);
 
@@ -72,9 +73,9 @@ public class FindersClientProxy {
 
     public void deregisterInstance(String serviceName, String ip, int port, String cluster) {
         ObjectNode objectNode = JacksonUtils.createObjectNode();
-        objectNode.put("namespace", this.namespace);
-        objectNode.put("cluster", cluster);
-        objectNode.put("serviceName", serviceName);
+        objectNode.put(Services.NAMESPACE, this.namespace);
+        objectNode.put(Services.CLUSTER, cluster);
+        objectNode.put(Services.SERVICE_NAME, serviceName);
         objectNode.put("ip", ip);
         objectNode.put("port", port);
 
