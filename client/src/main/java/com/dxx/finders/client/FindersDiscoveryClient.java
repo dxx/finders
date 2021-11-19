@@ -5,6 +5,7 @@ import com.dxx.finders.client.loadbalance.LoadBalancer;
 import com.dxx.finders.client.loadbalance.LoadBalancerType;
 import com.dxx.finders.client.loadbalance.RandomBalancer;
 import com.dxx.finders.client.loadbalance.RoundBalancer;
+import com.dxx.finders.client.model.Instance;
 
 import java.util.Arrays;
 import java.util.Collections;

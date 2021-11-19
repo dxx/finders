@@ -1,5 +1,7 @@
 package com.dxx.finders.client;
 
+import com.dxx.finders.client.model.Instance;
+
 import java.util.List;
 
 /**

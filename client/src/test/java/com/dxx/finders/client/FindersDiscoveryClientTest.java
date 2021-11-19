@@ -2,6 +2,7 @@ package com.dxx.finders.client;
 
 import com.dxx.finders.client.constant.Services;
 import com.dxx.finders.client.loadbalance.LoadBalancerType;
+import com.dxx.finders.client.model.Instance;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

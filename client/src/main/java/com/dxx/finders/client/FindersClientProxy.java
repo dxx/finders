@@ -5,6 +5,8 @@ import com.dxx.finders.client.constant.Services;
 import com.dxx.finders.client.http.FindersHttpClient;
 import com.dxx.finders.client.http.HttpMethod;
 import com.dxx.finders.client.loadbalance.LoadBalancer;
+import com.dxx.finders.client.model.Instance;
+import com.dxx.finders.client.model.ServiceInfo;
 import com.dxx.finders.client.util.JacksonUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
