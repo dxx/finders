@@ -1,7 +1,9 @@
 package com.dxx.finders.client;
 
 import com.dxx.finders.client.constant.Paths;
+import com.dxx.finders.client.constant.Services;
 import com.dxx.finders.client.http.FindersHttpClient;
+import com.dxx.finders.client.http.HttpMethod;
 import com.dxx.finders.client.loadbalance.LoadBalancer;
 import com.dxx.finders.client.util.JacksonUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -34,7 +36,7 @@ public class FindersClientProxy {
         String clusterStr = String.join(",", clusters.toArray(new String[0]));
         String path = String.format("%s?namespace=%s&clusters=%s&serviceName=%s",
                 Paths.INSTANCE_LIST, this.namespace, clusterStr, serviceName);
-        String result = req(path, "GET", null);
+        String result = req(path, HttpMethod.GET, null);
         ServiceInfo serviceInfo = JacksonUtils.toObject(result, ServiceInfo.class);
         return serviceInfo.getInstances();
     }
@@ -43,7 +45,7 @@ public class FindersClientProxy {
         String clusterStr = String.join(",", clusters.toArray(new String[0]));
         String path = String.format("%s?namespace=%s&clusters=%s&serviceName=%s&healthy=%s",
                 Paths.INSTANCE_LIST, this.namespace, clusterStr, serviceName, healthy);
-        String result = req(path, "GET", null);
+        String result = req(path, HttpMethod.GET, null);
         ServiceInfo serviceInfo = JacksonUtils.toObject(result, ServiceInfo.class);
         return serviceInfo.getInstances();
     }
@@ -51,37 +53,37 @@ public class FindersClientProxy {
     public Instance getInstance(String serviceName, String ip, int port, String cluster) {
         String path = String.format("%s?namespace=%s&cluster=%s&serviceName=%s&ip=%s&port=%s",
                 Paths.INSTANCE, this.namespace, cluster, serviceName, ip, port);
-        String result = req(path, "GET", null);
+        String result = req(path, HttpMethod.GET, null);
         return JacksonUtils.toObject(result, Instance.class);
     }
 
     public void registerInstance(String serviceName, String ip, int port, String cluster) {
         ObjectNode objectNode = JacksonUtils.createObjectNode();
-        objectNode.put("namespace", this.namespace);
-        objectNode.put("cluster", cluster);
-        objectNode.put("serviceName", serviceName);
+        objectNode.put(Services.NAMESPACE, this.namespace);
+        objectNode.put(Services.CLUSTER, cluster);
+        objectNode.put(Services.SERVICE_NAME, serviceName);
         objectNode.put("ip", ip);
         objectNode.put("port", port);
 
-        req(Paths.INSTANCE, "POST", objectNode.toString());
+        req(Paths.INSTANCE, HttpMethod.POST, objectNode.toString());
     }
 
-    public void registerInstance(String serviceName, Instance instance) {
-        req(Paths.INSTANCE, "POST", JacksonUtils.toJson(instance));
+    public void registerInstance(Instance instance) {
+        req(Paths.INSTANCE, HttpMethod.POST, JacksonUtils.toJson(instance));
     }
 
     public void deregisterInstance(String serviceName, String ip, int port, String cluster) {
         ObjectNode objectNode = JacksonUtils.createObjectNode();
-        objectNode.put("namespace", this.namespace);
-        objectNode.put("cluster", cluster);
-        objectNode.put("serviceName", serviceName);
+        objectNode.put(Services.NAMESPACE, this.namespace);
+        objectNode.put(Services.CLUSTER, cluster);
+        objectNode.put(Services.SERVICE_NAME, serviceName);
         objectNode.put("ip", ip);
         objectNode.put("port", port);
 
-        req(Paths.INSTANCE, "DELETE", objectNode.toString());
+        req(Paths.INSTANCE, HttpMethod.DELETE, objectNode.toString());
     }
 
-    private String req(String path, String method, String body) {
+    private String req(String path, HttpMethod method, String body) {
         String server = loadBalancer.chooseServer();
         for (int i = 0; i < RETRY_COUNT; i++) {
             try {

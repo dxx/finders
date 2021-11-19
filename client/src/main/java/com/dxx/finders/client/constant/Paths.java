@@ -2,6 +2,8 @@ package com.dxx.finders.client.constant;
 
 /**
  * Path for finders api.
+ *
+ * @author dxx
  */
 public class Paths {
 

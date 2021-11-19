@@ -102,10 +102,9 @@ public interface FindersClient {
 
     /**
      * Register an instance of service with specified instance properties.
-     * @param serviceName name of service
-     * @param instance    instance to register
+     * @param instance instance to register
      */
-    void registerInstance(String serviceName, Instance instance);
+    void registerInstance(Instance instance);
 
     /**
      * Deregister an instance of service.
