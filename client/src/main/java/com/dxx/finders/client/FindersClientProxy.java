@@ -67,7 +67,7 @@ public class FindersClientProxy {
         req(Paths.INSTANCE, "POST", objectNode.toString());
     }
 
-    public void registerInstance(String serviceName, Instance instance) {
+    public void registerInstance(Instance instance) {
         req(Paths.INSTANCE, "POST", JacksonUtils.toJson(instance));
     }
 

@@ -103,8 +103,8 @@ public class FindersDiscoveryClient implements FindersClient {
     }
 
     @Override
-    public void registerInstance(String serviceName, Instance instance) {
-        proxy.registerInstance(serviceName, instance);
+    public void registerInstance(Instance instance) {
+        proxy.registerInstance(instance);
     }
 
     @Override
