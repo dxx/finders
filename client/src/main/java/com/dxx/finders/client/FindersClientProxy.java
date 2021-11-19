@@ -5,6 +5,7 @@ import com.dxx.finders.client.constant.Services;
 import com.dxx.finders.client.http.FindersHttpClient;
 import com.dxx.finders.client.http.HttpMethod;
 import com.dxx.finders.client.loadbalance.LoadBalancer;
+import com.dxx.finders.client.model.Heartbeat;
 import com.dxx.finders.client.model.Instance;
 import com.dxx.finders.client.model.ServiceInfo;
 import com.dxx.finders.client.util.JacksonUtils;
@@ -83,6 +84,16 @@ public class FindersClientProxy {
         objectNode.put("port", port);
 
         req(Paths.INSTANCE, HttpMethod.DELETE, objectNode.toString());
+    }
+
+    public void sendHeartbeat(Heartbeat heartbeat) {
+        ObjectNode objectNode = JacksonUtils.createObjectNode();
+        objectNode.put(Services.NAMESPACE, this.namespace);
+        objectNode.put(Services.CLUSTER, heartbeat.getCluster());
+        objectNode.put(Services.SERVICE_NAME, heartbeat.getServiceName());
+        objectNode.put("ip", heartbeat.getIp());
+        objectNode.put("port", heartbeat.getPort());
+        req(Paths.INSTANCE_BEAT, HttpMethod.PUT, objectNode.toString());
     }
 
     private String req(String path, HttpMethod method, String body) {
