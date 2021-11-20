@@ -27,11 +27,10 @@ public class HeartbeatReactor {
 
     private final Map<String, Heartbeat> heartbeatMap = new HashMap<>();
 
-    public HeartbeatReactor(FindersClientProxy clientProxy) {
-        this(clientProxy, ThreadUtils.DEFAULT_HEARTBEAT_THREAD);
-    }
-
     public HeartbeatReactor(FindersClientProxy clientProxy, int heartbeatThreads) {
+        if (heartbeatThreads <= 0) {
+            heartbeatThreads = ThreadUtils.DEFAULT_HEARTBEAT_THREAD;
+        }
         this.clientProxy = clientProxy;
         this.executorService = Executors.newScheduledThreadPool(heartbeatThreads,
                 ThreadUtils.newNamedThreadFactory("HeartbeatTask"));

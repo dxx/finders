@@ -24,15 +24,16 @@ public class FindersClientProxy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FindersClientProxy.class);
 
-    private final int RETRY_COUNT = 3;
+    private final int retryCount;
 
     private final String namespace;
 
     private final LoadBalancer loadBalancer;
 
-    public FindersClientProxy(String namespace, LoadBalancer loadBalancer) {
+    public FindersClientProxy(String namespace, LoadBalancer loadBalancer, int maxRetry) {
         this.namespace = namespace;
         this.loadBalancer = loadBalancer;
+        this.retryCount = maxRetry;
     }
 
     public List<Instance> getAllInstances(String serviceName, List<String> clusters) {
@@ -98,7 +99,7 @@ public class FindersClientProxy {
 
     private String req(String path, HttpMethod method, String body) {
         String server = loadBalancer.chooseServer();
-        for (int i = 0; i < RETRY_COUNT; i++) {
+        for (int i = 0; i <= retryCount; i++) {
             try {
                 String url = String.format("http://%s%s", server, path);
                 return FindersHttpClient.request(url, method, body, null);
