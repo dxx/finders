@@ -5,6 +5,9 @@ import com.dxx.finders.client.loadbalance.LoadBalancer;
 import com.dxx.finders.client.loadbalance.LoadBalancerType;
 import com.dxx.finders.client.loadbalance.RandomBalancer;
 import com.dxx.finders.client.loadbalance.RoundBalancer;
+import com.dxx.finders.client.model.Heartbeat;
+import com.dxx.finders.client.model.Instance;
+import com.dxx.finders.client.reactor.HeartbeatReactor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,21 +23,34 @@ public class FindersDiscoveryClient implements FindersClient {
 
     private String namespace;
 
-    private String serverList;
+    private FindersClientConfig config;
 
-    private FindersClientProxy proxy;
+    private FindersClientProxy clientProxy;
 
-    public FindersDiscoveryClient(String serverList, String namespace,
+    private HeartbeatReactor heartbeatReactor;
+
+    public FindersDiscoveryClient(String namespace,
+                                  FindersClientConfig clientConfig,
                                   LoadBalancerType loadBalancerType) {
-        this.namespace = namespace;
-        this.serverList = serverList;
-
-        init(serverList, namespace, loadBalancerType);
+        init(namespace, clientConfig, loadBalancerType);
     }
 
-    private void init(String serverList, String namespace, LoadBalancerType loadBalancerType) {
+    private void init(String namespace,
+                      FindersClientConfig clientConfig,
+                      LoadBalancerType loadBalancerType) {
+        if (namespace == null || namespace.equals("")) {
+            throw new FindersRuntimeException("namespace must not be empty");
+        }
+        this.namespace = namespace;
+
+        if (clientConfig == null) {
+            throw new FindersRuntimeException("clientConfig must not be null");
+        }
+        this.config = clientConfig;
+
+        String serverList = clientConfig.serverList();
         if (serverList == null || serverList.equals("")) {
-            throw new FindersRuntimeException("serverList must not be null");
+            throw new FindersRuntimeException("serverList must not be empty");
         }
         List<String> srvList = Arrays.stream(serverList.split(","))
                 .collect(Collectors.toList());
@@ -49,7 +65,8 @@ public class FindersDiscoveryClient implements FindersClient {
             default:
                 throw new FindersRuntimeException("loadBalancerType is incorrect");
         }
-        this.proxy = new FindersClientProxy(namespace, loadBalancer);
+        this.clientProxy = new FindersClientProxy(namespace, loadBalancer, clientConfig.requestMaxRetry());
+        this.heartbeatReactor = new HeartbeatReactor(this.clientProxy, clientConfig.heartbeatThreads());
     }
 
     @Override
@@ -64,7 +81,7 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public List<Instance> getAllInstances(String serviceName, List<String> clusters) {
-        return proxy.getAllInstances(serviceName, clusters);
+        return clientProxy.getAllInstances(serviceName, clusters);
     }
 
     @Override
@@ -79,7 +96,7 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public List<Instance> getInstances(String serviceName, List<String> clusters, boolean healthy) {
-        return proxy.getInstances(serviceName, clusters, healthy);
+        return clientProxy.getInstances(serviceName, clusters, healthy);
     }
 
     @Override
@@ -89,7 +106,7 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public Instance getInstance(String serviceName, String ip, int port, String cluster) {
-        return proxy.getInstance(serviceName, ip, port, cluster);
+        return clientProxy.getInstance(serviceName, ip, port, cluster);
     }
 
     @Override
@@ -99,12 +116,28 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public void registerInstance(String serviceName, String ip, int port, String cluster) {
-        proxy.registerInstance(serviceName, ip, port, cluster);
+        clientProxy.registerInstance(serviceName, ip, port, cluster);
+
+        Heartbeat heartbeat = new Heartbeat();
+        heartbeat.setCluster(cluster);
+        heartbeat.setServiceName(serviceName);
+        heartbeat.setIp(ip);
+        heartbeat.setPort(port);
+        heartbeat.setPeriod(config.heartbeatPeriod());
+        heartbeatReactor.addHeartbeat(heartbeat);
     }
 
     @Override
     public void registerInstance(Instance instance) {
-        proxy.registerInstance(instance);
+        clientProxy.registerInstance(instance);
+
+        Heartbeat heartbeat = new Heartbeat();
+        heartbeat.setCluster(instance.getCluster());
+        heartbeat.setServiceName(instance.getServiceName());
+        heartbeat.setIp(instance.getIp());
+        heartbeat.setPort(instance.getPort());
+        heartbeat.setPeriod(config.heartbeatPeriod());
+        heartbeatReactor.addHeartbeat(heartbeat);
     }
 
     @Override
@@ -114,7 +147,11 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public void deregisterInstance(String serviceName, String ip, int port, String cluster) {
-        proxy.deregisterInstance(serviceName, ip, port, cluster);
+        clientProxy.deregisterInstance(serviceName, ip, port, cluster);
+    }
+
+    public void shutdown() {
+        this.heartbeatReactor.shutdown();
     }
 
 }

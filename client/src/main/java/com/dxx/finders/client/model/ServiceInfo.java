@@ -1,4 +1,4 @@
-package com.dxx.finders.client;
+package com.dxx.finders.client.model;
 
 import java.util.List;
 

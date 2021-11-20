@@ -1,7 +1,6 @@
 package com.dxx.finders.client.loadbalance;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Round balancer.

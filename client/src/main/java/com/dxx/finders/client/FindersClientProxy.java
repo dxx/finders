@@ -5,6 +5,9 @@ import com.dxx.finders.client.constant.Services;
 import com.dxx.finders.client.http.FindersHttpClient;
 import com.dxx.finders.client.http.HttpMethod;
 import com.dxx.finders.client.loadbalance.LoadBalancer;
+import com.dxx.finders.client.model.Heartbeat;
+import com.dxx.finders.client.model.Instance;
+import com.dxx.finders.client.model.ServiceInfo;
 import com.dxx.finders.client.util.JacksonUtils;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
@@ -21,15 +24,16 @@ public class FindersClientProxy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FindersClientProxy.class);
 
-    private final int RETRY_COUNT = 3;
+    private final int retryCount;
 
     private final String namespace;
 
     private final LoadBalancer loadBalancer;
 
-    public FindersClientProxy(String namespace, LoadBalancer loadBalancer) {
+    public FindersClientProxy(String namespace, LoadBalancer loadBalancer, int maxRetry) {
         this.namespace = namespace;
         this.loadBalancer = loadBalancer;
+        this.retryCount = maxRetry;
     }
 
     public List<Instance> getAllInstances(String serviceName, List<String> clusters) {
@@ -83,9 +87,19 @@ public class FindersClientProxy {
         req(Paths.INSTANCE, HttpMethod.DELETE, objectNode.toString());
     }
 
+    public void sendHeartbeat(Heartbeat heartbeat) {
+        ObjectNode objectNode = JacksonUtils.createObjectNode();
+        objectNode.put(Services.NAMESPACE, this.namespace);
+        objectNode.put(Services.CLUSTER, heartbeat.getCluster());
+        objectNode.put(Services.SERVICE_NAME, heartbeat.getServiceName());
+        objectNode.put("ip", heartbeat.getIp());
+        objectNode.put("port", heartbeat.getPort());
+        req(Paths.INSTANCE_BEAT, HttpMethod.PUT, objectNode.toString());
+    }
+
     private String req(String path, HttpMethod method, String body) {
         String server = loadBalancer.chooseServer();
-        for (int i = 0; i < RETRY_COUNT; i++) {
+        for (int i = 0; i <= retryCount; i++) {
             try {
                 String url = String.format("http://%s%s", server, path);
                 return FindersHttpClient.request(url, method, body, null);
