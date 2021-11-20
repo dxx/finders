@@ -17,6 +17,8 @@ public class Heartbeat {
 
     private long period;
 
+    private boolean stopped;
+
     public String getCluster() {
         return cluster;
     }
@@ -55,5 +57,13 @@ public class Heartbeat {
 
     public void setPeriod(long period) {
         this.period = period;
+    }
+
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    public void setStopped(boolean stopped) {
+        this.stopped = stopped;
     }
 }
