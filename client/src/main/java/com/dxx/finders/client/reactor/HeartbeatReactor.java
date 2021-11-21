@@ -21,11 +21,11 @@ public class HeartbeatReactor {
 
     private final Logger LOGGER = LoggerFactory.getLogger(HeartbeatReactor.class);
 
+    private final Map<String, Heartbeat> heartbeatMap = new HashMap<>();
+
     private final FindersClientProxy clientProxy;
 
     private final ScheduledExecutorService executorService;
-
-    private final Map<String, Heartbeat> heartbeatMap = new HashMap<>();
 
     public HeartbeatReactor(FindersClientProxy clientProxy, int heartbeatThreads) {
         if (heartbeatThreads <= 0) {
