@@ -84,7 +84,7 @@ public class HeartbeatReactor {
             } catch (Exception e) {
                 LOGGER.error("Send heartbeat error: ", e);
             } finally {
-                scheduledExecutor.schedule(new HeartbeatTask(heartbeat), delayTime, TimeUnit.MILLISECONDS);
+                scheduledExecutor.schedule(this, delayTime, TimeUnit.MILLISECONDS);
             }
         }
 
