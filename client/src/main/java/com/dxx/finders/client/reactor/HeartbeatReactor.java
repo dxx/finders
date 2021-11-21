@@ -77,14 +77,14 @@ public class HeartbeatReactor {
                 return;
             }
             long start = System.currentTimeMillis();
-            long nextTime = heartbeat.getPeriod();
+            long delayTime = heartbeat.getPeriod();
             try {
                 clientProxy.sendHeartbeat(heartbeat);
-                nextTime = nextTime - (System.currentTimeMillis() - start);
+                delayTime = delayTime - (System.currentTimeMillis() - start);
             } catch (Exception e) {
                 LOGGER.error("Send heartbeat error: ", e);
             } finally {
-                executorService.schedule(new HeartbeatTask(heartbeat), nextTime, TimeUnit.MILLISECONDS);
+                executorService.schedule(new HeartbeatTask(heartbeat), delayTime, TimeUnit.MILLISECONDS);
             }
         }
 
