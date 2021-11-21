@@ -11,6 +11,8 @@ public class FindersClientConfig {
 
     private final int requestMaxRetry;
 
+    private final int servicePullThreads;
+
     private final int heartbeatThreads;
 
     private final long heartbeatPeriod;
@@ -18,6 +20,7 @@ public class FindersClientConfig {
     private FindersClientConfig(Builder builder) {
         this.serverList = builder.serverList;
         this.requestMaxRetry = builder.requestMaxRetry;
+        this.servicePullThreads = builder.servicePullThreads;
         this.heartbeatThreads = builder.heartbeatThreads;
         this.heartbeatPeriod = builder.heartbeatPeriod;
     }
@@ -34,6 +37,10 @@ public class FindersClientConfig {
         return this.requestMaxRetry;
     }
 
+    public int servicePullThreads() {
+        return this.servicePullThreads;
+    }
+
     public int heartbeatThreads() {
         return this.heartbeatThreads;
     }
@@ -48,6 +55,8 @@ public class FindersClientConfig {
 
         private int requestMaxRetry = 3;
 
+        private int servicePullThreads;
+
         private int heartbeatThreads;
 
         private long heartbeatPeriod = 5000;
@@ -59,6 +68,11 @@ public class FindersClientConfig {
 
         public Builder requestMaxRetry(int requestMaxRetry) {
             this.requestMaxRetry = requestMaxRetry;
+            return this;
+        }
+
+        public Builder servicePullThreads(int servicePullThreads) {
+            this.servicePullThreads = servicePullThreads;
             return this;
         }
 

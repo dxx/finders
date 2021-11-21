@@ -14,6 +14,8 @@ public class ThreadUtils {
 
     private static final int SHUTDOWN_RETRY = 3;
 
+    public static final int DEFAULT_SERVICE_POLL_THREAD = Runtime.getRuntime().availableProcessors() / 2;
+
     public static final int DEFAULT_HEARTBEAT_THREAD = Runtime.getRuntime().availableProcessors() / 2;
 
     public static ThreadFactory newNamedThreadFactory(String name) {

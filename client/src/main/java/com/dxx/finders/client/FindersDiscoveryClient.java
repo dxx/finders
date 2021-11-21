@@ -7,8 +7,12 @@ import com.dxx.finders.client.loadbalance.RandomBalancer;
 import com.dxx.finders.client.loadbalance.RoundBalancer;
 import com.dxx.finders.client.model.Heartbeat;
 import com.dxx.finders.client.model.Instance;
+import com.dxx.finders.client.model.InstanceStatus;
+import com.dxx.finders.client.model.ServiceInfo;
 import com.dxx.finders.client.reactor.HeartbeatReactor;
+import com.dxx.finders.client.reactor.ServiceReactor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +30,8 @@ public class FindersDiscoveryClient implements FindersClient {
     private FindersClientConfig config;
 
     private FindersClientProxy clientProxy;
+
+    private ServiceReactor serviceReactor;
 
     private HeartbeatReactor heartbeatReactor;
 
@@ -66,12 +72,13 @@ public class FindersDiscoveryClient implements FindersClient {
                 throw new FindersRuntimeException("loadBalancerType is incorrect");
         }
         this.clientProxy = new FindersClientProxy(namespace, loadBalancer, clientConfig.requestMaxRetry());
+        this.serviceReactor = new ServiceReactor(this.clientProxy, clientConfig.servicePullThreads());
         this.heartbeatReactor = new HeartbeatReactor(this.clientProxy, clientConfig.heartbeatThreads());
     }
 
     @Override
     public List<Instance> getAllInstances(String serviceName) {
-        return getAllInstances(serviceName, Services.DEFAULT_CLUSTER);
+        return getAllInstances(serviceName, Collections.emptyList());
     }
 
     @Override
@@ -81,22 +88,22 @@ public class FindersDiscoveryClient implements FindersClient {
 
     @Override
     public List<Instance> getAllInstances(String serviceName, List<String> clusters) {
-        return clientProxy.getAllInstances(serviceName, clusters);
+        return getInstances(serviceName, clusters, false);
     }
 
     @Override
-    public List<Instance> getInstances(String serviceName, boolean healthy) {
-        return getInstances(serviceName, Services.DEFAULT_CLUSTER, healthy);
+    public List<Instance> getInstances(String serviceName, boolean healthyOnly) {
+        return getInstances(serviceName, Services.DEFAULT_CLUSTER, healthyOnly);
     }
 
     @Override
-    public List<Instance> getInstances(String serviceName, String cluster, boolean healthy) {
-        return getInstances(serviceName, Collections.singletonList(cluster), healthy);
+    public List<Instance> getInstances(String serviceName, String cluster, boolean healthyOnly) {
+        return getInstances(serviceName, Collections.singletonList(cluster), healthyOnly);
     }
 
     @Override
-    public List<Instance> getInstances(String serviceName, List<String> clusters, boolean healthy) {
-        return clientProxy.getInstances(serviceName, clusters, healthy);
+    public List<Instance> getInstances(String serviceName, List<String> clusters, boolean healthyOnly) {
+        return selectInstances(serviceName, clusters, healthyOnly);
     }
 
     @Override
@@ -148,6 +155,18 @@ public class FindersDiscoveryClient implements FindersClient {
     @Override
     public void deregisterInstance(String serviceName, String ip, int port, String cluster) {
         clientProxy.deregisterInstance(serviceName, ip, port, cluster);
+    }
+
+    private List<Instance> selectInstances(String serviceName, List<String> clusters, boolean healthyOnly) {
+        ServiceInfo serviceInfo = serviceReactor.getService(serviceName, clusters);
+        if (serviceInfo == null) {
+            return new ArrayList<>();
+        }
+        if (healthyOnly) {
+            return serviceInfo.getInstances().stream()
+                    .filter(item -> item.getStatus() == InstanceStatus.HEALTHY).collect(Collectors.toList());
+        }
+        return serviceInfo.getInstances();
     }
 
     public void shutdown() {

@@ -25,7 +25,8 @@ public class FindersDiscoveryClientTest {
         FindersClientConfig findersClientConfig = FindersClientConfig.builder()
                 .serverList(serverList)
                 .requestMaxRetry(3)
-                .heartbeatThreads(3)
+                .servicePullThreads(1)
+                .heartbeatThreads(1)
                 .heartbeatPeriod(5000)
                 .build();
         discoveryClient = new FindersDiscoveryClient(namespace, findersClientConfig,
