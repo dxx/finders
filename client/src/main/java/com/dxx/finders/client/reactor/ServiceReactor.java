@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.*;
 
 /**
  * Service reactor.
@@ -31,11 +28,14 @@ public class ServiceReactor {
 
     private final ScheduledExecutorService scheduledExecutor;
 
-    public ServiceReactor(FindersClientProxy clientProxy, int pullTreads) {
+    private final long pullPeriod;
+
+    public ServiceReactor(FindersClientProxy clientProxy, int pullTreads, long pullPeriod) {
         if (pullTreads <= 0) {
             pullTreads = ThreadUtils.DEFAULT_SERVICE_POLL_THREAD;
         }
         this.clientProxy = clientProxy;
+        this.pullPeriod = pullPeriod;
         this.scheduledExecutor = Executors.newScheduledThreadPool(pullTreads,
                 ThreadUtils.newNamedThreadFactory("service-update-task"));
     }
@@ -47,12 +47,29 @@ public class ServiceReactor {
                 updateService(serviceName, clusters);
             }
         }
+        scheduleUpdateIfAbsent(serviceName, clusters);
         return serviceMap.get(key);
+    }
+
+    private void scheduleUpdateIfAbsent(String serviceName, List<String> clusters) {
+        String key = serviceKey(serviceName, clusters);
+        if (scheduledFutureMap.containsKey(key)) {
+            return;
+        }
+        ScheduledFuture<?> scheduledFuture = scheduledExecutor.schedule(new ServiceUpdateTask(serviceName, clusters),
+                pullPeriod, TimeUnit.MILLISECONDS);
+        scheduledFutureMap.put(key, scheduledFuture);
     }
 
     private void updateService(String serviceName, List<String> clusters) {
         ServiceInfo serviceInfo = clientProxy.getService(serviceName, clusters);
         serviceMap.put(serviceKey(serviceName, clusters), serviceInfo);
+    }
+
+    public void shutdown() {
+        this.scheduledFutureMap.forEach((key, val) -> val.cancel(true));
+        this.scheduledFutureMap.clear();
+        ThreadUtils.shutdownThreadPool(scheduledExecutor);
     }
 
     private String serviceKey(String serviceName, List<String> clusters) {
@@ -72,12 +89,15 @@ public class ServiceReactor {
 
         @Override
         public void run() {
+            long start = System.currentTimeMillis();
+            long delayTime = pullPeriod;
             try {
-
+                updateService(serviceName, clusters);
+                delayTime = delayTime - (System.currentTimeMillis() - start);
             } catch (Exception e) {
                 LOGGER.error("Service update error: ", e);
             } finally {
-
+                scheduledExecutor.schedule(this, delayTime, TimeUnit.MILLISECONDS);
             }
         }
 

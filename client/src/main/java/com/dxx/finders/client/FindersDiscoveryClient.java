@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
  */
 public class FindersDiscoveryClient implements FindersClient {
 
-    private String namespace;
-
     private FindersClientConfig config;
 
     private FindersClientProxy clientProxy;
@@ -47,7 +45,6 @@ public class FindersDiscoveryClient implements FindersClient {
         if (namespace == null || namespace.equals("")) {
             throw new FindersRuntimeException("namespace must not be empty");
         }
-        this.namespace = namespace;
 
         if (clientConfig == null) {
             throw new FindersRuntimeException("clientConfig must not be null");
@@ -72,7 +69,8 @@ public class FindersDiscoveryClient implements FindersClient {
                 throw new FindersRuntimeException("loadBalancerType is incorrect");
         }
         this.clientProxy = new FindersClientProxy(namespace, loadBalancer, clientConfig.requestMaxRetry());
-        this.serviceReactor = new ServiceReactor(this.clientProxy, clientConfig.servicePullThreads());
+        this.serviceReactor = new ServiceReactor(this.clientProxy, clientConfig.servicePullThreads(),
+                clientConfig.servicePullPeriod());
         this.heartbeatReactor = new HeartbeatReactor(this.clientProxy, clientConfig.heartbeatThreads());
     }
 
@@ -170,6 +168,7 @@ public class FindersDiscoveryClient implements FindersClient {
     }
 
     public void shutdown() {
+        this.serviceReactor.shutdown();
         this.heartbeatReactor.shutdown();
     }
 

@@ -57,16 +57,18 @@ public class FindersDiscoveryClientTest {
     }
 
     @Test
-    public void testGetAllInstances() {
+    public void testGetAllInstances() throws IOException {
         Instance instance = new Instance();
         instance.setServiceName("testService");
         instance.setCluster(Services.DEFAULT_CLUSTER);
         instance.setIp("127.0.0.1");
         instance.setPort(8080);
-        discoveryClient.registerInstance(instance);
+        //discoveryClient.registerInstance(instance);
 
         List<Instance> instanceList = discoveryClient.getAllInstances(instance.getServiceName(), instance.getCluster());
         instanceList.forEach(item -> System.out.println(item.getIp() + ":" + item.getPort()));
+
+        System.in.read();
 
         discoveryClient.shutdown();
     }
