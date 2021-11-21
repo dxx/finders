@@ -42,8 +42,10 @@ public class ServiceReactor {
 
     public ServiceInfo getService(String serviceName, List<String> clusters) {
         String key = serviceKey(serviceName, clusters);
-        if (!serviceMap.containsKey(key)) {
-            updateService(serviceName, clusters);
+        synchronized (key.intern()) {
+            if (!serviceMap.containsKey(key)) {
+                updateService(serviceName, clusters);
+            }
         }
         return serviceMap.get(key);
     }
