@@ -3,6 +3,7 @@ package com.dxx.finders.client;
 import com.dxx.finders.client.constant.Services;
 import com.dxx.finders.client.loadbalance.LoadBalancerType;
 import com.dxx.finders.client.model.Instance;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,8 +16,10 @@ import java.util.List;
  */
 public class FindersDiscoveryClientTest {
 
-    @Test
-    public void testRegisterInstance() throws IOException {
+    private static FindersDiscoveryClient discoveryClient;
+
+    @BeforeAll
+    public static void setUp() {
         String namespace = Services.DEFAULT_NAMESPACE;
         String serverList = "127.0.0.1:9080,127.0.0.1:9081,127.0.0.1:9082";
         FindersClientConfig findersClientConfig = FindersClientConfig.builder()
@@ -25,9 +28,12 @@ public class FindersDiscoveryClientTest {
                 .heartbeatThreads(3)
                 .heartbeatPeriod(5000)
                 .build();
-        FindersDiscoveryClient discoveryClient = new FindersDiscoveryClient(namespace, findersClientConfig,
+        discoveryClient = new FindersDiscoveryClient(namespace, findersClientConfig,
                 LoadBalancerType.ROUND);
+    }
 
+    @Test
+    public void testRegisterInstance() throws IOException {
         discoveryClient.registerInstance("testService", "127.0.0.1", 8080);
 
         System.in.read();
@@ -37,12 +43,6 @@ public class FindersDiscoveryClientTest {
 
     @Test
     public void testDeregisterInstance() {
-        String namespace = Services.DEFAULT_NAMESPACE;
-        String serverList = "127.0.0.1:9080,127.0.0.1:9081,127.0.0.1:9082";
-        FindersClientConfig findersClientConfig = FindersClientConfig.builder()
-                .serverList(serverList).build();
-        FindersDiscoveryClient discoveryClient = new FindersDiscoveryClient(namespace, findersClientConfig,
-                LoadBalancerType.ROUND);
         Instance instance = new Instance();
         instance.setServiceName("testService");
         instance.setCluster(Services.DEFAULT_CLUSTER);
@@ -57,12 +57,6 @@ public class FindersDiscoveryClientTest {
 
     @Test
     public void testGetAllInstances() {
-        String namespace = Services.DEFAULT_NAMESPACE;
-        String serverList = "127.0.0.1:9080,127.0.0.1:9081,127.0.0.1:9082";
-        FindersClientConfig findersClientConfig = FindersClientConfig.builder()
-                .serverList(serverList).build();
-        FindersDiscoveryClient discoveryClient = new FindersDiscoveryClient(namespace, findersClientConfig,
-                LoadBalancerType.ROUND);
         Instance instance = new Instance();
         instance.setServiceName("testService");
         instance.setCluster(Services.DEFAULT_CLUSTER);
@@ -78,12 +72,6 @@ public class FindersDiscoveryClientTest {
 
     @Test
     public void testGetInstance() {
-        String namespace = Services.DEFAULT_NAMESPACE;
-        String serverList = "127.0.0.1:9080,127.0.0.1:9081,127.0.0.1:9082";
-        FindersClientConfig findersClientConfig = FindersClientConfig.builder()
-                .serverList(serverList).build();
-        FindersDiscoveryClient discoveryClient = new FindersDiscoveryClient(namespace, findersClientConfig,
-                LoadBalancerType.ROUND);
         Instance instance = new Instance();
         instance.setServiceName("testService");
         instance.setCluster(Services.DEFAULT_CLUSTER);
