@@ -21,19 +21,19 @@ public class HeartbeatReactor {
 
     private final Logger LOGGER = LoggerFactory.getLogger(HeartbeatReactor.class);
 
+    private final Map<String, Heartbeat> heartbeatMap = new HashMap<>();
+
     private final FindersClientProxy clientProxy;
 
-    private final ScheduledExecutorService executorService;
-
-    private final Map<String, Heartbeat> heartbeatMap = new HashMap<>();
+    private final ScheduledExecutorService scheduledExecutor;
 
     public HeartbeatReactor(FindersClientProxy clientProxy, int heartbeatThreads) {
         if (heartbeatThreads <= 0) {
             heartbeatThreads = ThreadUtils.DEFAULT_HEARTBEAT_THREAD;
         }
         this.clientProxy = clientProxy;
-        this.executorService = Executors.newScheduledThreadPool(heartbeatThreads,
-                ThreadUtils.newNamedThreadFactory("HeartbeatTask"));
+        this.scheduledExecutor = Executors.newScheduledThreadPool(heartbeatThreads,
+                ThreadUtils.newNamedThreadFactory("heartbeat-task"));
     }
 
     public void addHeartbeat(Heartbeat heartbeat) {
@@ -41,7 +41,7 @@ public class HeartbeatReactor {
                 heartbeat.getPort());
         this.removeHeartbeat(heartbeat.getCluster(), heartbeat.getServiceName(), heartbeat.getIp(),
                 heartbeat.getPort());
-        this.executorService.schedule(new HeartbeatTask(heartbeat), 0, TimeUnit.MILLISECONDS);
+        this.scheduledExecutor.schedule(new HeartbeatTask(heartbeat), 0, TimeUnit.MILLISECONDS);
         this.heartbeatMap.put(key, heartbeat);
     }
 
@@ -56,7 +56,7 @@ public class HeartbeatReactor {
     public void shutdown() {
         this.heartbeatMap.forEach((key, val) -> val.setStopped(true));
         this.heartbeatMap.clear();
-        ThreadUtils.shutdownThreadPool(this.executorService);
+        ThreadUtils.shutdownThreadPool(this.scheduledExecutor);
     }
 
     private String heartbeatKey(String cluster, String serviceName, String ip, int port) {
@@ -77,14 +77,14 @@ public class HeartbeatReactor {
                 return;
             }
             long start = System.currentTimeMillis();
-            long nextTime = heartbeat.getPeriod();
+            long delayTime = heartbeat.getPeriod();
             try {
                 clientProxy.sendHeartbeat(heartbeat);
-                nextTime = nextTime - (System.currentTimeMillis() - start);
+                delayTime = delayTime - (System.currentTimeMillis() - start);
             } catch (Exception e) {
                 LOGGER.error("Send heartbeat error: ", e);
             } finally {
-                executorService.schedule(new HeartbeatTask(heartbeat), nextTime, TimeUnit.MILLISECONDS);
+                scheduledExecutor.schedule(this, delayTime, TimeUnit.MILLISECONDS);
             }
         }
 

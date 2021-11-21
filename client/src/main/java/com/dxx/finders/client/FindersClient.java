@@ -41,30 +41,30 @@ public interface FindersClient {
      * Get all instances of a service.
      *
      * @param serviceName name of service
-     * @param healthy is it healthy
+     * @param healthyOnly is instance healthyOnly
      * @return A list of instance
      */
-    List<Instance> getInstances(String serviceName, boolean healthy);
+    List<Instance> getInstances(String serviceName, boolean healthyOnly);
 
     /**
      * Get instances of a service.
      *
      * @param serviceName name of service
      * @param cluster name of cluster
-     * @param healthy is it healthy
+     * @param healthyOnly is instance healthyOnly
      * @return A list of instance
      */
-    List<Instance> getInstances(String serviceName, String cluster, boolean healthy);
+    List<Instance> getInstances(String serviceName, String cluster, boolean healthyOnly);
 
     /**
      * Get instances of a service.
      *
      * @param serviceName name of service
      * @param clusters name list of cluster
-     * @param healthy is it healthy
+     * @param healthyOnly is instance healthyOnly
      * @return A list of instance
      */
-    List<Instance> getInstances(String serviceName, List<String> clusters, boolean healthy);
+    List<Instance> getInstances(String serviceName, List<String> clusters, boolean healthyOnly);
 
     /**
      * Get instance of a service.

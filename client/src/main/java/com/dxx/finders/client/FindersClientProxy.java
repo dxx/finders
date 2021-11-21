@@ -36,22 +36,12 @@ public class FindersClientProxy {
         this.retryCount = maxRetry;
     }
 
-    public List<Instance> getAllInstances(String serviceName, List<String> clusters) {
-        String clusterStr = String.join(",", clusters.toArray(new String[0]));
+    public ServiceInfo getService(String serviceName, List<String> clusters) {
+        String clusterStr = String.join(",", clusters.toArray(new String[]{}));
         String path = String.format("%s?namespace=%s&clusters=%s&serviceName=%s",
                 Paths.INSTANCE_LIST, this.namespace, clusterStr, serviceName);
         String result = req(path, HttpMethod.GET, null);
-        ServiceInfo serviceInfo = JacksonUtils.toObject(result, ServiceInfo.class);
-        return serviceInfo.getInstances();
-    }
-
-    public List<Instance> getInstances(String serviceName, List<String> clusters, boolean healthy) {
-        String clusterStr = String.join(",", clusters.toArray(new String[0]));
-        String path = String.format("%s?namespace=%s&clusters=%s&serviceName=%s&healthy=%s",
-                Paths.INSTANCE_LIST, this.namespace, clusterStr, serviceName, healthy);
-        String result = req(path, HttpMethod.GET, null);
-        ServiceInfo serviceInfo = JacksonUtils.toObject(result, ServiceInfo.class);
-        return serviceInfo.getInstances();
+        return JacksonUtils.toObject(result, ServiceInfo.class);
     }
 
     public Instance getInstance(String serviceName, String ip, int port, String cluster) {
