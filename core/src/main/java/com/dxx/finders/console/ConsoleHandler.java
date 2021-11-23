@@ -35,6 +35,9 @@ public class ConsoleHandler {
         this.serverNodeManager = serverNodeManager;
     }
 
+    /**
+     * Get all name of namespace.
+     */
     @RequestMapping(path = "/console/namespace/names", method = RequestMethod.GET)
     public void namespaceNameList(RoutingContext context) {
         HttpServerResponse response = context.response();
@@ -46,6 +49,9 @@ public class ConsoleHandler {
         response.end(JacksonUtils.toJson(namespaces));
     }
 
+    /**
+     * Get all namespace.
+     */
     @RequestMapping(path = "/console/namespaces", method = RequestMethod.GET)
     public void namespacesList(RoutingContext context) {
         HttpServerResponse response = context.response();
@@ -71,6 +77,9 @@ public class ConsoleHandler {
         response.end(JacksonUtils.toJson(namespaceInfoList));
     }
 
+    /**
+     * Get all cluster.
+     */
     @RequestMapping(path = "/console/clusters", method = RequestMethod.GET)
     public void clusterList(RoutingContext context) {
         HttpServerResponse response = context.response();
