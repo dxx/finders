@@ -5,6 +5,7 @@ import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.console.vo.ClusterNodeInfo;
 import com.dxx.finders.console.vo.NamespaceInfo;
 import com.dxx.finders.constant.Services;
+import com.dxx.finders.core.Service;
 import com.dxx.finders.core.ServiceManager;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class ConsoleService {
 
             for (String k : val.keySet()) {
                 // If there are no instances, the number is not counted
-                if (val.get(k).getAllInstance().isEmpty()) {
+                if (filterNoInstance(val.get(k))) {
                     continue;
                 }
                 serviceCount++;
@@ -70,6 +71,10 @@ public class ConsoleService {
             clusterNodeInfo.setStatus(item.getStatus().toString());
             return clusterNodeInfo;
         }).collect(Collectors.toList());
+    }
+
+    private boolean filterNoInstance(Service service) {
+        return service.getAllInstance().isEmpty();
     }
 
 }
