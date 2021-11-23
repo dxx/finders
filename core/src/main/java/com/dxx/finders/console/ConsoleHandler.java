@@ -3,12 +3,16 @@ package com.dxx.finders.console;
 import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.console.vo.ClusterNodeInfo;
 import com.dxx.finders.console.vo.NamespaceInfo;
+import com.dxx.finders.console.vo.ServiceView;
+import com.dxx.finders.constant.Services;
 import com.dxx.finders.core.ServiceManager;
 import com.dxx.finders.http.RequestMethod;
 import com.dxx.finders.http.annotation.RequestMapping;
 import com.dxx.finders.util.JacksonUtils;
+import com.dxx.finders.util.ParamUtils;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
+import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
@@ -59,6 +63,26 @@ public class ConsoleHandler {
         List<ClusterNodeInfo> clusterNodeInfoList = consoleService.getClusterNodeList();
 
         responseJson(response, clusterNodeInfoList);
+    }
+
+    /**
+     * Get all service.
+     */
+    @RequestMapping(path = "/console/services", method = RequestMethod.GET)
+    public void serviceList(RoutingContext context) {
+        HttpServerRequest request = context.request();
+        HttpServerResponse response = context.response();
+
+        String namespace = ParamUtils.optional(request, Services.PARAM_NAMESPACE, Services.DEFAULT_NAMESPACE);
+        String serviceName = ParamUtils.optional(request, Services.PARAM_SERVICE_NAME, "");
+        String page = ParamUtils.optional(request, "page", "1");
+        String size = ParamUtils.optional(request, "size", "10");
+
+        ServiceView serviceView = consoleService.getServiceList(namespace, serviceName,
+                Integer.parseInt(page),
+                Integer.parseInt(size));
+
+        responseJson(response, serviceView);
     }
 
     private void responseJson(HttpServerResponse response, Object obj) {

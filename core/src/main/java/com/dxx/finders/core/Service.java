@@ -116,4 +116,19 @@ public class Service {
         return serviceName;
     }
 
+    public int getClusterCount() {
+        return clusterMap.keySet().size();
+    }
+
+    public int getInstanceCount(boolean healthyOnly) {
+        int count = 0;
+        for (Instance instance : getAllInstance()) {
+            if (healthyOnly && instance.getStatus() != InstanceStatus.HEALTHY) {
+                continue;
+            }
+            count++;
+        }
+        return count;
+    }
+
 }
