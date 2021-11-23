@@ -5,7 +5,7 @@ package com.dxx.finders.console.vo;
  *
  * @author dxx
  */
-public class ClusterInfo {
+public class ClusterNodeInfo {
 
     private String id;
 

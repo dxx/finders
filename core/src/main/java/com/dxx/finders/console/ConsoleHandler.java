@@ -1,7 +1,7 @@
 package com.dxx.finders.console;
 
 import com.dxx.finders.cluster.ServerNodeManager;
-import com.dxx.finders.console.vo.ClusterInfo;
+import com.dxx.finders.console.vo.ClusterNodeInfo;
 import com.dxx.finders.console.vo.NamespaceInfo;
 import com.dxx.finders.core.ServiceManager;
 import com.dxx.finders.http.RequestMethod;
@@ -53,12 +53,12 @@ public class ConsoleHandler {
     /**
      * Get all cluster node.
      */
-    @RequestMapping(path = "/console/clusters", method = RequestMethod.GET)
-    public void clusterList(RoutingContext context) {
+    @RequestMapping(path = "/console/cluster/nodes", method = RequestMethod.GET)
+    public void clusterNodeList(RoutingContext context) {
         HttpServerResponse response = context.response();
-        List<ClusterInfo> clusterInfoList = consoleService.getClusterNodeList();
+        List<ClusterNodeInfo> clusterNodeInfoList = consoleService.getClusterNodeList();
 
-        responseJson(response, clusterInfoList);
+        responseJson(response, clusterNodeInfoList);
     }
 
     private void responseJson(HttpServerResponse response, Object obj) {

@@ -2,7 +2,7 @@ package com.dxx.finders.console;
 
 import com.dxx.finders.cluster.ServerNode;
 import com.dxx.finders.cluster.ServerNodeManager;
-import com.dxx.finders.console.vo.ClusterInfo;
+import com.dxx.finders.console.vo.ClusterNodeInfo;
 import com.dxx.finders.console.vo.NamespaceInfo;
 import com.dxx.finders.constant.Services;
 import com.dxx.finders.core.ServiceManager;
@@ -58,17 +58,17 @@ public class ConsoleService {
         return namespaceInfoList;
     }
 
-    public List<ClusterInfo> getClusterNodeList() {
+    public List<ClusterNodeInfo> getClusterNodeList() {
         List<ServerNode> serverNodeList = serverNodeManager.allNodes();
 
         return serverNodeList.stream().map(item -> {
-            ClusterInfo clusterInfo = new ClusterInfo();
-            clusterInfo.setId(item.getId());
-            clusterInfo.setIp(item.getIp());
-            clusterInfo.setPort(item.getPort());
-            clusterInfo.setAddress(item.getAddress());
-            clusterInfo.setStatus(item.getStatus().toString());
-            return clusterInfo;
+            ClusterNodeInfo clusterNodeInfo = new ClusterNodeInfo();
+            clusterNodeInfo.setId(item.getId());
+            clusterNodeInfo.setIp(item.getIp());
+            clusterNodeInfo.setPort(item.getPort());
+            clusterNodeInfo.setAddress(item.getAddress());
+            clusterNodeInfo.setStatus(item.getStatus().toString());
+            return clusterNodeInfo;
         }).collect(Collectors.toList());
     }
 
