@@ -60,6 +60,13 @@ public class ConsoleService {
             namespaceInfoList.add(namespaceInfo);
         });
 
+        if (namespaceInfoList.size() == 0) {
+            NamespaceInfo namespaceInfo = new NamespaceInfo();
+            namespaceInfo.setNamespace(Services.DEFAULT_NAMESPACE);
+            namespaceInfo.setServiceCount(0);
+            namespaceInfoList.add(namespaceInfo);
+        }
+
         return namespaceInfoList;
     }
 
