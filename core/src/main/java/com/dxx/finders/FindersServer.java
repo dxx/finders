@@ -8,10 +8,12 @@ import com.dxx.finders.env.Environment;
 import com.dxx.finders.http.RouterFunction;
 import com.dxx.finders.util.StringUtils;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.LoggerFormat;
 import io.vertx.ext.web.handler.LoggerHandler;
 
@@ -35,6 +37,13 @@ public class FindersServer {
         Vertx vertx = Vertx.vertx();
         HttpServer httpServer = vertx.createHttpServer(serverOptions);
         Router router = Router.router(vertx);
+
+        // CORS handler
+        router.route().handler(CorsHandler.create("*")
+                .allowedMethod(HttpMethod.GET)
+                .allowedMethod(HttpMethod.POST)
+                .allowedMethod(HttpMethod.PUT)
+                .allowedMethod(HttpMethod.DELETE));
 
         // Logger handler
         router.route().handler(LoggerHandler.create(LoggerFormat.DEFAULT));
