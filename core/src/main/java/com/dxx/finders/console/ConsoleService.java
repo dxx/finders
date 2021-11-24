@@ -2,10 +2,7 @@ package com.dxx.finders.console;
 
 import com.dxx.finders.cluster.ServerNode;
 import com.dxx.finders.cluster.ServerNodeManager;
-import com.dxx.finders.console.vo.ClusterNodeInfo;
-import com.dxx.finders.console.vo.NamespaceInfo;
-import com.dxx.finders.console.vo.ServiceInfo;
-import com.dxx.finders.console.vo.ServiceView;
+import com.dxx.finders.console.vo.*;
 import com.dxx.finders.constant.Services;
 import com.dxx.finders.core.Service;
 import com.dxx.finders.core.ServiceManager;
@@ -113,6 +110,28 @@ public class ConsoleService {
         serviceView.setCount(serviceList.size());
         serviceView.setServiceList(serviceInfoList);
         return serviceView;
+    }
+
+    public InstanceView getInstanceList(String namespace, String serviceName) {
+        Service service = serviceManager.getService(namespace, serviceName);
+        InstanceView instanceView = new InstanceView();
+        instanceView.setServiceName(serviceName);
+        if (service == null) {
+            instanceView.setInstanceList(Collections.emptyList());
+            return instanceView;
+        }
+        List<InstanceInfo> instanceInfoList = service.getAllInstance().stream().map(instance -> {
+            InstanceInfo instanceInfo = new InstanceInfo();
+            instanceInfo.setInstanceId(instance.getInstanceId());
+            instanceInfo.setCluster(instance.getCluster());
+            instanceInfo.setServiceName(instance.getServiceName());
+            instanceInfo.setIp(instance.getIp());
+            instanceInfo.setPort(instance.getPort());
+            instanceInfo.setStatus(instance.getStatus().toString());
+            return instanceInfo;
+        }).collect(Collectors.toList());
+        instanceView.setInstanceList(instanceInfoList);
+        return instanceView;
     }
 
     private boolean filterServiceName(String name, String searchName) {

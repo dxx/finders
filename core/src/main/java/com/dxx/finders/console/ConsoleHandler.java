@@ -2,6 +2,7 @@ package com.dxx.finders.console;
 
 import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.console.vo.ClusterNodeInfo;
+import com.dxx.finders.console.vo.InstanceView;
 import com.dxx.finders.console.vo.NamespaceInfo;
 import com.dxx.finders.console.vo.ServiceView;
 import com.dxx.finders.constant.Services;
@@ -83,6 +84,22 @@ public class ConsoleHandler {
                 Integer.parseInt(size));
 
         responseJson(response, serviceView);
+    }
+
+    /**
+     * Get all instance.
+     */
+    @RequestMapping(path = "/console/instances", method = RequestMethod.GET)
+    public void instanceList(RoutingContext context) {
+        HttpServerRequest request = context.request();
+        HttpServerResponse response = context.response();
+
+        String namespace = ParamUtils.optional(request, Services.PARAM_NAMESPACE, Services.DEFAULT_NAMESPACE);
+        String serviceName = ParamUtils.required(request, Services.PARAM_SERVICE_NAME);
+
+        InstanceView instanceView = consoleService.getInstanceList(namespace, serviceName);
+
+        responseJson(response, instanceView);
     }
 
     private void responseJson(HttpServerResponse response, Object obj) {
