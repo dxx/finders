@@ -106,6 +106,10 @@ public class ServiceManager {
         updateInstance(service, instances, Services.ACTION_SYNC);
     }
 
+    public Map<String, Map<String, Service>> getServiceMap() {
+        return serviceMap;
+    }
+
     public ServiceStore getServiceStore() {
         return serviceStore;
     }

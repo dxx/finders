@@ -3,6 +3,7 @@ package com.dxx.finders.http;
 import com.dxx.finders.cluster.DistributionManager;
 import com.dxx.finders.cluster.ServerNodeManager;
 import com.dxx.finders.cluster.ServerStatusManager;
+import com.dxx.finders.console.ConsoleHandler;
 import com.dxx.finders.core.ServiceManager;
 import com.dxx.finders.core.SyncManager;
 import com.dxx.finders.exception.FindersRuntimeException;
@@ -60,6 +61,9 @@ public class RouterFunction {
         this.routeIfNecessary(instanceHandler);
         this.routeIfNecessary(serviceHandler);
         this.routeIfNecessary(serverHandler);
+
+        ConsoleHandler consoleHandler = new ConsoleHandler(serviceManager, serverNodeManager);
+        this.routeIfNecessary(consoleHandler);
     }
 
     @SuppressWarnings("unchecked")
