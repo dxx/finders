@@ -5,7 +5,9 @@ package com.dxx.finders.constant;
  */
 public class Paths {
 
-    public static final String INSTANCE = "/instance";
+    private static final String API = "/api";
+
+    public static final String INSTANCE = API + "/instance";
 
     public static final String INSTANCE_LIST = INSTANCE + "/list";
 
@@ -22,8 +24,6 @@ public class Paths {
     public static final String SERVICE_DATA = SERVICE + "/data";
 
     public static final String SERVER = "/server";
-
-    public static final String SERVER_REPORT = SERVER + "/report";
 
     public static final String SERVER_HEALTH = SERVER + "/health";
 
