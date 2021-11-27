@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Table, Tag, Space, Modal, message} from "antd";
+import { Table, Tag, Space, Modal, message } from  "antd";
 import {
   getInstances,
   deregisterInstance,
@@ -70,15 +70,15 @@ function InstanceList() {
         <Column title="服务名" dataIndex="serviceName" key="serviceName" />
         <Column title="IP" dataIndex="ip" key="ip" />
         <Column title="端口" dataIndex="port" key="port" />
-        <Column title="状态" dataIndex="status" key="status" render={(status: InstanceStatus) => {
-            let color = "green";
+        <Column title="状态" dataIndex="status" key="status" render={(status: InstanceStatus)  =>  {
+            let  color  =  "green";
             if (status === InstanceStatus.UN_HEALTHY) {
               color = "orange";
-            } else if (status === InstanceStatus.DISABLE) {
-              color = "red";
+            } else if (status === InstanceStatus.DISABLE)  {
+              color = "red";
             }
-            return (
-              <Tag color={color}>
+            return (
+              <Tag color={color}>
                 {status}
               </Tag>
             )

@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from "react";
 import { Link } from "react-router-dom";
-import { Button, Table, Select, Space, Input, message} from "antd";
+import { Button, Table, Select, Space, Input, message} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { getNamespaceNames } from "../../api/namespace";
 import { getServices, ServicesReqData, ServiceInfo } from "../../api/service";

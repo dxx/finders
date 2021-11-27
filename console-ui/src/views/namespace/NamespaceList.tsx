@@ -1,10 +1,10 @@
 import React from "react";
-import { Table, message } from "antd";
+import { Table, message } from "antd";
 import { getNamespaces, NamespaceInfo } from "../../api/namespace";
 
 const { useState, useEffect } = React;
 
-const columns = [
+const columns = [
   {
     title: "命名空间",
     dataIndex: "namespace",
@@ -39,7 +39,7 @@ function NamespaceList() {
         columns={columns}
         dataSource={namespaces}
         loading={loading}
-        pagination={false} />
+        pagination={false} />
     </>
   );
 }
