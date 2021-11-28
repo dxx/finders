@@ -11,7 +11,7 @@ const URL_CLUSTER_NODES = prefix + "/console/cluster/nodes";
 const URL_SERVICES = prefix + "/console/services";
 const URL_INSTANCES = prefix + "/console/instances";
 
-const URL_INSTANCE = prefix + "/instance";
+const URL_INSTANCE = prefix + "/api/instance";
 
 
 export {
