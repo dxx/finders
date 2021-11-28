@@ -59,6 +59,10 @@ distributions {
             from('conf') {
                 into 'conf'
             }
+            // Copy console ui file
+            from('ui') {
+                into 'ui'
+            }
             // Trigger the task
             from(createShutdownScripts) {
                 exclude '*'
