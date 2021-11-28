@@ -76,6 +76,7 @@ function ServiceList() {
     });
 
     fetchServices({page: pagination.current, size: pagination.pageSize, namespace, serviceName});
+    // eslint-disable-next-line
   }, []);
 
   return (

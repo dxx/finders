@@ -85,7 +85,8 @@ function InstanceList() {
           }} />
         <Column title="操作" key="action" render={(text: any, record: InstanceInfo) => (
             <Space size="middle">
-              <a onClick={() => { deregister(record) }}>删除实例</a>
+              {/* eslint-disable-next-line */}
+              <a href="javascript:void(0)" onClick={() => { deregister(record) }}>删除实例</a>
             </Space>
           )} />
       </Table>
