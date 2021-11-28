@@ -102,10 +102,6 @@ public class ServiceManager {
         }
     }
 
-    public void syncInstance(Service service, List<Instance> instances) {
-        updateInstance(service, instances, Services.ACTION_SYNC);
-    }
-
     public Map<String, Map<String, Service>> getServiceMap() {
         return serviceMap;
     }
@@ -135,6 +131,10 @@ public class ServiceManager {
 
     private void removeInstance(Service service, List<Instance> instances) {
         updateInstance(service, instances, Services.ACTION_REMOVE);
+    }
+
+    public void syncInstance(Service service, List<Instance> instances) {
+        updateInstance(service, instances, Services.ACTION_SYNC);
     }
 
     private void updateInstance(Service service, List<Instance> instances, String action) {

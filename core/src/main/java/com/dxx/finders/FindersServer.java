@@ -12,10 +12,7 @@ import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.BodyHandler;
-import io.vertx.ext.web.handler.CorsHandler;
-import io.vertx.ext.web.handler.LoggerFormat;
-import io.vertx.ext.web.handler.LoggerHandler;
+import io.vertx.ext.web.handler.*;
 
 import java.io.File;
 
@@ -38,12 +35,7 @@ public class FindersServer {
         HttpServer httpServer = vertx.createHttpServer(serverOptions);
         Router router = Router.router(vertx);
 
-        // CORS handler
-        router.route().handler(CorsHandler.create("*")
-                .allowedMethod(HttpMethod.GET)
-                .allowedMethod(HttpMethod.POST)
-                .allowedMethod(HttpMethod.PUT)
-                .allowedMethod(HttpMethod.DELETE));
+        initUIRoute(router);
 
         // Logger handler
         router.route().handler(LoggerHandler.create(LoggerFormat.DEFAULT));
@@ -61,6 +53,21 @@ public class FindersServer {
             }
             Loggers.CORE.error("Finders server startup error", http.cause());
         });
+    }
+
+    private static void initUIRoute(Router router) {
+        String home = System.getProperty(EnvConst.HOME);
+        if (home.contains(":")) {
+            home = home.substring(home.indexOf(":") + 1);
+        }
+        router.route("/static/*").handler(StaticHandler.create(home + "/ui"));
+
+        // CORS handler
+        router.route().handler(CorsHandler.create("*")
+                .allowedMethod(HttpMethod.GET)
+                .allowedMethod(HttpMethod.POST)
+                .allowedMethod(HttpMethod.PUT)
+                .allowedMethod(HttpMethod.DELETE));
     }
 
     /**

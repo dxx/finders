@@ -7,12 +7,12 @@ package com.dxx.finders.client.constant;
  */
 public class Paths {
 
-    public static final String INSTANCE = "/instance";
+    private static final String API = "/api";
+
+    public static final String INSTANCE = API + "/instance";
 
     public static final String INSTANCE_LIST = INSTANCE + "/list";
 
     public static final String INSTANCE_BEAT = INSTANCE + "/beat";
-
-    public static final String INSTANCE_STATUS = INSTANCE + "/status";
 
 }

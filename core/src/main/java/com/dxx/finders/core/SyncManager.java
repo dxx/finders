@@ -209,6 +209,9 @@ public class SyncManager {
                     address, Paths.SERVICE_DATA, namespace, serviceName));
             SyncData syncData = JacksonUtils.toObject(result, SyncData.class);
             Service service = serviceManager.getService(namespace, serviceName);
+            if (service == null) {
+                service = serviceManager.createService(namespace, serviceName);
+            }
             serviceManager.syncInstance(service, syncData.getInstanceList());
         }
     }
