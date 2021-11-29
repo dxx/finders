@@ -23,6 +23,8 @@ public class Services {
 
     public static final String SERVICE_NAME_SYNTAX = "[0-9a-zA-Z@\\.:_-]+";
 
+    public static final String SERVICE_NAME_ANY_PATTERN = ".*";
+
     public static final String ACTION_ADD = "add";
 
     public static final String ACTION_REMOVE = "remove";

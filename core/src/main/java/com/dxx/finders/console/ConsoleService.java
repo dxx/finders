@@ -138,7 +138,9 @@ public class ConsoleService {
         if (searchName == null || searchName.equals("")) {
             return false;
         }
-        return !searchName.equals(name);
+        String searchRegx = Services.SERVICE_NAME_ANY_PATTERN +
+                searchName + Services.SERVICE_NAME_ANY_PATTERN;
+        return !name.matches(searchRegx);
     }
 
     private boolean filterNoInstance(Service service) {
