@@ -1,4 +1,5 @@
 *.css linguist-language=java
 *.html linguist-language=java
+*.js linguist-language=java
 *.ts linguist-language=java
 *.tsx linguist-language=java
