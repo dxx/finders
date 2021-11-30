@@ -7,16 +7,34 @@ package com.dxx.finders.client;
  */
 public class FindersClientConfig {
 
+    /**
+     * Url list of finders server.
+     */
     private final String serverList;
 
+    /**
+     * Number of max retries when the request fails.
+     */
     private final int requestMaxRetry;
 
+    /**
+     * Number of threads processing the pull service.
+     */
     private final int servicePullThreads;
 
+    /**
+     * Number of threads processing the heartbeat.
+     */
     private final int heartbeatThreads;
 
+    /**
+     * Cycle of the service pull.
+     */
     private final long servicePullPeriod;
 
+    /**
+     * Cycle of the heartbeat.
+     */
     private final long heartbeatPeriod;
 
     private FindersClientConfig(Builder builder) {
