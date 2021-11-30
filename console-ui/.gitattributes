@@ -1,0 +1,3 @@
+*.css linguist-language=typescript
+*.html linguist-language=typescript
+*.js linguist-language=typescript
