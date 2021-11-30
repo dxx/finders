@@ -10,13 +10,13 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * FindersDiscovery client.
+ * FindersClient test.
  *
  * @author dxx
  */
-public class FindersDiscoveryClientTest {
+public class FindersClientTest {
 
-    private static FindersDiscoveryClient discoveryClient;
+    private static FindersClient findersClient;
 
     @BeforeAll
     public static void setUp() {
@@ -29,17 +29,17 @@ public class FindersDiscoveryClientTest {
                 .heartbeatThreads(1)
                 .heartbeatPeriod(5000)
                 .build();
-        discoveryClient = new FindersDiscoveryClient(namespace, findersClientConfig,
+        findersClient = new FindersClient(namespace, findersClientConfig,
                 LoadBalancerType.ROUND);
     }
 
     @Test
     public void testRegisterInstance() throws IOException {
-        discoveryClient.registerInstance("testService", "127.0.0.1", 8080);
+        findersClient.registerInstance("testService", "127.0.0.1", 8080);
 
         System.in.read();
 
-        discoveryClient.shutdown();
+        findersClient.shutdown();
     }
 
     @Test
@@ -49,11 +49,11 @@ public class FindersDiscoveryClientTest {
         instance.setCluster(Services.DEFAULT_CLUSTER);
         instance.setIp("127.0.0.1");
         instance.setPort(8080);
-        discoveryClient.registerInstance(instance);
+        findersClient.registerInstance(instance);
 
-        discoveryClient.deregisterInstance(instance.getServiceName(), instance.getIp(), instance.getPort());
+        findersClient.deregisterInstance(instance.getServiceName(), instance.getIp(), instance.getPort());
 
-        discoveryClient.shutdown();
+        findersClient.shutdown();
     }
 
     @Test
@@ -63,12 +63,12 @@ public class FindersDiscoveryClientTest {
         instance.setCluster(Services.DEFAULT_CLUSTER);
         instance.setIp("127.0.0.1");
         instance.setPort(8080);
-        discoveryClient.registerInstance(instance);
+        findersClient.registerInstance(instance);
 
-        List<Instance> instanceList = discoveryClient.getAllInstances(instance.getServiceName(), instance.getCluster());
+        List<Instance> instanceList = findersClient.getAllInstances(instance.getServiceName(), instance.getCluster());
         instanceList.forEach(item -> System.out.println(item.getIp() + ":" + item.getPort()));
 
-        discoveryClient.shutdown();
+        findersClient.shutdown();
     }
 
     @Test
@@ -78,12 +78,12 @@ public class FindersDiscoveryClientTest {
         instance.setCluster(Services.DEFAULT_CLUSTER);
         instance.setIp("127.0.0.1");
         instance.setPort(8080);
-        discoveryClient.registerInstance(instance);
+        findersClient.registerInstance(instance);
 
-        Instance instanceInfo = discoveryClient.getInstance(instance.getServiceName(), instance.getIp(), instance.getPort());
+        Instance instanceInfo = findersClient.getInstance(instance.getServiceName(), instance.getIp(), instance.getPort());
         System.out.println(instanceInfo.getIp() + ":" + instanceInfo.getPort());
 
-        discoveryClient.shutdown();
+        findersClient.shutdown();
     }
 
 }
