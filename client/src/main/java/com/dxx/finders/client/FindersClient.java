@@ -1,128 +1,175 @@
 package com.dxx.finders.client;
 
+import com.dxx.finders.client.constant.Services;
+import com.dxx.finders.client.loadbalance.LoadBalancer;
+import com.dxx.finders.client.loadbalance.LoadBalancerType;
+import com.dxx.finders.client.loadbalance.RandomBalancer;
+import com.dxx.finders.client.loadbalance.RoundBalancer;
+import com.dxx.finders.client.model.Heartbeat;
 import com.dxx.finders.client.model.Instance;
+import com.dxx.finders.client.model.InstanceStatus;
+import com.dxx.finders.client.model.ServiceInfo;
+import com.dxx.finders.client.reactor.HeartbeatReactor;
+import com.dxx.finders.client.reactor.ServiceReactor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Finders client interface.
+ * Finders client.
  *
  * @author dxx
  */
-public interface FindersClient {
+public class FindersClient implements FindersClientService {
 
-    /**
-     * Get all instances of a service.
-     *
-     * @param serviceName name of service
-     * @return A list of instance
-     */
-    List<Instance> getAllInstances(String serviceName);
+    private FindersClientConfig config;
 
-    /**
-     * Get all instances of a service.
-     *
-     * @param serviceName name of service
-     * @param cluster name of cluster
-     * @return A list of instance
-     */
-    List<Instance> getAllInstances(String serviceName, String cluster);
+    private FindersClientProxy clientProxy;
 
-    /**
-     * Get all instances of a service.
-     *
-     * @param serviceName name of service
-     * @param clusters name list of cluster
-     * @return A list of instance
-     */
-    List<Instance> getAllInstances(String serviceName, List<String> clusters);
+    private ServiceReactor serviceReactor;
 
-    /**
-     * Get all instances of a service.
-     *
-     * @param serviceName name of service
-     * @param healthyOnly is instance healthyOnly
-     * @return A list of instance
-     */
-    List<Instance> getInstances(String serviceName, boolean healthyOnly);
+    private HeartbeatReactor heartbeatReactor;
 
-    /**
-     * Get instances of a service.
-     *
-     * @param serviceName name of service
-     * @param cluster name of cluster
-     * @param healthyOnly is instance healthyOnly
-     * @return A list of instance
-     */
-    List<Instance> getInstances(String serviceName, String cluster, boolean healthyOnly);
+    public FindersClient(String namespace,
+                         FindersClientConfig clientConfig,
+                         LoadBalancerType loadBalancerType) {
+        init(namespace, clientConfig, loadBalancerType);
+    }
 
-    /**
-     * Get instances of a service.
-     *
-     * @param serviceName name of service
-     * @param clusters name list of cluster
-     * @param healthyOnly is instance healthyOnly
-     * @return A list of instance
-     */
-    List<Instance> getInstances(String serviceName, List<String> clusters, boolean healthyOnly);
+    private void init(String namespace,
+                      FindersClientConfig clientConfig,
+                      LoadBalancerType loadBalancerType) {
+        if (namespace == null || namespace.equals("")) {
+            throw new FindersRuntimeException("namespace must not be empty");
+        }
 
-    /**
-     * Get instance of a service.
-     * @param serviceName name of service
-     * @param ip instance ip
-     * @param port instance port
-     * @return An instance
-     */
-    Instance getInstance(String serviceName, String ip, int port);
+        if (clientConfig == null) {
+            throw new FindersRuntimeException("clientConfig must not be null");
+        }
+        this.config = clientConfig;
 
-    /**
-     * Get instance of a service.
-     * @param serviceName name of service
-     * @param ip instance ip
-     * @param port instance port
-     * @param cluster name of cluster
-     * @return An instance
-     */
-    Instance getInstance(String serviceName, String ip, int port, String cluster);
+        String serverList = clientConfig.serverList();
+        if (serverList == null || serverList.equals("")) {
+            throw new FindersRuntimeException("serverList must not be empty");
+        }
+        List<String> srvList = Arrays.stream(serverList.split(","))
+                .collect(Collectors.toList());
+        LoadBalancer loadBalancer;
+        switch (loadBalancerType) {
+            case ROUND:
+                loadBalancer = new RoundBalancer(srvList);
+                break;
+            case RANDOM:
+                loadBalancer = new RandomBalancer(srvList);
+                break;
+            default:
+                throw new FindersRuntimeException("loadBalancerType is incorrect");
+        }
+        this.clientProxy = new FindersClientProxy(namespace, loadBalancer, clientConfig.requestMaxRetry());
+        this.serviceReactor = new ServiceReactor(this.clientProxy, clientConfig.servicePullThreads(),
+                clientConfig.servicePullPeriod());
+        this.heartbeatReactor = new HeartbeatReactor(this.clientProxy, clientConfig.heartbeatThreads());
+    }
 
-    /**
-     * Register an instance of service.
-     * @param serviceName name of service
-     * @param ip instance ip
-     * @param port instance port
-     */
-    void registerInstance(String serviceName, String ip, int port);
+    @Override
+    public List<Instance> getAllInstances(String serviceName) {
+        return getAllInstances(serviceName, Collections.emptyList());
+    }
 
-    /**
-     * Register an instance of service with specified cluster name.
-     * @param serviceName name of service
-     * @param ip instance ip
-     * @param port instance port
-     * @param cluster name of cluster
-     */
-    void registerInstance(String serviceName, String ip, int port, String cluster);
+    @Override
+    public List<Instance> getAllInstances(String serviceName, String cluster) {
+        return getAllInstances(serviceName, Collections.singletonList(cluster));
+    }
 
-    /**
-     * Register an instance of service with specified instance properties.
-     * @param instance instance to register
-     */
-    void registerInstance(Instance instance);
+    @Override
+    public List<Instance> getAllInstances(String serviceName, List<String> clusters) {
+        return getInstances(serviceName, clusters, false);
+    }
 
-    /**
-     * Deregister an instance of service.
-     * @param serviceName name of service
-     * @param ip instance ip
-     * @param port instance port
-     */
-    void deregisterInstance(String serviceName, String ip, int port);
+    @Override
+    public List<Instance> getInstances(String serviceName, boolean healthyOnly) {
+        return getInstances(serviceName, Services.DEFAULT_CLUSTER, healthyOnly);
+    }
 
-    /**
-     * Deregister an instance of service.
-     * @param serviceName name of service
-     * @param ip instance ip
-     * @param port instance port
-     * @param cluster name of cluster
-     */
-    void deregisterInstance(String serviceName, String ip, int port, String cluster);
+    @Override
+    public List<Instance> getInstances(String serviceName, String cluster, boolean healthyOnly) {
+        return getInstances(serviceName, Collections.singletonList(cluster), healthyOnly);
+    }
+
+    @Override
+    public List<Instance> getInstances(String serviceName, List<String> clusters, boolean healthyOnly) {
+        return selectInstances(serviceName, clusters, healthyOnly);
+    }
+
+    @Override
+    public Instance getInstance(String serviceName, String ip, int port) {
+        return getInstance(serviceName, ip, port, Services.DEFAULT_CLUSTER);
+    }
+
+    @Override
+    public Instance getInstance(String serviceName, String ip, int port, String cluster) {
+        return clientProxy.getInstance(serviceName, ip, port, cluster);
+    }
+
+    @Override
+    public void registerInstance(String serviceName, String ip, int port) {
+        registerInstance(serviceName, ip, port, Services.DEFAULT_CLUSTER);
+    }
+
+    @Override
+    public void registerInstance(String serviceName, String ip, int port, String cluster) {
+        clientProxy.registerInstance(serviceName, ip, port, cluster);
+
+        Heartbeat heartbeat = new Heartbeat();
+        heartbeat.setCluster(cluster);
+        heartbeat.setServiceName(serviceName);
+        heartbeat.setIp(ip);
+        heartbeat.setPort(port);
+        heartbeat.setPeriod(config.heartbeatPeriod());
+        heartbeatReactor.addHeartbeat(heartbeat);
+    }
+
+    @Override
+    public void registerInstance(Instance instance) {
+        clientProxy.registerInstance(instance);
+
+        Heartbeat heartbeat = new Heartbeat();
+        heartbeat.setCluster(instance.getCluster());
+        heartbeat.setServiceName(instance.getServiceName());
+        heartbeat.setIp(instance.getIp());
+        heartbeat.setPort(instance.getPort());
+        heartbeat.setPeriod(config.heartbeatPeriod());
+        heartbeatReactor.addHeartbeat(heartbeat);
+    }
+
+    @Override
+    public void deregisterInstance(String serviceName, String ip, int port) {
+        deregisterInstance(serviceName, ip, port, Services.DEFAULT_CLUSTER);
+    }
+
+    @Override
+    public void deregisterInstance(String serviceName, String ip, int port, String cluster) {
+        clientProxy.deregisterInstance(serviceName, ip, port, cluster);
+    }
+
+    private List<Instance> selectInstances(String serviceName, List<String> clusters, boolean healthyOnly) {
+        ServiceInfo serviceInfo = serviceReactor.getService(serviceName, clusters);
+        if (serviceInfo == null) {
+            return new ArrayList<>();
+        }
+        if (healthyOnly) {
+            return serviceInfo.getInstances().stream()
+                    .filter(item -> item.getStatus() == InstanceStatus.HEALTHY).collect(Collectors.toList());
+        }
+        return serviceInfo.getInstances();
+    }
+
+    public void shutdown() {
+        this.serviceReactor.shutdown();
+        this.heartbeatReactor.shutdown();
+    }
 
 }
