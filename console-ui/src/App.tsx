@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Link } from "react-router-dom";
-import { Layout, Menu } from 'antd';
+import { ConfigProvider, Layout, Menu } from "antd";
+import zhCN from "antd/lib/locale/zh_CN";
 import Router from "./router";
 import "./App.css";
 import "antd/dist/antd.css";
@@ -42,34 +43,36 @@ function App() {
     defaultKey = path.key;
   }
   return (
-    <BrowserRouter>
-      <Layout className="app">
-        <Header className="header">
-          <span className="logo">Finders</span>
-          <a className="github" href="https://github.com/dxx/finders" target="_blank" rel="noreferrer"><GithubOutlined/></a>
-        </Header>
-        <Sider width={200} className="sider" style={{ position: 'fixed' }}>
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={[defaultKey]}
-            style={{ height: '100%', borderRight: 0 }}
-          >
-            {
-              menus.map(menu => {
-                return (
-                  <Menu.Item key={menu.key} icon={menu.icon}><Link to={menu.path}>{menu.name}</Link></Menu.Item>
-                );
-              })
-            }
-          </Menu>
-        </Sider>
-        <Layout className="main-layout">
-          <Content className="main-content" style={{ minHeight: 'auto' }}>
-            <Router />
-          </Content>
+    <ConfigProvider locale={zhCN}>
+      <BrowserRouter>
+        <Layout className="app">
+          <Header className="header">
+            <span className="logo">Finders</span>
+            <a className="github" href="https://github.com/dxx/finders" target="_blank" rel="noreferrer"><GithubOutlined/></a>
+          </Header>
+          <Sider width={200} className="sider" style={{ position: 'fixed' }}>
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={[defaultKey]}
+              style={{ height: '100%', borderRight: 0 }}
+            >
+              {
+                menus.map(menu => {
+                  return (
+                    <Menu.Item key={menu.key} icon={menu.icon}><Link to={menu.path}>{menu.name}</Link></Menu.Item>
+                  );
+                })
+              }
+            </Menu>
+          </Sider>
+          <Layout className="main-layout">
+            <Content className="main-content" style={{ minHeight: 'auto' }}>
+              <Router />
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
-    </BrowserRouter>
+      </BrowserRouter>
+    </ConfigProvider>
   );
 }
 
