@@ -5,6 +5,7 @@ import com.dxx.finders.config.ServerConfig;
 import com.dxx.finders.env.EnvConst;
 import com.dxx.finders.constant.Loggers;
 import com.dxx.finders.env.Environment;
+import com.dxx.finders.exception.FindersRuntimeException;
 import com.dxx.finders.http.RouterFunction;
 import com.dxx.finders.util.StringUtils;
 import io.vertx.core.Vertx;
@@ -15,6 +16,9 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class FindersServer {
 
@@ -60,7 +64,18 @@ public class FindersServer {
         if (home.contains(":")) {
             home = home.substring(home.indexOf(":") + 1);
         }
-        router.route("/static/*").handler(StaticHandler.create(home + "/ui"));
+        final String staticRootPath = home + "/ui";
+        router.route("/static/*").handler(StaticHandler.create(staticRootPath));
+
+        // Render the index page
+        router.route("/finders/*").handler(ctx -> {
+            try {
+                ctx.response().putHeader("Content-Type", "text/html; charset=UTF-8");
+                ctx.end(new String(Files.readAllBytes(Paths.get(staticRootPath + "/index.html"))));
+            } catch (IOException e) {
+                throw new FindersRuntimeException(e);
+            }
+        });
 
         // CORS handler
         router.route().handler(CorsHandler.create("*")

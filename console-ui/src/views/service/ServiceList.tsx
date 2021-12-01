@@ -107,7 +107,7 @@ function ServiceList() {
         <Column title="健康实例数量" dataIndex="healthyInstanceCount" key="healthyInstanceCount" />
         <Column title="操作" key="action" render={(text: any, record: ServiceInfo) => (
           <Space size="middle">
-            <Link to={`/${namespace}/${record.serviceName}/instances`}>实例列表</Link>
+            <Link to={`/finders/${namespace}/${record.serviceName}/instances`}>实例列表</Link>
           </Space>
         )} />
       </Table>
