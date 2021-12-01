@@ -14,7 +14,33 @@ import {
 
 const { Header, Content, Sider } = Layout;
 
+const menus = [
+  {
+    key: "services",
+    path: "/services",
+    name: "服务列表",
+    icon: <BarsOutlined />
+  },
+  {
+    key: "namespaces",
+    path: "/namespaces",
+    name: "命名空间",
+    icon: <CloudOutlined />
+  },
+  {
+    key: "nodes",
+    path: "/cluster/nodes",
+    name: "集群节点",
+    icon: <ApartmentOutlined />
+  }
+];
+
 function App() {
+  let defaultKey = menus[0].key;
+  let path = menus.find(item => item.path === window.location.pathname);
+  if (path) {
+    defaultKey = path.key;
+  }
   return (
     <BrowserRouter>
       <Layout className="app">
@@ -25,12 +51,16 @@ function App() {
         <Sider width={200} className="sider" style={{ position: 'fixed' }}>
           <Menu
             mode="inline"
-            defaultSelectedKeys={['1']}
+            defaultSelectedKeys={[defaultKey]}
             style={{ height: '100%', borderRight: 0 }}
           >
-            <Menu.Item key="1" icon={<BarsOutlined />}><Link to="/services">服务列表</Link></Menu.Item>
-            <Menu.Item key="2" icon={<CloudOutlined />}><Link to="/namespaces">命名空间</Link></Menu.Item>
-            <Menu.Item key="3" icon={<ApartmentOutlined />}><Link to="/cluster/nodes">集群节点</Link></Menu.Item>
+            {
+              menus.map(menu => {
+                return (
+                  <Menu.Item key={menu.key} icon={menu.icon}><Link to={menu.path}>{menu.name}</Link></Menu.Item>
+                );
+              })
+            }
           </Menu>
         </Sider>
         <Layout className="main-layout">
