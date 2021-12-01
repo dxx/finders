@@ -16,7 +16,7 @@ const InstanceList = withSuspense(React.lazy(() => import("../views/instance/Ins
 
 const router = [
   {
-    path: "/",
+    path: "/finders",
     element: <ServiceList />,
   },
   {
@@ -37,7 +37,7 @@ const router = [
   },
   {
     path: "*",
-    element: <Navigate to={"/"} />
+    element: <Navigate to={"/finders"} />
   }
 ];
 
