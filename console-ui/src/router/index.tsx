@@ -1,5 +1,5 @@
 import React from "react";
-import { useRoutes } from "react-router-dom";
+import { useRoutes, Navigate } from "react-router-dom";
 
 const withSuspense = (Component: React.LazyExoticComponent<any>) => {
   return (props: any) => (
@@ -14,32 +14,30 @@ const ClusterNodeList = withSuspense(React.lazy(() => import("../views/clusterno
 const ServiceList = withSuspense(React.lazy(() => import("../views/service/ServiceList")));
 const InstanceList = withSuspense(React.lazy(() => import("../views/instance/InstanceList")));
 
-const NotFound = () => (<div>请求的页面不存在！</div>)
-
 const router = [
   {
-    path: "/static/index.html",
+    path: "/",
     element: <ServiceList />,
   },
   {
-    path: "/namespaces",
+    path: "/finders/namespaces",
     element: <NamespaceList />
   },
   {
-    path: "/cluster/nodes",
+    path: "/finders/cluster/nodes",
     element: <ClusterNodeList />
   },
   {
-    path: "/services",
+    path: "/finders/services",
     element: <ServiceList />
   },
   {
-    path: "/:namespace/:serviceName/instances",
+    path: "/finders/:namespace/:serviceName/instances",
     element: <InstanceList />
   },
   {
     path: "*",
-    element: <NotFound />
+    element: <Navigate to={"/"} />
   }
 ];
 

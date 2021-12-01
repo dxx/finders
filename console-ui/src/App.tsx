@@ -18,19 +18,19 @@ const { Header, Content, Sider } = Layout;
 const menus = [
   {
     key: "services",
-    path: "/services",
+    path: "/finders/services",
     name: "服务列表",
     icon: <BarsOutlined />
   },
   {
     key: "namespaces",
-    path: "/namespaces",
+    path: "/finders/namespaces",
     name: "命名空间",
     icon: <CloudOutlined />
   },
   {
     key: "nodes",
-    path: "/cluster/nodes",
+    path: "/finders/cluster/nodes",
     name: "集群节点",
     icon: <ApartmentOutlined />
   }
