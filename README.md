@@ -6,11 +6,11 @@
 
 Distributed service management. Inspired by [Nacos](https://github.com/alibaba/nacos).
 
-## Quick Start
+## Getting Started
 
 Build from source code. The build requires `java8`.
 
-### Getting the Source Code
+### Get the Source Code
 
 ```shell
 git clone https://github.com/dxx/finders.git
