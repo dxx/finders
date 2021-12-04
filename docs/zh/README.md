@@ -1,6 +1,5 @@
 ---
 home: true
-heroImage: /hero.png
 heroText: Finders
 tagline: 分布式服务管理
 actionText: 快速开始 →

@@ -1,5 +1,6 @@
 [themeConfig]
 repo = "https://github.com/dxx/finders"
+docsDir = "docs"
 smoothScroll = true
 
 [locales."/"]

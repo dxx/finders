@@ -1,6 +1,5 @@
 ---
 home: true
-heroImage: /hero.png
 heroText: Finders
 tagline: Distributed service management
 actionText: Get Started →
