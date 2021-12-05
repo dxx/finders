@@ -10,6 +10,6 @@ features:
 - title: Distributed
   details: Simple configuration can support multi-node deployment to ensure high availability.
 - title: High-Performance 
-  details: High-performance network services built using vertx, the underlying layer is based on the netty framework.
+  details: High-performance network services built using vertx, the underlying layer is based on the netty.
 footer: Apache-2.0 License | Copyright © 2021-present dxx
 ---

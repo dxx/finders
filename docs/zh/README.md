@@ -10,6 +10,6 @@ features:
 - title: 分布式
   details: 只需简单的配置，即可支持多节点部署，保证高可用性。
 - title: 高性能
-  details: 使用 Vertx 构建的高性能网络服务，底层基于 Netty 框架。
+  details: 使用 Vertx 构建的高性能网络服务，底层基于 Netty。
 footer: Apache-2.0 License | Copyright © 2021-present dxx
 ---
