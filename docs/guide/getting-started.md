@@ -82,6 +82,6 @@ Or double click the `shutdown.bat` file.
 
 > Note: if the `shutdown.bat` file is not found, please build again.
 
-## Access the console
+## Access the Console
 
 Open the browser and enter `http://localhost:9080/finders`.
