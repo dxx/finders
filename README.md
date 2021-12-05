@@ -1,23 +1,38 @@
 # Finders
 
+![JDK8+](https://img.shields.io/badge/JDK-1.8%2B-%23b07219)
 [![Apache-2.0 licensed](https://img.shields.io/github/license/dxx/finders.svg?color=blue)](./LICENSE)
 
 [中文](./README_zh.md)
 
 Distributed service management. Inspired by [Nacos](https://github.com/alibaba/nacos).
 
+Finders is a distributed service management platform that helps you achieve the governance of microservices, such as service discovery, service registration, service healthy check. 
+
 ## Getting Started
 
-Build from source code. The build requires `java8`.
+### Download Installation Package
 
-### Get the Source Code
+Finders is released on the github and can be downloaded directly from [here](https://github.com/dxx/finders/releases).
+
+After the download is completed, decompression zip file:
+
+```shell
+unzip finders-<version>.zip
+```
+
+### Build from Source Code
+
+Build from source code requires `JDK8+`.
+
+#### Get the Source Code
 
 ```shell
 git clone https://github.com/dxx/finders.git
 cd finders
 ```
 
-### Build Binary Package
+#### Build Binary Package
 
 ```shell
 ./gradlew -p ./distribution build
@@ -31,23 +46,19 @@ Decompression zip file:
 unzip finders-<version>.zip
 ```
 
-### Start Server
+#### Start Server
 
 ```shell
 cd finders/bin
 ```
 
-#### Linux/Unix/Mac
-
-Run the following command to start:
+Linux/Unix/Mac:
 
 ```shell
 ./startup
 ```
 
-#### Windows
-
-Run the following command to start:
+Windows :
 
 ```shell
 startup.bat
@@ -55,15 +66,15 @@ startup.bat
 
 Or double click the `startup.bat` file.
 
-### Shutdown Server
+#### Shutdown Server
 
-#### Linux/Unix/Mac
+Linux/Unix/Mac:
 
 ```shell
 ./shutdown
 ```
 
-#### Windows
+Windows:
 
 ```
 shutdown.bat
@@ -72,6 +83,10 @@ shutdown.bat
 Or double click the `shutdown.bat` file.
 
 > Note: if the `shutdown.bat` file is not found, please build again.
+
+## Documentation
+
+Your can view the full documentation from [here](https://dxx.github.io/finders-docs).
 
 ## License
 
