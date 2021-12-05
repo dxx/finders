@@ -7,7 +7,7 @@ The installation package can be downloaded directly or built using the source co
 * JDK 8+ installed
 * `JAVA_HOME` environment variable configured
 
-## Download the Installation Package
+## Download Installation Package
 
 Finders is released on the github and can be downloaded directly from [here](https://github.com/dxx/finders/releases).
 
