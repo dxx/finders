@@ -86,7 +86,7 @@ shutdown.bat
 
 ## 文档
 
-你可以从[这里](https://dxx.github.io/finders-docs)查看完整的文档。
+你可以从[这里](https://dxx.github.io/finders)查看完整的文档。
 
 ## 许可证
 
