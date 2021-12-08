@@ -15,7 +15,7 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-annotations:${rootProject.ext.jacksonVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${rootProject.ext.jacksonVersion}"
 
-    implementation('org.slf4j:slf4j-api:1.7.31')
+    implementation("org.slf4j:slf4j-api:${rootProject.ext.slf4jVersion}")
 
     // Junit5
     testImplementation "org.junit.jupiter:junit-jupiter:${rootProject.ext.junitVersion}"
