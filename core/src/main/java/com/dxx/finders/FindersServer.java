@@ -65,7 +65,9 @@ public class FindersServer {
             home = home.substring(home.indexOf(":") + 1);
         }
         final String staticRootPath = home + "/ui";
-        router.route("/static/*").handler(StaticHandler.create(staticRootPath));
+        router.route("/static/*").handler(StaticHandler.create()
+                .setAllowRootFileSystemAccess(true)
+                .setWebRoot(staticRootPath));
 
         // Render the index page
         router.route("/finders/*").handler(ctx -> {
