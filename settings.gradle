@@ -8,5 +8,5 @@ pluginManagement {
 rootProject.name = 'finders'
 
 include 'distribution'
-include 'core'
+include 'server'
 include 'client'
