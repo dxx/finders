@@ -32,8 +32,8 @@ public class FindersServer {
 
         HttpServerOptions serverOptions = new HttpServerOptions();
         serverOptions.setAcceptBacklog(serverConfig.getBacklog());
-        serverOptions.setReceiveBufferSize(serverConfig.getRcvBuf());
-        serverOptions.setSendBufferSize(serverConfig.getSndBuf());
+        serverOptions.setReceiveBufferSize(serverConfig.getRcvBufSize());
+        serverOptions.setSendBufferSize(serverConfig.getSndBufSize());
 
         Vertx vertx = Vertx.vertx();
         HttpServer httpServer = vertx.createHttpServer(serverOptions);
@@ -93,7 +93,7 @@ public class FindersServer {
     public static void main(String[] args) {
         String home = System.getProperty(EnvConst.HOME);
         home = StringUtils.defaultIfEmpty(home,
-                System.getProperty("user.dir") + File.separator + "core");
+                System.getProperty("user.dir") + File.separator + "server");
         System.setProperty(EnvConst.HOME, home);
 
         run();

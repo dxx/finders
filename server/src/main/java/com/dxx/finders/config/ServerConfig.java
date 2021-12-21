@@ -11,9 +11,9 @@ public class ServerConfig {
 
     private int backlog = 128;
 
-    private int rcvBuf = 128 * 1024;
+    private int rcvBufSize = 128 * 1024;
 
-    private int sndBuf = 128 * 1024;
+    private int sndBufSize = 128 * 1024;
 
     public int getPort() {
         return port;
@@ -31,19 +31,19 @@ public class ServerConfig {
         this.backlog = backlog;
     }
 
-    public int getRcvBuf() {
-        return rcvBuf;
+    public int getRcvBufSize() {
+        return rcvBufSize;
     }
 
-    public void setRcvBuf(int rcvBuf) {
-        this.rcvBuf = rcvBuf;
+    public void setRcvBufSize(int rcvBufSize) {
+        this.rcvBufSize = rcvBufSize;
     }
 
-    public int getSndBuf() {
-        return sndBuf;
+    public int getSndBufSize() {
+        return sndBufSize;
     }
 
-    public void setSndBuf(int sndBuf) {
-        this.sndBuf = sndBuf;
+    public void setSndBufSize(int sndBufSize) {
+        this.sndBufSize = sndBufSize;
     }
 }
