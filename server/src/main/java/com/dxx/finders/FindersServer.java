@@ -93,7 +93,7 @@ public class FindersServer {
     public static void main(String[] args) {
         String home = System.getProperty(EnvConst.HOME);
         home = StringUtils.defaultIfEmpty(home,
-                System.getProperty("user.dir") + File.separator + "core");
+                System.getProperty("user.dir") + File.separator + "server");
         System.setProperty(EnvConst.HOME, home);
 
         run();
