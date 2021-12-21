@@ -6,10 +6,10 @@ port = 9080
 # backlog = 128
 
 # Upper capacity limit of the tcp receiving buffer, the unit is bytes. Default is 128K.
-# rcvBuf = 131072
+# rcvBufSize = 131072
 
 # Upper capacity limit of the tcp send buffer, the unit is bytes. Default is 128K.
-# sndBuf = 131072
+# sndBufSize = 131072
 
 [cluster]
 # The own server node id, must be unique in the cluster.
