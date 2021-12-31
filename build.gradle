@@ -3,7 +3,7 @@ description = "Finders"
 configure(allprojects) { project ->
     apply plugin: 'java'
 
-    group 'io.github.dxx.finders'
+    group 'io.github.dxx'
 
     repositories {
         maven { url 'https://maven.aliyun.com/repository/public' }
