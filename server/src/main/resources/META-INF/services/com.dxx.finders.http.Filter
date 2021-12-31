@@ -1,3 +1,0 @@
-# Default filters.
-com.dxx.finders.http.LogFilter
-com.dxx.finders.filter.DistributionFilter

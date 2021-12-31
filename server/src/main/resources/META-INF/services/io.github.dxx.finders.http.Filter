@@ -1,0 +1,3 @@
+# Default filters.
+io.github.dxx.finders.http.LogFilter
+io.github.dxx.finders.filter.DistributionFilter
