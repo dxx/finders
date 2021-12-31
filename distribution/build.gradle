@@ -13,7 +13,7 @@ java {
 }
 
 application {
-    mainClassName = 'com.dxx.finders.Starter'
+    mainClassName = 'io.github.dxx.finders.Starter'
 }
 
 dependencies {

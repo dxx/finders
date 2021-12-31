@@ -105,15 +105,15 @@
         <appender-ref ref="accessAsync" />
     </logger>
 
-    <logger name="com.dxx.finders.core" level="DEBUG">
+    <logger name="io.github.dxx.finders.core" level="DEBUG">
         <appender-ref ref="coreAsync" />
     </logger>
 
-    <logger name="com.dxx.finders.event" level="DEBUG">
+    <logger name="io.github.dxx.finders.event" level="DEBUG">
         <appender-ref ref="eventAsync" />
     </logger>
 
-    <logger name="com.dxx.finders.http.client" level="DEBUG">
+    <logger name="io.github.dxx.finders.http.client" level="DEBUG">
         <appender-ref ref="httpClientAsync" />
     </logger>
 
