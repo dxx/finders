@@ -1,7 +1,5 @@
 description = "Finders Server"
 
-version "0.1.3"
-
 java {
     archivesBaseName = 'finders-server'
 }
