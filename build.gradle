@@ -1,11 +1,9 @@
 description = "Finders"
 
-configure(allprojects) { project ->
-    group 'io.github.dxx'
-}
-
 configure(subprojects) { project ->
     apply plugin: 'java'
+
+    group 'io.github.dxx'
 
     repositories {
         maven { url 'https://maven.aliyun.com/repository/public' }
