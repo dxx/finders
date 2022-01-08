@@ -1,3 +1,6 @@
+# These are explicitly windows files and should use crlf
+*.bat           text eol=crlf
+
 *.css linguist-language=typescript
 *.html linguist-language=typescript
 *.js linguist-language=typescript
