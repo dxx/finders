@@ -1,6 +1,6 @@
 description = "Finders Client"
 
-version '0.1.0'
+version "0.1.0"
 
 java {
     archivesBaseName = 'finders-client'
@@ -8,17 +8,17 @@ java {
 
 dependencies {
     // OkHttp
-    implementation("com.squareup.okhttp3:okhttp:${okhttpVersion}")
+    implementation("com.squareup.okhttp3:okhttp:${libraries.okhttpVersion}")
 
     // Jackson
-    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
-    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
-    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${libraries.jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${libraries.jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${libraries.jacksonVersion}"
 
-    implementation("org.slf4j:slf4j-api:${slf4jVersion}")
+    implementation("org.slf4j:slf4j-api:${libraries.slf4jVersion}")
 
     // Junit5
-    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter:${libraries.junitVersion}"
 }
 
 test {
