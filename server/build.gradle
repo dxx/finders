@@ -1,6 +1,6 @@
 description = "Finders Server"
 
-version '0.1.3'
+version "0.1.3"
 
 java {
     archivesBaseName = 'finders-server'
@@ -8,22 +8,22 @@ java {
 
 dependencies {
     // Vertx
-    implementation "io.vertx:vertx-web:${vertxVersion}"
-    implementation "io.vertx:vertx-web-client:${vertxVersion}"
+    implementation "io.vertx:vertx-web:${libraries.vertxVersion}"
+    implementation "io.vertx:vertx-web-client:${libraries.vertxVersion}"
 
     // Logback
-    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
+    implementation "ch.qos.logback:logback-classic:${libraries.logbackVersion}"
 
     // Jackson
-    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
-    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
-    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${libraries.jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${libraries.jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${libraries.jacksonVersion}"
 
     // Toml
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${libraries.jacksonVersion}"
 
     // Junit5
-    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter:${libraries.junitVersion}"
 }
 
 test {
