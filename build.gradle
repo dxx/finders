@@ -1,16 +1,12 @@
 description = "Finders"
 
 ext {
-    libraries = [
-        vertxVersion: "4.1.5",
-        jacksonVersion: "2.12.3",
-        logbackVersion: "1.2.5",
-        slf4jVersion: "1.7.31",
-
-        okhttpVersion: "3.12.8",
-
-        junitVersion: "5.6.0",
-    ]
+    set("vertxVersion", "4.1.5")
+    set("jacksonVersion", "2.12.3")
+    set("logbackVersion", "1.2.5")
+    set("slf4jVersion", "1.7.31")
+    set("okhttpVersion", "3.12.8")
+    set("junitVersion", "5.6.0")
 }
 
 configure(subprojects) { project ->
