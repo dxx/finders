@@ -6,22 +6,22 @@ java {
 
 dependencies {
     // Vertx
-    implementation "io.vertx:vertx-web:${libraries.vertxVersion}"
-    implementation "io.vertx:vertx-web-client:${libraries.vertxVersion}"
+    implementation "io.vertx:vertx-web:${vertxVersion}"
+    implementation "io.vertx:vertx-web-client:${vertxVersion}"
 
     // Logback
-    implementation "ch.qos.logback:logback-classic:${libraries.logbackVersion}"
+    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
 
     // Jackson
-    implementation "com.fasterxml.jackson.core:jackson-core:${libraries.jacksonVersion}"
-    implementation "com.fasterxml.jackson.core:jackson-annotations:${libraries.jacksonVersion}"
-    implementation "com.fasterxml.jackson.core:jackson-databind:${libraries.jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 
     // Toml
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${libraries.jacksonVersion}"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${jacksonVersion}"
 
     // Junit5
-    testImplementation "org.junit.jupiter:junit-jupiter:${libraries.junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
 }
 
 test {
