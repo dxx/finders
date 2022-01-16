@@ -1,17 +1,17 @@
 import groovy.text.SimpleTemplateEngine
 
 plugins {
-    id 'application'
+    id "application"
 }
 
 description = "Finders Distribution"
 
 java {
-    archivesBaseName = 'finders-starter'
+    archivesBaseName = "finders-starter"
 }
 
 application {
-    mainClassName = 'io.github.dxx.finders.Starter'
+    mainClassName = "io.github.dxx.finders.Starter"
 }
 
 dependencies {
@@ -20,10 +20,10 @@ dependencies {
 
 // Use custom script templates
 tasks.withType(CreateStartScripts) {
-    applicationName = 'startup'
+    applicationName = "startup"
 
-    def unixScriptFile = 'script/UnixStartupScript.txt'
-    def winScriptFile = 'script/WinStartupScript.txt'
+    def unixScriptFile = "script/UnixStartupScript.txt"
+    def winScriptFile = "script/WinStartupScript.txt"
     assert project.file(unixScriptFile).exists()
     assert project.file(winScriptFile).exists()
     unixStartScriptGenerator.template = resources.text.fromFile(file(unixScriptFile))
@@ -40,30 +40,30 @@ task createShutdownScripts {
         }
         def binding = ["mainClassName": mainClassName]
         def unixEngine = new SimpleTemplateEngine()
-        def unixTemplate = unixEngine.createTemplate(file('script/UnixShutdownScript.txt').getText()).make(binding)
-        new File(scripts, 'shutdown').write(unixTemplate.toString())
+        def unixTemplate = unixEngine.createTemplate(file("script/UnixShutdownScript.txt").getText()).make(binding)
+        new File(scripts, "shutdown").write(unixTemplate.toString())
 
         def winEngine = new SimpleTemplateEngine()
-        def winTemplate = winEngine.createTemplate(file('script/WinShutdownScript.txt').getText()).make(binding)
-        new File(scripts, 'shutdown.bat').write(winTemplate.toString())
+        def winTemplate = winEngine.createTemplate(file("script/WinShutdownScript.txt").getText()).make(binding)
+        new File(scripts, "shutdown.bat").write(winTemplate.toString())
     }
 }
 
 distributions {
     main {
-        distributionBaseName = 'finders'
+        distributionBaseName = "finders"
         contents {
             // Copy config file
-            from('conf') {
-                into 'conf'
+            from("conf") {
+                into "conf"
             }
             // Copy console ui file
-            from('ui') {
-                into 'ui'
+            from("ui") {
+                into "ui"
             }
             // Trigger the task
             from(createShutdownScripts) {
-                exclude '*'
+                exclude "*"
             }
         }
     }
