@@ -8,7 +8,7 @@ description = "Finders Client"
 version "0.1.0"
 
 java {
-    archivesBaseName = 'finders-client'
+    archivesBaseName = "finders-client"
     withSourcesJar()
 }
 
