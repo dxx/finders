@@ -98,6 +98,6 @@ public class FindersClientProxy {
                 server = loadBalancer.chooseServer();
             }
         }
-        throw new FindersRuntimeException("Get instances failed, server: " + server);
+        throw new FindersRuntimeException(String.format("Request server %s failed", server));
     }
 }
