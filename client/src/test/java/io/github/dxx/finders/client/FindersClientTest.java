@@ -39,7 +39,7 @@ public class FindersClientTest {
 
         System.in.read();
 
-        findersClient.shutdown();
+        findersClient.close();
     }
 
     @Test
@@ -53,7 +53,7 @@ public class FindersClientTest {
 
         findersClient.deregisterInstance(instance.getServiceName(), instance.getIp(), instance.getPort());
 
-        findersClient.shutdown();
+        findersClient.close();
     }
 
     @Test
@@ -68,7 +68,7 @@ public class FindersClientTest {
         List<Instance> instanceList = findersClient.getAllInstances(instance.getServiceName(), instance.getCluster());
         instanceList.forEach(item -> System.out.println(item.getIp() + ":" + item.getPort()));
 
-        findersClient.shutdown();
+        findersClient.close();
     }
 
     @Test
@@ -83,7 +83,7 @@ public class FindersClientTest {
         Instance instanceInfo = findersClient.getInstance(instance.getServiceName(), instance.getIp(), instance.getPort());
         System.out.println(instanceInfo.getIp() + ":" + instanceInfo.getPort());
 
-        findersClient.shutdown();
+        findersClient.close();
     }
 
 }

@@ -1,9 +1,14 @@
+plugins {
+    id "maven-publish"
+}
+
 description = "Finders Client"
 
 version "0.1.0"
 
 java {
     archivesBaseName = 'finders-client'
+    withSourcesJar()
 }
 
 dependencies {
@@ -23,4 +28,73 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    into("META-INF/") {
+        from rootProject.file("LICENSE")
+    }
+    into("META-INF/maven/${project.group}/${project.name}") {
+        from { generatePomFileForMavenJavaPublication }
+        rename ".*", "pom.xml"
+    }
+    afterEvaluate {
+        manifest {
+            attributes "Implementation-Title": archiveBaseName
+            attributes "Implementation-Version": archiveVersion
+            attributes "Build-Gradle": gradle.gradleVersion
+            attributes 'Build-Jdk': System.getProperty("java.version")
+            attributes 'Build-Timestamp': LocalDateTime.now().format("yyyy-MM-dd HH:mm:ss")
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = archivesBaseName
+
+            from components.java
+
+            pom {
+                afterEvaluate {
+                    name = archivesBaseName
+                    description = project.description
+                }
+
+                url = "https://github.com/dxx/finders"
+
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = "dxx"
+                        name = "dxx"
+                        email = "dx1898@foxmail.com"
+                    }
+                }
+
+                withXml {
+                    def node = asNode()
+                    node.dependencies.dependency.findAll { xmlDep ->
+                        xmlDep.scope.text() == "runtime" && project.configurations.implementation
+                                .allDependencies.find { dep ->
+                            xmlDep.groupId.text() == dep.group && xmlDep.artifactId.text() == dep.name
+                        }.each {
+                            xmlDep.scope*.value = "compile"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
 }
