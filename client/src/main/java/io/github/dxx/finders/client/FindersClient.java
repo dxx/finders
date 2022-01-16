@@ -167,7 +167,8 @@ public class FindersClient implements FindersClientService {
         return serviceInfo.getInstances();
     }
 
-    public void shutdown() {
+    @Override
+    public void close() {
         this.serviceReactor.shutdown();
         this.heartbeatReactor.shutdown();
     }

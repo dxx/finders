@@ -125,4 +125,9 @@ public interface FindersClientService {
      */
     void deregisterInstance(String serviceName, String ip, int port, String cluster);
 
+    /**
+     * Closes the FindersClientService.
+     */
+    void close();
+
 }
