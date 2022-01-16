@@ -1,4 +1,5 @@
 plugins {
+    id "java-library"
     id "maven-publish"
 }
 
@@ -13,14 +14,14 @@ java {
 
 dependencies {
     // OkHttp
-    implementation "com.squareup.okhttp3:okhttp:${okhttpVersion}"
+    api "com.squareup.okhttp3:okhttp:${okhttpVersion}"
 
     // Jackson
-    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
-    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
-    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    api "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    api "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    api "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
 
-    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    api "org.slf4j:slf4j-api:${slf4jVersion}"
 
     // Junit5
     testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
@@ -76,18 +77,6 @@ publishing {
                         id = "dxx"
                         name = "dxx"
                         email = "dx1898@foxmail.com"
-                    }
-                }
-
-                withXml {
-                    def node = asNode()
-                    node.dependencies.dependency.findAll { xmlDep ->
-                        xmlDep.scope.text() == "runtime" && project.configurations.implementation
-                                .allDependencies.find { dep ->
-                            xmlDep.groupId.text() == dep.group && xmlDep.artifactId.text() == dep.name
-                        }.each {
-                            xmlDep.scope*.value = "compile"
-                        }
                     }
                 }
             }
