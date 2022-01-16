@@ -126,6 +126,14 @@ public interface FindersClientService {
     void deregisterInstance(String serviceName, String ip, int port, String cluster);
 
     /**
+     * Update an instance of service.
+     * @param serviceName name of service
+     * @param cluster name of cluster
+     * @param instance instance to update
+     */
+    void updateInstance(String serviceName, String cluster, Instance instance);
+
+    /**
      * Closes the FindersClientService.
      */
     void close();
