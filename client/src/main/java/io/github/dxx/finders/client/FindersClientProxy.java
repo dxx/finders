@@ -77,6 +77,10 @@ public class FindersClientProxy {
         req(Paths.INSTANCE, HttpMethod.DELETE, objectNode.toString());
     }
 
+    public void updateInstanceStatus(Instance instance) {
+        req(Paths.INSTANCE_STATUS, HttpMethod.PUT, JacksonUtils.toJson(instance));
+    }
+
     public void sendHeartbeat(Heartbeat heartbeat) {
         ObjectNode objectNode = JacksonUtils.createObjectNode();
         objectNode.put(Services.NAMESPACE, this.namespace);

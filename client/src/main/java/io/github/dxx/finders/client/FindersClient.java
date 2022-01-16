@@ -155,6 +155,15 @@ public class FindersClient implements FindersClientService {
         clientProxy.deregisterInstance(serviceName, ip, port, cluster);
     }
 
+    @Override
+    public void updateInstance(String serviceName, String cluster, Instance instance) {
+        if (instance != null) {
+            instance.setServiceName(serviceName);
+            instance.setCluster(cluster);
+        }
+        clientProxy.updateInstanceStatus(instance);
+    }
+
     private List<Instance> selectInstances(String serviceName, List<String> clusters, boolean healthyOnly) {
         ServiceInfo serviceInfo = serviceReactor.getService(serviceName, clusters);
         if (serviceInfo == null) {

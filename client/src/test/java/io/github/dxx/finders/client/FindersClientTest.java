@@ -3,6 +3,7 @@ package io.github.dxx.finders.client;
 import io.github.dxx.finders.client.constant.Services;
 import io.github.dxx.finders.client.loadbalance.LoadBalancerType;
 import io.github.dxx.finders.client.model.Instance;
+import io.github.dxx.finders.client.model.InstanceStatus;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -82,6 +83,21 @@ public class FindersClientTest {
 
         Instance instanceInfo = findersClient.getInstance(instance.getServiceName(), instance.getIp(), instance.getPort());
         System.out.println(instanceInfo.getIp() + ":" + instanceInfo.getPort());
+
+        findersClient.close();
+    }
+
+    @Test
+    public void testUpdateInstanceStatus() {
+        Instance instance = new Instance();
+        instance.setServiceName("testService");
+        instance.setCluster(Services.DEFAULT_CLUSTER);
+        instance.setIp("127.0.0.1");
+        instance.setPort(8080);
+        instance.setStatus(InstanceStatus.DISABLE);
+        findersClient.registerInstance(instance);
+
+        findersClient.updateInstance(instance.getServiceName(), instance.getCluster(), instance);
 
         findersClient.close();
     }
