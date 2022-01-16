@@ -94,7 +94,7 @@ public class FindersClientProxy {
                 String url = String.format("http://%s%s", server, path);
                 return FindersHttpClient.request(url, method, body, null);
             } catch (FindersRuntimeException e) {
-                LOGGER.error(String.format("Error while request server %s: ", server), e);
+                LOGGER.error(String.format("Error while request server %s", server), e);
                 server = loadBalancer.chooseServer();
             }
         }
