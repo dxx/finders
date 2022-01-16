@@ -28,12 +28,12 @@ public class FindersClientConfig {
     private final int heartbeatThreads;
 
     /**
-     * Cycle of the service pull.
+     * Period of the service pull.
      */
     private final long servicePullPeriod;
 
     /**
-     * Cycle of the heartbeat.
+     * Period of the heartbeat.
      */
     private final long heartbeatPeriod;
 
@@ -108,12 +108,12 @@ public class FindersClientConfig {
             return this;
         }
 
-        public Builder servicePullPeriod(int servicePullPeriod) {
+        public Builder servicePullPeriod(long servicePullPeriod) {
             this.servicePullPeriod = servicePullPeriod;
             return this;
         }
 
-        public Builder heartbeatPeriod(int heartbeatPeriod) {
+        public Builder heartbeatPeriod(long heartbeatPeriod) {
             this.heartbeatPeriod = heartbeatPeriod;
             return this;
         }
