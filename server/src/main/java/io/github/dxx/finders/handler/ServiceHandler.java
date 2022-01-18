@@ -13,6 +13,11 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Service handler.
  *
@@ -27,6 +32,24 @@ public class ServiceHandler {
     public ServiceHandler(ServiceManager serviceManager, SyncManager syncManager) {
         this.serviceManager = serviceManager;
         this.syncManager = syncManager;
+    }
+
+    /**
+     * Get all service names.
+     */
+    @RequestMapping(path = Paths.SERVICE_NAMES, method = RequestMethod.GET)
+    public void names(RoutingContext context) {
+        HttpServerRequest request = context.request();
+        HttpServerResponse response = context.response();
+
+        String namespace = ParamUtils.optional(request, Services.PARAM_NAMESPACE, Services.DEFAULT_NAMESPACE);
+        Map<String, Service> serviceMap = serviceManager.getServiceMap().get(namespace);
+        List<String> names = new ArrayList<>();
+        if (serviceMap == null) {
+            response.end(JacksonUtils.toJson(names));
+            return;
+        }
+        response.end(JacksonUtils.toJson(new ArrayList<>(serviceMap.keySet())));
     }
 
     /**
