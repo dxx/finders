@@ -134,6 +134,12 @@ public interface FindersClientService {
     void updateInstance(String serviceName, String cluster, Instance instance);
 
     /**
+     * Get all service name.
+     * @return name of service list
+     */
+    List<String> getServiceNames();
+
+    /**
      * Closes the FindersClientService.
      */
     void close();

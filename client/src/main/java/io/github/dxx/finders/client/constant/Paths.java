@@ -17,4 +17,6 @@ public class Paths {
 
     public static final String INSTANCE_STATUS = INSTANCE + "/status";
 
+    public static final String SERVICE_NAMES = "/service/names";
+
 }

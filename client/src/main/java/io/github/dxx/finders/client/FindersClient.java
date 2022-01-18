@@ -152,6 +152,7 @@ public class FindersClient implements FindersClientService {
 
     @Override
     public void deregisterInstance(String serviceName, String ip, int port, String cluster) {
+        heartbeatReactor.removeHeartbeat(cluster, serviceName, ip, port);
         clientProxy.deregisterInstance(serviceName, ip, port, cluster);
     }
 
@@ -162,6 +163,11 @@ public class FindersClient implements FindersClientService {
             instance.setCluster(cluster);
         }
         clientProxy.updateInstanceStatus(instance);
+    }
+
+    @Override
+    public List<String> getServiceNames() {
+        return clientProxy.getServiceNames();
     }
 
     private List<Instance> selectInstances(String serviceName, List<String> clusters, boolean healthyOnly) {

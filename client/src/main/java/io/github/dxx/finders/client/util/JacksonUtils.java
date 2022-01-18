@@ -1,5 +1,6 @@
 package io.github.dxx.finders.client.util;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.dxx.finders.client.FindersRuntimeException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -42,6 +43,17 @@ public class JacksonUtils {
     public static <T> T toObject(String json, Class<T> cls) {
         try {
             return mapper.readValue(json, cls);
+        } catch (IOException e) {
+            throw new FindersRuntimeException(e);
+        }
+    }
+
+    /**
+     * Convert json string to Object.
+     */
+    public static <T> T toObject(String json, TypeReference<T> typeReference) {
+        try {
+            return mapper.readValue(json, typeReference);
         } catch (IOException e) {
             throw new FindersRuntimeException(e);
         }
