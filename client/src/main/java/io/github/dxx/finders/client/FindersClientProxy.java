@@ -1,5 +1,6 @@
 package io.github.dxx.finders.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.dxx.finders.client.constant.Paths;
 import io.github.dxx.finders.client.constant.Services;
 import io.github.dxx.finders.client.http.FindersHttpClient;
@@ -79,6 +80,13 @@ public class FindersClientProxy {
 
     public void updateInstanceStatus(Instance instance) {
         req(Paths.INSTANCE_STATUS, HttpMethod.PUT, JacksonUtils.toJson(instance));
+    }
+
+    public List<String> getServiceNames() {
+        String path = String.format("%s?namespace=%s",
+                Paths.SERVICE_NAMES, this.namespace);
+        String result = req(path, HttpMethod.GET, null);
+        return JacksonUtils.toObject(result, new TypeReference<List<String>>() {});
     }
 
     public void sendHeartbeat(Heartbeat heartbeat) {
