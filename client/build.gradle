@@ -44,8 +44,8 @@ jar {
             attributes "Implementation-Title": archiveBaseName
             attributes "Implementation-Version": archiveVersion
             attributes "Build-Gradle": gradle.gradleVersion
-            attributes 'Build-Jdk': System.getProperty("java.version")
-            attributes 'Build-Timestamp': LocalDateTime.now().format("yyyy-MM-dd HH:mm:ss")
+            attributes "Build-Jdk": System.getProperty("java.version")
+            attributes "Build-Timestamp": LocalDateTime.now().format("yyyy-MM-dd HH:mm:ss")
         }
     }
 }
