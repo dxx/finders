@@ -7,7 +7,7 @@
 
 Distributed service management. Inspired by [Nacos](https://github.com/alibaba/nacos).
 
-Finders is a distributed service management platform that help you achieve the governance of microservices, such as service discovery, service registration, service healthy check. 
+Finders is a distributed service management platform that help you achieve the governance of microservices, such as service discovery, service registration, service health check. 
 
 ## Getting Started
 
