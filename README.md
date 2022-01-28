@@ -64,7 +64,7 @@ Windows :
 startup.bat
 ```
 
-Or double click the `startup.bat` file.
+Or double-click the `startup.bat` file.
 
 #### Shutdown Server
 
@@ -80,7 +80,7 @@ Windows:
 shutdown.bat
 ```
 
-Or double click the `shutdown.bat` file.
+Or double-click the `shutdown.bat` file.
 
 > Note: if the `shutdown.bat` file is not found, please build again.
 
