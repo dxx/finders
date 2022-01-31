@@ -140,7 +140,7 @@ public interface FindersClientService {
     List<String> getServiceNames();
 
     /**
-     * Closes the FindersClientService.
+     * Close the FindersClientService.
      */
     void close();
 
