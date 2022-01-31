@@ -140,6 +140,12 @@ public interface FindersClientService {
     List<String> getServiceNames();
 
     /**
+     * Server whether health.
+     * @return true or false.
+     */
+    boolean serverHealth();
+
+    /**
      * Close the FindersClientService.
      */
     void close();

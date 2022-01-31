@@ -89,6 +89,11 @@ public class FindersClientProxy {
         return JacksonUtils.toObject(result, new TypeReference<List<String>>() {});
     }
 
+    public boolean serverHealth() {
+        String result = req(Paths.SERVER_HEALTH, HttpMethod.GET, null);
+        return result != null && !result.equals("");
+    }
+
     public void sendHeartbeat(Heartbeat heartbeat) {
         ObjectNode objectNode = JacksonUtils.createObjectNode();
         objectNode.put(Services.NAMESPACE, this.namespace);

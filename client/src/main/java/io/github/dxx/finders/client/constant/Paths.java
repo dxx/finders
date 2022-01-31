@@ -19,4 +19,6 @@ public class Paths {
 
     public static final String SERVICE_NAMES = "/service/names";
 
+    public static final String SERVER_HEALTH = "/server/health";
+
 }
