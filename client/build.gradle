@@ -8,6 +8,7 @@ description = "Finders Client"
 java {
     archivesBaseName = "finders-client"
     withSourcesJar()
+    withJavadocJar()
 }
 
 dependencies {
@@ -77,11 +78,33 @@ publishing {
                         email = "dx1898@foxmail.com"
                     }
                 }
+
+                scm {
+                    connection = "scm:git:git://github.com/dxx/finders.git"
+                    developerConnection = "scm:git:ssh://github.com/dxx/finders.git"
+                    url = "https://github.com/dxx/finders"
+                }
             }
         }
     }
 
     repositories {
         mavenLocal()
+
+        maven {
+            def sonatypeUsername = project.hasProperty("sonatypeUsername") ?
+                    project.getProperties().get("sonatypeUsername") : ""
+            def sonatypePassword = project.hasProperty("sonatypePassword") ?
+                    project.getProperties().get("sonatypePassword") : ""
+
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+
+            credentials {
+                username = sonatypeUsername
+                password = sonatypePassword
+            }
+        }
     }
 }
