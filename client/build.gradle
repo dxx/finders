@@ -1,6 +1,7 @@
 plugins {
     id "java-library"
     id "maven-publish"
+    id "signing"
 }
 
 description = "Finders Client"
@@ -107,4 +108,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
