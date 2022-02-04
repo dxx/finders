@@ -1,7 +1,7 @@
 # Finders
 
 ![JDK8+](https://img.shields.io/badge/JDK-1.8%2B-%23b07219)
-[![Apache-2.0 licensed](https://img.shields.io/github/license/dxx/finders.svg?color=blue)](./LICENSE)
+[![Apache-2.0 licensed](https://img.shields.io/github/license/dxx/finders.svg?color=4EB1BA)](./LICENSE)
 
 [English](./README.md)
 
