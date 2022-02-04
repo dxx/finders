@@ -1,7 +1,7 @@
 package io.github.dxx.finders.client.util;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import io.github.dxx.finders.client.FindersRuntimeException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
