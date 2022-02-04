@@ -28,6 +28,9 @@ public class JacksonUtils {
 
     /**
      * Convert object to json string.
+     *
+     * @param obj the object be converted
+     * @return json string
      */
     public static String toJson(Object obj) {
         try {
@@ -39,6 +42,11 @@ public class JacksonUtils {
 
     /**
      * Convert json string to Object.
+     *
+     * @param <T> type of class
+     * @param json json string
+     * @param cls class type
+     * @return object
      */
     public static <T> T toObject(String json, Class<T> cls) {
         try {
@@ -50,6 +58,11 @@ public class JacksonUtils {
 
     /**
      * Convert json string to Object.
+     *
+     * @param <T> type of class
+     * @param json json string
+     * @param typeReference {@link TypeReference}
+     * @return object
      */
     public static <T> T toObject(String json, TypeReference<T> typeReference) {
         try {
@@ -61,6 +74,11 @@ public class JacksonUtils {
 
     /**
      * Convert bytes to Object.
+     *
+     * @param <T> type of class
+     * @param bytes the bytes be converted
+     * @param cls class type
+     * @return object
      */
     public static <T> T toObject(byte[] bytes, Class<T> cls) {
         return toObject(new String(bytes, StandardCharsets.UTF_8), cls);
@@ -68,6 +86,11 @@ public class JacksonUtils {
 
     /**
      * Convert InputStream to Object.
+     *
+     * @param <T> type of class
+     * @param cls class type
+     * @param is the InputStream be converted
+     * @return object
      */
     public static <T> T toObject(InputStream is, Class<T> cls) {
         try {
@@ -79,6 +102,9 @@ public class JacksonUtils {
 
     /**
      * Convert json string to JsonNode.
+     *
+     * @param json the json string to be converted
+     * @return {@link JsonNode}
      */
     public static JsonNode toJsonNode(String json) {
         try {
@@ -90,6 +116,8 @@ public class JacksonUtils {
 
     /**
      * Create a new Jackson ObjectNode.
+     *
+     * @return {@link ObjectNode}
      */
     public static ObjectNode createObjectNode() {
         return new ObjectNode(mapper.getNodeFactory());
@@ -97,6 +125,8 @@ public class JacksonUtils {
 
     /**
      * Create a new Jackson ArrayNode.
+     *
+     * @return {@link ArrayNode}
      */
     public static ArrayNode createArrayNode() {
         return new ArrayNode(mapper.getNodeFactory());
