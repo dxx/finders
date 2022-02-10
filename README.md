@@ -86,7 +86,7 @@ Or double-click the `shutdown.bat` file.
 
 ## Documentation
 
-Your can view the full documentation from [here](https://dxx.github.io/finders).
+You can view the full documentation from [here](https://dxx.github.io/finders).
 
 ## License
 
