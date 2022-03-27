@@ -4,7 +4,7 @@ import io.github.dxx.finders.constant.Loggers;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +27,7 @@ public class DefaultEventPublisher extends Thread implements EventPublisher {
 
     public DefaultEventPublisher(Class<? extends Event> eventType, int bufferSize) {
         this.eventType = eventType;
-        this.eventQueue = new ArrayBlockingQueue<>(bufferSize);
+        this.eventQueue = new LinkedBlockingQueue<>(bufferSize);
         this.start();
     }
 
