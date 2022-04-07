@@ -9,9 +9,6 @@ dependencies {
     implementation "io.vertx:vertx-web:${vertxVersion}"
     implementation "io.vertx:vertx-web-client:${vertxVersion}"
 
-    // Logback
-    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
-
     // Jackson
     implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
@@ -19,6 +16,9 @@ dependencies {
 
     // Toml
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-toml:${jacksonVersion}"
+
+    // Logback
+    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
 
     // Junit5
     testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
