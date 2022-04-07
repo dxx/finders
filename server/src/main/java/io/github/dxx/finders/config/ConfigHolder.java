@@ -1,7 +1,5 @@
 package io.github.dxx.finders.config;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
  * The config holder.
  *
@@ -9,16 +7,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class ConfigHolder {
 
-    private static final AtomicBoolean alreadySetConfig = new AtomicBoolean(false);
-    private static FindersConfig findersConfig = new FindersConfig();
+    private static boolean alreadySetConfig = false;
+
+    private static FindersConfig findersConfig;
 
     public static void setConfig(FindersConfig findersConfig) {
-        if (alreadySetConfig.compareAndSet(false, true)) {
+        if (!alreadySetConfig) {
             ConfigHolder.findersConfig = findersConfig;
+            alreadySetConfig = true;
         }
     }
 
     public static FindersConfig config() {
+        if (findersConfig == null) {
+            throw new IllegalStateException("FindersConfig can't be null");
+        }
         return findersConfig;
     }
 
