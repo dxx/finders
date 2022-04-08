@@ -52,7 +52,7 @@ public class Environment {
         intiConfig();
     }
 
-    public static void initLog() {
+    private static void initLog() {
         // Setting logback config file. Must setting before use logger.
         System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY,
                 String.format("%s%s%s", CONF_DIR, File.separator, EnvConst.LOGBACK_FILE_NAME));
@@ -61,13 +61,13 @@ public class Environment {
     private static void intiConfig() {
         String config = String.format("%s%s%s", CONF_DIR, File.separator, EnvConst.CONFIG_FILE_NAME);
         if (logger.isDebugEnabled()) {
-            logger.debug("Initialize configuration use the file {}", config);
+            logger.debug("Initialize config use file {}", config);
         }
         try {
             JsonNode jsonNode = TomlMapper.builder().build().readTree(new File(config));
             parseConfig(jsonNode);
         } catch (Exception e) {
-            Loggers.CORE.error("Init config error: {}", e.getMessage());
+            logger.error("Initialize config error: {}", e.getMessage());
 
             throw new FindersRuntimeException(e);
         }
