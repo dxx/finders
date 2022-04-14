@@ -66,7 +66,6 @@ public class RouterFunction {
         this.routeIfNecessary(consoleHandler);
     }
 
-    @SuppressWarnings("unchecked")
     private void routeIfNecessary(Object obj) {
         Arrays.stream(obj.getClass().getMethods()).forEach(method -> {
             RequestMapping annotation = method.getAnnotation(RequestMapping.class);
