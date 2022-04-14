@@ -31,8 +31,10 @@ public class DefaultFilterChain extends AbstractFilter {
     }
 
     public void addLast(AbstractFilter abstractFilter) {
-        last.setNext(abstractFilter);
-        last = abstractFilter;
+        if (abstractFilter != null) {
+            last.setNext(abstractFilter);
+            last = abstractFilter;
+        }
     }
 
     @Override
