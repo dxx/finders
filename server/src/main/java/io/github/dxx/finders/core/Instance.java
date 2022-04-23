@@ -2,6 +2,8 @@ package io.github.dxx.finders.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Objects;
+
 /**
  * The class that holds instance information.
  *
@@ -88,4 +90,13 @@ public class Instance implements Comparable<Instance> {
     public int compareTo(Instance o) {
         return this.instanceId.compareTo(o.getInstanceId());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Instance instance = (Instance) o;
+        return Objects.equals(instanceId, instance.instanceId);
+    }
+
 }

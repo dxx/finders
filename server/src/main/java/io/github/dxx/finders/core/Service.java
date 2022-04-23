@@ -33,12 +33,12 @@ public class Service {
     }
 
     public void updateInstance(List<Instance> instances) {
-        Map<String, List<Instance>> newClusterMap = new HashMap<>(clusterMap.size());
-        clusterMap.keySet().forEach(key -> newClusterMap.put(key, new ArrayList<>()));
+        Map<String, Set<Instance>> newClusterMap = new HashMap<>(clusterMap.size());
+        clusterMap.keySet().forEach(key -> newClusterMap.put(key, clusterMap.get(key)));
 
         instances.forEach(instance -> {
-            List<Instance> instanceList = newClusterMap.computeIfAbsent(
-                    instance.getCluster(), k -> new ArrayList<>());
+            Set<Instance> instanceList = newClusterMap.computeIfAbsent(
+                    instance.getCluster(), k -> new HashSet<>());
             instanceList.add(instance);
         });
 
@@ -99,8 +99,8 @@ public class Service {
         GlobalExecutor.scheduleHeartbeatHandler(heartbeatHandler, 0, TimeUnit.MILLISECONDS);
     }
 
-    private void updateInstance(String clusterName, List<Instance> instances) {
-        clusterMap.put(clusterName, new HashSet<>(instances));
+    private void updateInstance(String clusterName, Set<Instance> instances) {
+        clusterMap.put(clusterName, instances);
     }
 
     private void init() {
