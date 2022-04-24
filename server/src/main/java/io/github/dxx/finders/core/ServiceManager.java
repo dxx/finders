@@ -40,8 +40,9 @@ public class ServiceManager {
                 service = createServiceIfAbsent(namespace, serviceName);
             }
         }
-
-        addInstance(service, Collections.singletonList(instance));
+        synchronized ((namespace + serviceName).intern()) {
+            addInstance(service, Collections.singletonList(instance));
+        }
 
         syncManager.sync(service.getNamespace(), service.getServiceName());
     }
