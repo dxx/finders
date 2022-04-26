@@ -64,11 +64,11 @@ public class ServiceManager {
     }
 
     public Service getService(String namespace, String serviceName) {
-        Map<String, Service> clusterMap = serviceMap.get(namespace);
-        if (clusterMap == null) {
+        Map<String, Service> map = serviceMap.get(namespace);
+        if (map == null) {
             return null;
         }
-        return clusterMap.get(serviceName);
+        return map.get(serviceName);
     }
 
     public void handleInstanceHeartbeat(String namespace, String serviceName, String cluster, String ip, int port) {
