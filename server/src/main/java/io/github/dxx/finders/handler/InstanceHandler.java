@@ -238,7 +238,7 @@ public class InstanceHandler {
         return objectNode;
     }
 
-    public Instance doDetail(HttpServerRequest request) {
+    private Instance doDetail(HttpServerRequest request) {
         String namespace = ParamUtils.optional(request, Services.PARAM_NAMESPACE, Services.DEFAULT_NAMESPACE);
         String cluster = ParamUtils.optional(request, Services.PARAM_CLUSTER, Services.DEFAULT_CLUSTER);
         String serviceName = ParamUtils.required(request, Services.PARAM_SERVICE_NAME);
