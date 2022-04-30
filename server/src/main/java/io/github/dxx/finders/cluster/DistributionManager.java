@@ -44,12 +44,8 @@ public class DistributionManager {
         return Math.abs(INSTANCE.hash(serviceName)) % INSTANCE.serverNodeManager.getUpAddresses().size();
     }
 
-    /**
-     * See {@link HashMap} hash method.
-     */
     private int hash(String key) {
-        int h;
-        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+        return (key == null) ? 0 : key.hashCode();
     }
 
     private static void checkServerNodeManager() {
