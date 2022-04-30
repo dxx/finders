@@ -56,10 +56,6 @@ public class ServerNodeManager extends ServerChangeSubscriber {
         return INSTANCE;
     }
 
-    public ServerNode getNode(String nodeId) {
-        return this.allNodes.get(nodeId);
-    }
-
     public List<ServerNode> allNodes() {
         return new ArrayList<>(this.allNodes.values());
     }
