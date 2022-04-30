@@ -28,10 +28,8 @@ public class DistributionManager {
     }
 
     public static boolean isResponsible(String serviceName) {
-        checkServerNodeManager();
-        int index = INSTANCE.distributedIndex(serviceName);
         return INSTANCE.serverNodeManager.selfNode().getAddress().equals(
-                INSTANCE.serverNodeManager.getUpAddresses().get(index));
+                getDistributedAddress(serviceName));
     }
 
     public static String getDistributedAddress(String serviceName) {
