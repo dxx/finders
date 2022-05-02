@@ -25,7 +25,7 @@ public class ServiceManagerTest {
         ServiceManager serviceManager = init();
 
         Instance instance = new Instance();
-        instance.setServiceName("testService");
+        instance.setServiceName("serviceTest");
         instance.setCluster(Services.DEFAULT_CLUSTER);
         instance.setIp("127.0.0.1");
         instance.setPort(9080);
@@ -38,7 +38,7 @@ public class ServiceManagerTest {
         ServiceManager serviceManager = init();
 
         Instance instance = new Instance();
-        instance.setServiceName("testService");
+        instance.setServiceName("serviceTest");
         instance.setCluster(Services.DEFAULT_CLUSTER);
         instance.setIp("127.0.0.1");
         instance.setPort(9080);

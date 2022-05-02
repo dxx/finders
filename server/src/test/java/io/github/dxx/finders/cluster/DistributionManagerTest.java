@@ -33,7 +33,7 @@ public class DistributionManagerTest {
 
     @Test
     public void testIsResponsible() {
-        String serviceName = "testService";
+        String serviceName = "serviceTest";
 
         boolean isResponsible = DistributionManager.isResponsible(serviceName);
         System.out.println(isResponsible);
@@ -41,7 +41,7 @@ public class DistributionManagerTest {
 
     @Test
     public void testGetDistributedAddress() {
-        String serviceName = "testService1";
+        String serviceName = "serviceTest";
 
         String address = DistributionManager.getDistributedAddress(serviceName);
         System.out.println(address);

@@ -17,7 +17,7 @@ public class ServiceStoreTest {
     public void testCheckInfo() {
         List<Instance> instanceList = new ArrayList<>();
         Instance instance = new Instance();
-        instance.setServiceName("testService");
+        instance.setServiceName("serviceTest");
         instance.setCluster(Services.DEFAULT_CLUSTER);
         instance.setIp("127.0.0.1");
         instance.setPort(9080);
