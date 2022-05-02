@@ -1,6 +1,7 @@
 package io.github.dxx.finders.core;
 
 import io.github.dxx.finders.constant.Loggers;
+import io.github.dxx.finders.executor.GlobalExecutor;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -20,13 +21,13 @@ public class ServiceUpdater implements Runnable {
         Pair<Service, List<Instance>> pair = Pair.with(service, instances);
         boolean success = taskQueue.offer(pair);
         if (!success) {
-            new Thread(() -> {
+            GlobalExecutor.executeBackgroundTask(() -> {
                 try {
                     taskQueue.put(pair);
                 } catch (InterruptedException e) {
                     Loggers.EVENT.error("[ServiceUpdater] Error while put pair into taskQueue", e);
                 }
-            }).start();
+            });
         }
     }
 

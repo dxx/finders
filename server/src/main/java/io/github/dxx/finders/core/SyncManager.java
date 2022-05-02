@@ -89,10 +89,16 @@ public class SyncManager {
                 new LinkedBlockingQueue<>(10 * 1024);
 
         public void addTask(String address, String data) {
-            try {
-                taskQueue.put(Pair.with(address, data));
-            } catch (InterruptedException e) {
-                Loggers.EVENT.error("[ServiceSynchronizer] Error while put pair into taskQueue", e);
+            Pair<String, String> pair = Pair.with(address, data);
+            boolean success = taskQueue.offer(pair);
+            if (!success) {
+                GlobalExecutor.executeBackgroundTask(() -> {
+                    try {
+                        taskQueue.put(pair);
+                    } catch (InterruptedException e) {
+                        Loggers.EVENT.error("[ServiceSynchronizer] Error while put pair into taskQueue", e);
+                    }
+                });
             }
         }
 

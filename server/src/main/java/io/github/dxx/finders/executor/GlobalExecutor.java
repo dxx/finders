@@ -28,6 +28,9 @@ public class GlobalExecutor {
     private static final ScheduledExecutorService SERVER_UPDATER_EXECUTOR = ExecutorFactory.newSingleScheduledExecutorService(
             new NamedThreadFactory("finders-server-updater"));
 
+    private static final ExecutorService BACKGROUND_EXECUTOR = ExecutorFactory
+            .newFixedExecutorService(DEFAULT_THREAD_COUNT, new NamedThreadFactory("finders-background-executor"));
+
     public static void executeServiceUpdate(Runnable runnable) {
         SERVICE_UPDATER_EXECUTOR.execute(runnable);
     }
@@ -57,5 +60,9 @@ public class GlobalExecutor {
     public static void scheduleServerUpdateTask(Runnable runnable, long initialDelay, long delay,
                                                 TimeUnit unit) {
         SERVER_UPDATER_EXECUTOR.scheduleWithFixedDelay(runnable, initialDelay, delay, unit);
+    }
+
+    public static void executeBackgroundTask(Runnable runnable) {
+        BACKGROUND_EXECUTOR.execute(runnable);
     }
 }
