@@ -69,7 +69,7 @@ public class ServerStatusManager {
             });
         }
 
-        public void updateServer(ServerNode serverNode, ServerStatus status) {
+        private void updateServer(ServerNode serverNode, ServerStatus status) {
             if (serverNode.getStatus() != status) {
                 ServerChangeEvent serverChangeEvent = new ServerChangeEvent();
                 serverChangeEvent.setId(serverNode.getId());
