@@ -106,6 +106,7 @@ public class DefaultEventPublisher extends Thread implements EventPublisher {
     public void shutdown() {
         this.shutdown = true;
         this.eventQueue.clear();
+        this.subscribers.clear();
     }
 
 }
